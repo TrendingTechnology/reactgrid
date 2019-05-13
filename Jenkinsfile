@@ -22,7 +22,7 @@ pipeline {
               bat "npm install"
             }
           }
-          if (env.BRANCH_NAME == 'jenkins') {
+          if (env.BRANCH_NAME == 'jenkins_2') {
             fileOperations([fileCopyOperation(	
               excludes: "",
               flattenFiles: false,	
