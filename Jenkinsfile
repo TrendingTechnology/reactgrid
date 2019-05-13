@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('npm') {	
       steps {	
-        bat 'npm ci'	
+        bat 'npm install'	
       }
     }
 
@@ -19,10 +19,10 @@ pipeline {
               targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
             )])
             dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-              bat "npm ci"
+              bat "npm install"
             }
           }
-          if (env.BRANCH_NAME == 'develop') {
+          if (env.BRANCH_NAME == 'jenkins') {
             fileOperations([fileCopyOperation(	
               excludes: "",
               flattenFiles: false,	
@@ -30,7 +30,7 @@ pipeline {
               targetLocation: "c:/users/lenovo/desktop/dynagrid"	
             )])
             dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              bat "npm ci"
+              bat "npm install"
             }
           }
         }
