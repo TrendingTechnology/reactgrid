@@ -65,7 +65,7 @@ pipeline {
         // if (env.BRANCH_NAME == 'develop') {
           load "$JENKINS_HOME/jobvars.env"
           withEnv(["TOKEN=${NPMJS_TOKEN}"]) {
-            bat "npm version prepatch && npm publish"
+            bat "npm publish"
           }
         // }
        }  
