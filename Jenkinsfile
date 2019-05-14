@@ -30,7 +30,7 @@ pipeline {
             //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
             // )])
             dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-              bat "git pull origin test"
+              bat "git pull -u origin test"
             }
           }
         }
