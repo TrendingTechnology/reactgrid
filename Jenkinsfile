@@ -34,9 +34,16 @@ pipeline {
             // }
 
             dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-              sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
-                powershell "git pull origin test"
-              }
+              // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
+              //   powershell "git pull origin test"
+              // }
+              powershell "git add ."
+            }
+            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+              // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
+              //   powershell "git pull origin test"
+              // }
+              powershell "git commit -m \"test\""
             }
           }
         }
