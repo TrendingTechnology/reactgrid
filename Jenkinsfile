@@ -65,7 +65,10 @@ pipeline {
           //   bat "git remote set-url origin "
           // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "git push origin test"
+            // bat "git push origin test"
+            sshagent(credentials: ['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
+              bat "git pull origin test"
+            }
           }
         }
        }  
