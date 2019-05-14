@@ -58,8 +58,11 @@ pipeline {
     success {
       script {
         if (env.BRANCH_NAME == 'test') {
+          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+          //   bat "npm version patch && npm publish"
+          // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm version patch && npm publish"
+            bat "git pull origin test"
           }
         }
        }  
