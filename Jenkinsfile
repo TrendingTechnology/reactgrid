@@ -30,8 +30,15 @@ pipeline {
             //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
             // )])
             dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+              bat "git config --global user.name miki10194"
+            }
+            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+              bat "git config --global user.email miki10194@wp.pl"
+            }
+            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
               bat "git config -l"
             }
+            
           }
         }
       }
