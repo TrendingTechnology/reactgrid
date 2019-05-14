@@ -64,7 +64,7 @@ pipeline {
           // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
           //   bat "npm publish"
           // }
-          withCredentials([string(credentialsId: '49789b44-fc72-4c81-98c3-f1bc1cda3d0a', variable: 'NPM_TOKEN')]) {
+          withCredentials([string(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', variable: 'NPM_TOKEN')]) {
             dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
               bat "npm whoami"
             }
