@@ -74,7 +74,7 @@ pipeline {
           //   bat "npm whoami"
           // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "git pull origin cleanup"
+            bat "npm publish"
           }
         }
        }  
