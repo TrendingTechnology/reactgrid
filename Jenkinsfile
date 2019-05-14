@@ -62,7 +62,7 @@ pipeline {
           //   bat "npm version patch && npm publish"
           // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "git pull origin test"
+            bat "ssh-keygen -t dsa"
           }
         }
        }  
