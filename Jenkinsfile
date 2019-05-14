@@ -73,6 +73,9 @@ pipeline {
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
             bat "npm whoami"
           }
+          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+            bat "npm publish"
+          }
         }
        }  
     }
