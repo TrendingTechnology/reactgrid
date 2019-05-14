@@ -3,39 +3,39 @@ pipeline {
   stages {
     // stage('npm') {	
     //   steps {	
-    //     bat 'npm ci'	
+    //     bat 'npm install'	
     //   }
     // }
 
-    // stage('update files') {
-    //   steps {
-    //     script {
-    //       powershell 'Remove-Item -Recurse -Force node_modules'
-    //       if (env.CHANGE_ID) {
-    //         fileOperations([fileCopyOperation(	
-    //           excludes: "",
-    //           flattenFiles: false,	
-    //           includes: "**/*",	
-    //           targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
-    //         )])
-    //         dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-    //           bat "npm ci"
-    //         }
-    //       }
-    //       if (env.BRANCH_NAME == 'develop') {
-    //         fileOperations([fileCopyOperation(	
-    //           excludes: "",
-    //           flattenFiles: false,	
-    //           includes: "**/*",	
-    //           targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-    //         )])
-    //         dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-    //           bat "npm ci"
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    stage('update files') {
+      steps {
+        script {
+          // powershell 'Remove-Item -Recurse -Force node_modules'
+          // if (env.CHANGE_ID) {
+          //   fileOperations([fileCopyOperation(	
+          //     excludes: "",
+          //     flattenFiles: false,	
+          //     includes: "**/*",	
+          //     targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
+          //   )])
+          //   dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
+          //     bat "npm install"
+          //   }
+          // }
+          if (env.BRANCH_NAME == 'test') {
+            // fileOperations([fileCopyOperation(	
+            //   excludes: "",
+            //   flattenFiles: false,	
+            //   includes: "**/*",	
+            //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
+            // )])
+            // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+            //   powershell "git pull origin cleanup"
+            // }
+          }
+        }
+      }
+    }
     
     // stage('tests') {
     //   steps {
@@ -48,11 +48,6 @@ pipeline {
     //     }
     //   }
     // }
-    stage('test') {
-      steps {
-        bat "echo hello world"
-      }
-    }
   }
 
   options {
@@ -62,15 +57,14 @@ pipeline {
   post {
     success {
       script {
-        // if (env.BRANCH_NAME == 'develop') {
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              bat "npm version patch && npm publish"
+        if (env.BRANCH_NAME == 'test') {
+          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+            bat "npm whami"
           }
-          // load "$JENKINS_HOME/jobvars.env"
-          // withEnv(["TOKEN=${NPMJS_TOKEN}"]) {
-          //   bat "npm login"
-          // }
-        // }
+          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+            bat "npm publish"
+          }
+        }
        }  
     }
 
