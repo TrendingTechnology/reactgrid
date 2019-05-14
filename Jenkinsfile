@@ -58,11 +58,16 @@ pipeline {
     success {
       script {
         if (env.BRANCH_NAME == 'test') {
-          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm whoami"
-          }
-          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm publish"
+          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+          //   bat "npm whoami"
+          // }
+          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+          //   bat "npm publish"
+          // }
+          withCredentials([string(credentialsId: '49789b44-fc72-4c81-98c3-f1bc1cda3d0a', variable: 'NPM_TOKEN')]) {
+            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+              bat "npm whoami"
+            }
           }
         }
        }  
