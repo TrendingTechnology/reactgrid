@@ -58,23 +58,8 @@ pipeline {
     success {
       script {
         if (env.BRANCH_NAME == 'test') {
-          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-          //   bat "npm whoami"
-          // }
-          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-          //   bat "npm publish"
-          // // }
-          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-          //   bat "npm install -g npm-cli-login"
-          // }
-          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-          //   bat "npm-cli-login -u piotr.mikosza -p Silevis_2019 -e piotr.mikosza@silevis.com"
-          // }
-          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-          //   bat "npm whoami"
-          // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm publish"
+            bat "npm version patch && npm publish"
           }
         }
        }  
