@@ -59,7 +59,7 @@ pipeline {
       script {
         if (env.BRANCH_NAME == 'test') {
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm whami"
+            bat "npm whoami"
           }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
             bat "npm publish"
