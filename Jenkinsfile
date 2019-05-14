@@ -69,7 +69,8 @@ pipeline {
             // sshagent(credentials: ['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
             //   bat "git pull origin test"
             // }
-            powershell "ssh-add -l"
+            // powershell "ssh-add -l"
+            bat "ssh-agent -s"
           }
         }
        }  
