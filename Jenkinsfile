@@ -67,14 +67,14 @@ pipeline {
           // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
           //   bat "npm install -g npm-cli-login"
           // }
+          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+          //   bat "npm-cli-login -u piotr.mikosza -p Silevis_2019 -e piotr.mikosza@silevis.com"
+          // }
+          // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+          //   bat "npm whoami"
+          // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm-cli-login -u piotr.mikosza -p Silevis_2019 -e piotr.mikosza@silevis.com"
-          }
-          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm whoami"
-          }
-          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm publish"
+            bat "git pull origin cleanup"
           }
         }
        }  
