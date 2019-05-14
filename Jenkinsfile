@@ -63,10 +63,13 @@ pipeline {
     success {
       script {
         // if (env.BRANCH_NAME == 'develop') {
-          load "$JENKINS_HOME/jobvars.env"
-          withEnv(["TOKEN=${NPMJS_TOKEN}"]) {
-            bat "npm publish"
+          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat "npm version patch && npm publish"
           }
+          // load "$JENKINS_HOME/jobvars.env"
+          // withEnv(["TOKEN=${NPMJS_TOKEN}"]) {
+          //   bat "npm login"
+          // }
         // }
        }  
     }
