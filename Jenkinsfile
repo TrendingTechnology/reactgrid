@@ -62,7 +62,7 @@ pipeline {
           //   bat "npm version patch && npm publish"
           // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "git remote set-url origin git@github.com:silevis/dynagrid.git"
+            bat "git remote set-url origin https://github.com/silevis/dynagrid.git"
           }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
             bat "git pull origin test"
