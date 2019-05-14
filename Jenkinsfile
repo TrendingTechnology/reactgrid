@@ -32,6 +32,12 @@ pipeline {
             // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
             //   powershell "git config -l"
             // }
+            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+              // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
+              //   powershell "git pull origin test"
+              // }
+              powershell "ssh-agent"
+            }
 
             dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
               // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
