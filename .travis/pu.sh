@@ -34,8 +34,7 @@ make_version() {
 upload_files() {
   # This make sure the current work area is pushed to the tip of the current branch
   echo 'before push'
-  git remote add origin git@github.com:silevis/dynagrid.git
-  git push origin HEAD:$TRAVIS_BRANCH
+  git push https://${GITHUB_API_KEY}@github.com/silevis/dynagrid.git >/dev/null 2>&1 HEAD:$TRAVIS_BRANCH
   echo 'after push'
   
   # This pushes the new tag
