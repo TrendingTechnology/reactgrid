@@ -51,12 +51,12 @@ pipeline {
               // }
               // powershell "git commit -m \"test\""
             // }
-            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+            withCredentials([string(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', 'TOKEN')]) {
+              dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
               // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
               //   powershell "git pull origin test"
               // }
               // powershell "git push origin test"
-              withCredentials([string(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', 'TOKEN')]) {
                 powershell "git pull origin test"
               }
             }
