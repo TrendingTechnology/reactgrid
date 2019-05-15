@@ -12,7 +12,7 @@ setup_git() {
   git config credential.helper "store --file=.git/credentials"
   
   # This associates the API Key with the account
-  echo "https://${GITHUB_API_KEY}:@github.com" > .git/credentials
+  echo "https://${GITHUB_API_KEY}:@github.com/silevis/dynagrid.git" > .git/credentials
 }
 
 make_version() {
@@ -34,7 +34,6 @@ make_version() {
 upload_files() {
   # This make sure the current work area is pushed to the tip of the current branch
   echo 'before push'
-  echo "https://${GITHUB_API_KEY}:@github.com" > .git/credentials
   git push origin HEAD:$TRAVIS_BRANCH
   echo 'after push'
   
