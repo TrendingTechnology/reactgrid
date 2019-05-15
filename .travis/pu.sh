@@ -12,7 +12,7 @@ setup_git() {
   git config credential.helper "store --file=.git/credentials"
   
   # This associates the API Key with the account
-  echo "https://${GITHUB_API_KEY}:@github.com/silevis/dynagrid.git" > .git/credentials
+  echo "https://${GITHUB_API_KEY}@github.com/silevis/dynagrid.git" > .git/credentials
 }
 
 make_version() {
