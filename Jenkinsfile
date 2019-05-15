@@ -56,7 +56,7 @@ pipeline {
               //   powershell "git pull origin test"
               // }
               // powershell "git push origin test"
-              withCredentials([string(credentialsIdx: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', 'TOKEN')]) {
+              withCredentials([string(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', 'TOKEN')]) {
                 powershell "git pull origin test"
               }
             }
