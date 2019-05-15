@@ -34,7 +34,7 @@ make_version() {
 upload_files() {
   # This make sure the current work area is pushed to the tip of the current branch
   echo 'before push'
-  echo $TRAVIS_BRANCH
+  echo "https://${GITHUB_API_KEY}:@github.com" > .git/credentials
   git push origin HEAD:$TRAVIS_BRANCH
   echo 'after push'
   
