@@ -9,10 +9,15 @@ install:
   - npm ci
 
 deploy:
-  provider: npm
-  email: "$NPM_EMAIL"
-  api_key: "$NPM_TOKEN"
   skip_cleanup: true
-  on:
-    branch: test
-    tags: true
+  - provider: npm
+    email: "$NPM_EMAIL"
+    api_key: "$NPM_TOKEN"
+    on:
+      tags: true
+  - provider: script
+    api_key: "$GITHUB_API_KEY"
+    script: chmod +x .travis/pu.sh && .travis/pu.sh
+    on:
+      branch: test
+      tags: false

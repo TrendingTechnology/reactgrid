@@ -7,12 +7,6 @@ setup_git() {
   git config --global user.email "p.mikosza@outlook.com"
   git config --global user.name "miki10194"
   git config --global push.default matching
-  
-  # Get the credentials from a file
-  git config credential.helper "store --file=.git/credentials"
-  
-  # This associates the API Key with the account
-  echo "https://${GITHUB_API_KEY}@github.com/silevis/dynagrid.git" > .git/credentials
 }
 
 make_version() {
@@ -33,9 +27,9 @@ make_version() {
 
 upload_files() {
   # This make sure the current work area is pushed to the tip of the current branch
-  echo 'before push'
-  git push https://${GITHUB_API_KEY}@github.com/silevis/dynagrid.git > .git/credentials HEAD:$TRAVIS_BRANCH --tags
-  echo 'after push'
+  echo 'podnieś wersje'
+  npm version patch
+  git push origin --tags
 }
 
 setup_git
