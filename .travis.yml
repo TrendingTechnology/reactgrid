@@ -15,11 +15,3 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: chmod +x .travis/pu.sh && .travis/pu.sh
-  on:
-    branch: test
-    tags: false
