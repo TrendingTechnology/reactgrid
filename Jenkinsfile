@@ -9,59 +9,14 @@ pipeline {
 
     stage('update files') {
       steps {
-        // script {
-          // powershell 'Remove-Item -Recurse -Force node_modules'
-          // if (env.CHANGE_ID) {
-          //   fileOperations([fileCopyOperation(	
-          //     excludes: "",
-          //     flattenFiles: false,	
-          //     includes: "**/*",	
-          //     targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
-          //   )])
-          //   dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-          //     bat "npm install"
-          //   }
-          // }
-          // if (env.BRANCH_NAME == 'test') {
-            // fileOperations([fileCopyOperation(	
-            //   excludes: "",
-            //   flattenFiles: false,	
-            //   includes: "**/*",	
-            //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-            // )])
-            // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            //   powershell "git config -l"
-            // }
-            // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-              // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
-              //   powershell "git pull origin test"
-              // }
-              // powershell "ssh-agent"
-            // }
-
-            // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-              // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
-              //   powershell "git pull origin test"
-              // }
-              // powershell "git add ."
-            // }
-            // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-              // sshagent(['c7a6351c-c618-4e94-88d9-1020cf897fbb']) {
-              //   powershell "git pull origin test"
-              // }
-              // powershell "git commit -m \"test\""
-            // }
-            node {
-              withCredentials([string(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', 'TOKEN')]) {
-                dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {              
-                  powershell "git pull origin test"
-                }
-              }
+        node {
+          withCredentials([string(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', 'TOKEN')]) {
+            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {              
+              powershell "git pull origin test"
             }
           }
         }
       }
-
     }
     
     // stage('tests') {
