@@ -9,12 +9,8 @@ pipeline {
 
     stage('update files') {
       steps {
-        node {
-          withCredentials([string(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', 'TOKEN')]) {
-            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {              
-              powershell "git pull origin test"
-            }
-          }
+        withCredentials([usernamePassword(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          bat "echo $PASSWORD"
         }
       }
     }
