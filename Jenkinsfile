@@ -44,9 +44,9 @@ pipeline {
           // }
           dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
             // bat "git push origin test"
-            sshagent(credentials: ['94462115-8e05-4850-933c-67971f831b1c']) {
-              bat "git pull origin test"
-            }
+            // sshagent(credentials: ['94462115-8e05-4850-933c-67971f831b1c']) {
+            //   bat "git pull origin test"
+            // }
             // powershell "ssh-add -l"
           }
         }
