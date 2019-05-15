@@ -9,3 +9,12 @@ cache:
 
 install:
   - npm ci
+
+before_deploy:
+- npm version patch
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  on:
+    branch: cleanup

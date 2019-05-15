@@ -1,1 +1,1 @@
-
+https://travis-ci.com/silevis/dynagrid.svg?token=UdPDe7gesU6LcyPy7C9z&branch=test
