@@ -29,7 +29,7 @@ upload_files() {
   # This make sure the current work area is pushed to the tip of the current branch
   echo 'podnieś wersje'
   npm version patch
-  git push origin --tags
+  git push https://${GITHUB_API_KEY}@github.com/silevis/dynagrid.git > .git/credentials --tags
 }
 
 setup_git
