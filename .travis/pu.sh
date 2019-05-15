@@ -7,12 +7,6 @@ setup_git() {
   git config --global user.email "p.mikosza@outlook.com"
   git config --global user.name "miki10194"
   git config --global push.default matching
-  
-  # Get the credentials from a file
-  git config credential.helper "store --file=.git/credentials"
-  
-  # This associates the API Key with the account
-  echo "https://${GITHUB_API_KEY}@github.com/silevis/dynagrid.git" > .git/credentials
 }
 
 make_version() {
@@ -38,7 +32,7 @@ upload_files() {
   echo 'after push'
   
   # This pushes the new tag
-  git push --tags
+  git push https://${GITHUB_API_KEY}@github.com/silevis/dynagrid.git >/dev/null 2>&1 --tags
 }
 
 setup_git
