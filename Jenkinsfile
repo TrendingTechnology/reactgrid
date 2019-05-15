@@ -9,8 +9,14 @@ pipeline {
 
     stage('update files') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          bat "echo $USERNAME"
+        // withCredentials([usernamePassword(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        //   bat "echo $USERNAME"
+        // }
+        bat "git config --global user.email \"p.mikosza@outlook.com\""
+        bat "git config --global user.name \"miki10194\""
+        bat "git config --global push.default matching"
+        dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+          bat "git pull https://eb2eb8995fd97fa2c5f31aab23b0cd798e2f3505@github.com/silevis/dynagrid.git test"
         }
       }
     }
