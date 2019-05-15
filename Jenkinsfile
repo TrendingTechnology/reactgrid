@@ -10,7 +10,7 @@ pipeline {
     stage('update files') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'c7a6351c-c618-4e94-88d9-1020cf897fbb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          bat "echo $PASSWORD"
+          bat "echo $USERNAME"
         }
       }
     }
