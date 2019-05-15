@@ -13,7 +13,7 @@ install:
 deploy:
   provider: script
   skip_cleanup: true
-  script: .travis/pu.sh
+  script: chmod +x .travis/pu.sh && .travis/pu.sh
   on:
     branch: test
     tags: false
