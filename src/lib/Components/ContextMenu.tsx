@@ -13,8 +13,38 @@ interface ContextMenuProps {
     onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
 }
 
+const ContextMenuItem = (props: {level: number, item: MenuOption, state: State}) => {
+    const {level, item, state } = props;
+    return (
+        <div
+            data-level={level}
+            className="dg-context-menu-option"
+            style={{position: 'relative'}}
+            onPointerDown={e => e.stopPropagation()}
+            onClick={() => {
+                item.handler();
+                state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
+            }}
+        > {item.childs ? item.title + ' >' : item.title } 
+            {item.childs && 
+            <div style={{ backgroundColor: '#ff0011', position: 'absolute', top: '0', left: '100%' }} >
+                {item.childs.map((item, idx) => {
+                    return <ContextMenuItem level={level+1} key={idx} state={state} item={item}/>
+                })}
+            </div>}
+        </div>
+    )
+}
+
 
 export class ContextMenu extends React.Component<ContextMenuProps> {
+
+    renderMenuOption = (level: number, contextMenuOptions: MenuOption[], state: State): any => {
+        return contextMenuOptions.map((item, idx) => {
+            return <ContextMenuItem level={level} key={idx} state={state} item={item}/>
+        })
+    }
+
     render() {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
@@ -41,22 +71,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                         top: contextMenuPosition[0] + 'px',
                         left: contextMenuPosition[1] + 'px'
                     }}
-                >
-                    {contextMenuOptions.map((el, idx) => {
-                        return (
-                            <div
-                                key={idx}
-                                className="dg-context-menu-option"
-                                onPointerDown={e => e.stopPropagation()}
-                                onClick={() => {
-                                    el.handler();
-                                    state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
-                                }}
-                            >
-                                {el.title}
-                            </div>
-                        );
-                    })}
+                > {this.renderMenuOption(0, contextMenuOptions, state)}
                 </div>
             )
         );
