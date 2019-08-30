@@ -1,16 +1,68 @@
 .context-menu-container {
-     position: fixed;
+    position: fixed;
+    max-width: 250px;
     background: white;
-    font-size: 12;
+    font-size: 12px;
     box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
     z-index: 1000;
+    padding: 4px 0;
+    border-radius: 6px;
 }
 
 .context-menu-container .dg-context-menu-option {
-        padding: 8px 20px 8px 15px;
-        cursor: pointer; 
-    }
+    padding: 5px 5px 5px 5px;
+    cursor: pointer; 
+    position: relative;
+    border-right: 4px solid transparent;
+}
 
 .context-menu-container .dg-context-menu-option:hover {
-            background: #f2f2f2;
-        }
+    background: #fbfbfb;
+    border-right-color: orangered;
+}
+
+.context-menu-container .dg-child-submenu-container {
+    background-color: white;
+    position: absolute;
+    top: -4px;
+    left: calc(100% + 4px);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.35);
+    display: none;
+    border: 1px solid #fbfbfb;
+    padding: 4px 0;
+    border-radius: 6px;
+    max-width: 250px;
+    min-width: 150px;
+}
+
+.dg-context-menu-option:hover > .dg-child-submenu-container {
+    display: block;
+}
+
+.dg-context-menu-description {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.dg-context-menu-description > .dg-context-menu-description-shortcut{
+    white-space: nowrap;
+    color: #999999;
+    padding-right: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.dg-context-menu-description > .dg-context-menu-description-title{
+    flex-grow: 1;
+    padding-right: 5px;
+}
+
+.dg-context-menu-description > .dg-context-menu-description-img{
+    flex: 0 0 13px;
+    min-height: 13px;
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 5px;
+}

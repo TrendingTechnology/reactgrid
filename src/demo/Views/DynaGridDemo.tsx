@@ -285,6 +285,40 @@ export class DynaGridDemo extends React.Component {
         return clearedRecords
     }
 
+    private sampleDropdownMenuOptions = {
+        title: 'Dropdown menu item 0 lvl 1', 
+        handler: () => {}, 
+        childs: [
+            {
+                title: 'Dropdown menu item 1 lvl 2', 
+                handler: () => console.log('clicked dropdown menu item 1 lvl 2'), 
+                childs: null
+            },
+            {
+                title: 'Dropdown menu item 3 lvl 2', 
+                handler:  () => {}, 
+                childs: [
+                    {
+                        title: 'Dropdown menu item 4 lvl 3', 
+                        handler:  () => {},
+                        childs: [
+                            {
+                                title: 'Dropdown menu item 5 lvl 4', 
+                                handler: () => console.log('clicked dropdown menu item 5 lvl 2'), 
+                                childs: null
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                title: 'Dropdown menu item 2 lvl 2', 
+                handler: () => console.log('clicked dropdown menu item 2 lvl 2'), 
+                childs: null
+            },
+        ]
+    };
+
     private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
         if (selectedRowIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
@@ -300,6 +334,7 @@ export class DynaGridDemo extends React.Component {
             {
                 title: 'Unpin row(s)', handler: () => this.setState(this.unpinRows(selectedRowIds))
             },
+            this.sampleDropdownMenuOptions,
         ]);
 
         if (this.state.records.filter(r => selectedRowIds.includes(r.id)).some(r => r.pinned == true))
@@ -325,27 +360,7 @@ export class DynaGridDemo extends React.Component {
             {
                 title: 'Unpin column(s)', handler: () => this.setState(this.unpinColumns(selectedColIds))
             },
-            {
-                title: 'Dropdown menu item 0 lvl 1', 
-                handler: () => console.log('clicked dropdown menu item lvl 1'), 
-                childs: [
-                    {
-                        title: 'Dropdown menu item 1 lvl 2', 
-                        handler: () => console.log('clicked dropdown menu item lvl 2'), 
-                        childs: []
-                    },
-                    {
-                        title: 'Dropdown menu item 2 lvl 2', 
-                        handler: () => console.log('clicked dropdown menu item lvl 2'), 
-                        childs: []
-                    },
-                    {
-                        title: 'Dropdown menu item 3 lvl 2', 
-                        handler: () => console.log('clicked dropdown menu item lvl 2'), 
-                        childs: []
-                    }
-                ]
-            }
+            this.sampleDropdownMenuOptions
         ]);
 
         if (this.state.fields.filter(f => selectedColIds.includes(f.id)).some(f => f.pinned == true))
@@ -458,6 +473,7 @@ export class DynaGridDemo extends React.Component {
             {
                 title: 'Delete column', handler: () => this.setState({ records: this.deleteColumns(selectedColIds) })
             },
+            this.sampleDropdownMenuOptions,
         ]);
 
         selectedRanges.forEach((range, idx) => {

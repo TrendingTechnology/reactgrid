@@ -117,7 +117,7 @@ export interface RowProps {
 export interface MenuOption {
     title: string;
     handler: () => void;
-    childs?: MenuOption[];
+    childs?: MenuOption[] | null;
 }
 
 

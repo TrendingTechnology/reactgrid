@@ -13,21 +13,33 @@ interface ContextMenuProps {
     onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
 }
 
+const ContextMenuDescription = (props: any) => {
+    const { title, hasChilds, iconURL } = props;
+    const backgroundImage = 'url("' + iconURL + '")';
+    return (
+        <div className="dg-context-menu-description">
+            <div className="dg-context-menu-description-img" style={{ backgroundImage }}></div>
+            <span className="dg-context-menu-description-title">{title}</span> 
+            <div className="dg-context-menu-description-shortcut"><span>CTRL+C</span></div>
+            {hasChilds && <span style={{fontSize: '16px'}}>›</span>}
+        </div>
+    )
+}
+
 const ContextMenuItem = (props: {level: number, item: MenuOption, state: State}) => {
     const {level, item, state } = props;
     return (
         <div
             data-level={level}
             className="dg-context-menu-option"
-            style={{position: 'relative'}}
             onPointerDown={e => e.stopPropagation()}
             onClick={() => {
                 item.handler();
                 state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
-            }}
-        > {item.childs ? item.title + ' >' : item.title } 
+            }}> 
+            <ContextMenuDescription title={item.title} hasChilds={item.childs && item.childs.length > 0} iconURL='https://img.icons8.com/color/2x/image.png'/>
             {item.childs && 
-            <div style={{ backgroundColor: '#ff0011', position: 'absolute', top: '0', left: '100%' }} >
+            <div className="dg-child-submenu-container">
                 {item.childs.map((item, idx) => {
                     return <ContextMenuItem level={level+1} key={idx} state={state} item={item}/>
                 })}
@@ -62,9 +74,8 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                 contextMenuOptions = rangeOptions;
             }
         }
-
         return (
-            (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
+            (contextMenuOptions.length > 0 &&
                 <div
                     className="dg-context-menu context-menu-container"
                     style={{

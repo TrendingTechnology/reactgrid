@@ -259,13 +259,14 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             cellMatrix={state.cellMatrix}
                             shadowSize={state.shadowSize}
                         />
+                        {props.state.contextMenuPosition[0] !== -1 && props.state.contextMenuPosition[1] !== -1 &&  
                         <ContextMenu
                             state={state}
                             onRowContextMenu={(_, menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(state.selectedIds, menuOptions) : []}
                             onColumnContextMenu={(_, menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(state.selectedIds, menuOptions) : []}
                             onRangeContextMenu={(_, menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(state.selectedRanges, menuOptions) : []}
                             contextMenuPosition={state.contextMenuPosition}
-                        />
+                        />}
                     </div>
                 </div >
                 {state.isFocusedCellInEditMode && state.currentlyEditedCell && <CellEditor state={state} />}

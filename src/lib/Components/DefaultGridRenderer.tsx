@@ -95,13 +95,14 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                     cellMatrix={props.state.cellMatrix}
                     shadowSize={props.state.shadowSize}
                 />
+                {props.state.contextMenuPosition[0] !== -1 && props.state.contextMenuPosition[1] !== -1 &&  
                 <ContextMenu
                     state={props.state}
                     onRowContextMenu={(_, menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(props.state.selectedIds, menuOptions) : []}
                     onColumnContextMenu={(_, menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(props.state.selectedIds, menuOptions) : []}
                     onRangeContextMenu={(_, menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(props.state.selectedRanges, menuOptions) : []}
                     contextMenuPosition={props.state.contextMenuPosition}
-                />
+                />}
             </div>
         </div >
         {props.state.isFocusedCellInEditMode && props.state.currentlyEditedCell && <CellEditor state={props.state} />}
