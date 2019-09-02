@@ -57,7 +57,25 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
         })
     }
 
-    render() {
+    state = {
+        contextMenuDimensions: {
+            width: -1,
+            height: -1,
+        },
+    };
+
+    componentDidMount() {
+        this.setState({
+            contextMenuDimensions: {
+                width: this.container && this.container.width,
+                height: this.container && this.container.height,
+            }
+        });
+    }
+
+    renderContent() {
+        const { contextMenuDimensions } = this.state;
+
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
         let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
@@ -74,17 +92,43 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                 contextMenuOptions = rangeOptions;
             }
         }
+        if (contextMenuDimensions && contextMenuDimensions.height) {
+            const vieportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            const vieportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            if (contextMenuDimensions.height + contextMenuPosition[0] > vieportHeight) {
+                contextMenuPosition[0] = vieportHeight - contextMenuDimensions.height - 10;
+            }
+            if (contextMenuDimensions.width + contextMenuPosition[1] > vieportWidth) {
+                contextMenuPosition[1] = vieportWidth - contextMenuDimensions.width - 10;
+            }
+        }
         return (
-            (contextMenuOptions.length > 0 &&
-                <div
-                    className="dg-context-menu context-menu-container"
-                    style={{
-                        top: contextMenuPosition[0] + 'px',
-                        left: contextMenuPosition[1] + 'px'
-                    }}
-                > {this.renderMenuOption(0, contextMenuOptions, state)}
-                </div>
-            )
+            contextMenuOptions.length > 0 && 
+            <div
+                className="dg-context-menu context-menu-container"
+                style={{
+                    top: contextMenuPosition[0] + 'px',
+                    left: contextMenuPosition[1] + 'px'
+                }}> 
+                {this.renderMenuOption(0, contextMenuOptions, state)}
+            </div>
+        );
+    }
+
+    private container!: DOMRect | ClientRect;
+
+    render() {
+        const { contextMenuDimensions } = this.state;
+        return (
+            <div 
+                ref={(el: HTMLDivElement) => {
+                    this.container = el && el.children[0].getBoundingClientRect(); 
+                    if (el) {
+                        console.log(el.children[0].getBoundingClientRect());
+                    }
+                }}>
+                {contextMenuDimensions && this.renderContent()}
+            </div>
         );
     }
 }
