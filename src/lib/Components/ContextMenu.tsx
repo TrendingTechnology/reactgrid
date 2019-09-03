@@ -13,6 +13,14 @@ interface ContextMenuProps {
     onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
 }
 
+interface ContextMenuContainerProps {
+    level: number;
+    item: MenuOption;
+    state: State;
+    container: DOMRect | ClientRect;
+    contextMenuPosition: number[];
+}
+
 const ContextMenuDescription = (props: any) => {
     const { title, hasChilds, iconURL } = props;
     const backgroundImage = 'url("' + iconURL + '")';
@@ -26,7 +34,7 @@ const ContextMenuDescription = (props: any) => {
     )
 }
 
-class ContextMenuSubContainer extends React.Component<{ parentLevel: number, level: number, item: MenuOption, state: State, container: DOMRect | ClientRect, contextMenuPosition: number[]  }> {
+class ContextMenuSubContainer extends React.Component<ContextMenuContainerProps> {
 
     state = {
         contextMenuDimensions: {
@@ -60,39 +68,37 @@ class ContextMenuSubContainer extends React.Component<{ parentLevel: number, lev
     }
 
     renderContent() {
-        const { parentLevel, level, item, state, container, contextMenuPosition } = this.props;
+        const { level, item, state, container, contextMenuPosition } = this.props;
         const { contextMenuDimensions } = this.state;
 
-        // if (contextMenuDimensions && contextMenuDimensions.height) {
-        let pos = [0, 0];
-
-        // pos[0] = container.height;
+        let pos: number[] = [0, 0];
+        let style: React.CSSProperties = {};
         
         if ( contextMenuDimensions && contextMenuDimensions.width !== -1 && contextMenuDimensions.height !== -1) {
-
             pos[1] = container.width - contextMenuPosition[0] - contextMenuDimensions.width;
-            console.log(container);
-
+            style = {
+                top: pos[0] + 'px',
+                right: pos[1] + 'px'
+            }
             const vieportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             const vieportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         
-            const leftSpace = contextMenuDimensions.right - container.width + contextMenuDimensions.width;
-            console.warn(`leftSpace: ${leftSpace}}, contextMenuDimensions.right: ${contextMenuDimensions.right} ,contextMenuDimensions.width ${contextMenuDimensions.width}`);
+            const usedWidth = contextMenuDimensions.right - container.width + contextMenuDimensions.width;
+            console.warn(`usedWidth: ${usedWidth}}, contextMenuDimensions.right: ${contextMenuDimensions.right} ,contextMenuDimensions.width ${contextMenuDimensions.width}`);
 
-            if (vieportWidth < leftSpace) {
-                console.log('nie mieszcze sie');
+            if (vieportWidth < usedWidth) {
+                pos[1] = -( contextMenuDimensions.width);
+                style = {
+                    top: pos[0] + 'px',
+                    left: pos[1] + 'px'
+                }
             }
-                
         }
 
         return (
             <div 
                 className="dg-child-submenu-container"
-                // style={{display: parentLevel !== level - 1 ? 'none' : 'block'}}
-                style={{
-                    top: pos[0] + 'px',
-                    right: pos[1] + 'px'
-                }}> 
+                style={style}> 
                 {item && item.childs && item.childs.map((item, idx) => {
                     return <ContextMenuItem level={level+1} key={idx} state={state} item={item} container={container} contextMenuPosition={pos}/>
                 })}
@@ -118,7 +124,7 @@ class ContextMenuSubContainer extends React.Component<{ parentLevel: number, lev
     }
 }
 
-class ContextMenuItem extends React.Component<{level: number, item: MenuOption, state: State, container: DOMRect | ClientRect, contextMenuPosition: number[] }> {
+class ContextMenuItem extends React.Component<ContextMenuContainerProps> {
     state = { hovered: false };
     render() {
         const {level, item, state, container, contextMenuPosition } = this.props;
@@ -135,7 +141,7 @@ class ContextMenuItem extends React.Component<{level: number, item: MenuOption, 
                 }}> 
                 <ContextMenuDescription title={item.title} hasChilds={item.childs && item.childs.length > 0} iconURL='https://img.icons8.com/color/2x/image.png'/>
                 {item.childs && this.state.hovered &&
-                    <ContextMenuSubContainer parentLevel={level-1} level={level} state={state} item={item} container={container} contextMenuPosition={contextMenuPosition}/>}
+                    <ContextMenuSubContainer level={level} state={state} item={item} container={container} contextMenuPosition={contextMenuPosition}/>}
             </div>
         )
     }
