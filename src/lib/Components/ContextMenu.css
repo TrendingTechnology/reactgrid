@@ -27,7 +27,7 @@
     top: -4px;
     left: calc(100% + 4px);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.35);
-    display: none;
+    /* display: none; */
     border: 1px solid #fbfbfb;
     padding: 4px 0;
     border-radius: 6px;
@@ -35,8 +35,8 @@
     /* min-width: 150px; */
 }
 
-.dg-context-menu-option:hover > .dg-child-submenu-container {
-    display: block;
+.dg-context-menu-option:hover > div > .dg-child-submenu-container {
+    /* display: block; */
 }
 
 .dg-context-menu-description {
