@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid",
-  "version": "2.0.4-rc.3",
+  "version": "2.0.4-rc.4",
   "main": "dist/reactgrid.js",
   "typings": "dist/reactgrid.d.ts",
   "dependencies": {},
@@ -9,7 +9,6 @@
     "@types/node": "11.13.6",
     "@types/react": "16.8.14",
     "@types/react-dom": "16.8.4",
-    "@types/styled-components": "^4.1.15",
     "core-js": "^3.2.1",
     "cross-env": "^6.0.2",
     "cypress": "^3.3.1",
@@ -17,12 +16,10 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "styled-components": "^4.2.0",
     "typescript": "3.4.4"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "styled-components": "^4.2.0"
+    "react": "^16.8.6"
   },
   "scripts": {
     "start": "react-scripts start",

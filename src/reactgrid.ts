@@ -1,3 +1,3 @@
-import DynaGridDemo from "./demo/Views/DynaGridDemo"
-export default DynaGridDemo;
+import DataChangingSample from "./dev-env/DataChangingSample"
+export default DataChangingSample;
 export * from "./lib";
