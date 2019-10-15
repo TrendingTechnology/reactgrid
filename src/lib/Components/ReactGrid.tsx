@@ -43,10 +43,10 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             ...state,
             cellTemplates: { ...defaultCellTemplates, ...props.cellTemplates },
             customFocuses: props.customFocuses,
-            disableFillHandle: props.disableFillHandle,
-            disableRangeSelection: props.disableRangeSelection,
-            disableColumnSelection: props.disableColumnSelection,
-            disableRowSelection: props.disableRowSelection,
+            disableFillHandle: props.disableFillHandle || false,
+            disableRangeSelection: props.disableRangeSelection || false,
+            disableColumnSelection: props.disableColumnSelection || false,
+            disableRowSelection: props.disableRowSelection || false,
         };
     }
 
