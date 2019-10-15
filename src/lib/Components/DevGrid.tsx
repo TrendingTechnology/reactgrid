@@ -1,6 +1,6 @@
 import React from 'react';
 import {ReactGrid} from './ReactGrid'
-import {ColumnProps, RowProps, DataChange} from '../Common/PublicModel'
+import {ColumnProps, RowProps, DataChange, Id} from '../Common/PublicModel'
 
 const columns_count = 10;
 const columns_width = 100;
@@ -9,7 +9,6 @@ const rows_count = 16;
 
 interface Column {
     id: string;
-    idx: number;
     width: number;
 }
 
@@ -19,7 +18,6 @@ interface Data {
 
 interface Row {
     id: string;
-    idx: number;
     height: number;
     data: Data;
 }
@@ -35,7 +33,7 @@ export default class DevGrid extends React.Component<any, DevGridState> {
         const columns = new Array(columns_count).fill(columns_width).map((width, idx) => ({id: this.getId(), width, idx}));
         this.state = {
             columns,
-            rows: new Array(rows_count).fill(rows_height).map((height, idx) => columns.reduce((row: Row, column: Column) => { row.data[column.id] = (idx + ' - ' + column.idx); return row; }, { id: this.getId(), height, data: {}, idx })),
+            rows: new Array(rows_count).fill(rows_height).map((height, idx) => columns.reduce((row: Row, column: Column) => { row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row; }, { id: this.getId(), height, data: {} })),
         }
     }
 
@@ -75,7 +73,7 @@ export default class DevGrid extends React.Component<any, DevGridState> {
         return state
     }
 
-    private getReorderedColumns(colIds: string[], to: number) {
+    private getReorderedColumns(colIds: Id[], to: number) {
         const movedColumns: Column[] = [...this.state.columns].filter(c  => colIds.includes(c.id));
         const clearedFields: Column[] = [...this.state.columns].filter(c => !colIds.includes(c.id));
         if (to > [...this.state.columns].findIndex(c => c.id == colIds[0]))
@@ -84,7 +82,7 @@ export default class DevGrid extends React.Component<any, DevGridState> {
         return clearedFields
     }
 
-    private getReorderedRows(rowIds: string[], to: number) {
+    private getReorderedRows(rowIds: Id[], to: number) {
         const movedRows = [...this.state.rows].filter(r => rowIds.includes(r.id));
         const clearedRows = [...this.state.rows].filter(r => !rowIds.includes(r.id));
         if (to > [...this.state.rows].findIndex(r => r.id == rowIds[0]))
