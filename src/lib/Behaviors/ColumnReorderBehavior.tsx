@@ -1,10 +1,11 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction, Column } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction, Column, Id } from '../Common';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
     private lastPossibleDropLocation?: PointerLocation;
     private pointerOffset!: number;
     private selectedIdxs!: number[];
+    private selectedIds!: Id[];
     autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -16,6 +17,7 @@ export class ColumnReorderBehavior extends Behavior {
         const leftColumns = leftIndexes.map(i => state.cellMatrix.cols[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
+        this.selectedIds = columns.map(c => c.id)
         return {
             ...state,
             lineOrientation: 'vertical',
@@ -66,7 +68,7 @@ export class ColumnReorderBehavior extends Behavior {
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
         if (this.initialColumnIdx !== location.col.idx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.col.onDrop) {
             const isBefore = this.lastPossibleDropLocation.col.idx <= this.initialColumnIdx;
-            this.lastPossibleDropLocation.col.onDrop(this.selectedIdxs, isBefore ? 'before' : 'after');
+            this.lastPossibleDropLocation.col.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
         }
         return {
             ...state,

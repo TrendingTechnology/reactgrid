@@ -16,7 +16,6 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     state = new State(this.updateState);
 
     static getDerivedStateFromProps(props: ReactGridProps, state: State) {
-
         const dataHasChanged = !state.cellMatrix || props.cellMatrixProps !== state.cellMatrix.props
         if (dataHasChanged) {
             state = { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps) }
