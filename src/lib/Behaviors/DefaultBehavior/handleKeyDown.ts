@@ -115,7 +115,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
                 return isSingleCellSelected ?
-                    {...moveFocusDown(state), currentlyEditedCell: undefined } :
+                    {...moveFocusDown(state), currentlyEditedCell: undefined} :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
             case keyCodes.ESC:
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
@@ -147,8 +147,12 @@ function moveFocusUp(state: State): State {
 }
 
 function moveFocusDown(state: State): State {
-    return (state.focusedLocation && state.focusedLocation.row.idx < state.cellMatrix.last.row.idx) ?
-        focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx + 1, state) : state;
+    if(state.focusedLocation){
+        if(state.focusedLocation.row.idx == state.cellMatrix.last.row.idx)
+            return focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx, state)
+        return focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx + 1, state)
+    }
+    return state;
 }
 
 // TODO this should be rewritten
