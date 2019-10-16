@@ -27,17 +27,24 @@ interface DevGridState {
     rows: Row[]
 }
 
-export default class DevGrid extends React.Component<{}, DevGridState> {
-    constructor(props: {}){
+interface DevGridProps {
+    columns: number;
+    rows: number;
+    rowsHeight?: number;
+    columnsWidth?: number;
+}
+
+export default class DevGrid extends React.Component<DevGridProps, DevGridState> {
+    constructor(props: DevGridProps){
         super(props)
-        const columns = new Array(columns_count).fill(columns_width).map((width, idx) => ({id: this.getId(), width, idx}));
+        const columns = new Array(props.columns).fill(props.columnsWidth || 100).map((width, idx) => ({id: this.getRandomId(), width, idx}));
         this.state = {
             columns,
-            rows: new Array(rows_count).fill(rows_height).map((height, idx) => columns.reduce((row: Row, column: Column) => {row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row}, { id: this.getId(), height, data: {} })),
+            rows: new Array(props.rows).fill(props.rowsHeight || 25).map((height, idx) => columns.reduce((row: Row, column: Column) => {row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row}, { id: this.getRandomId(), height, data: {} })),
         }
     }
 
-    private getId(): string {
+    private getRandomId(): string {
         return Math.random().toString(36).substr(2, 9);
     }
     
@@ -75,18 +82,18 @@ export default class DevGrid extends React.Component<{}, DevGridState> {
 
     private getReorderedColumns(colIds: Id[], to: number) {
         const movedColumns: Column[] = [...this.state.columns].filter(c  => colIds.includes(c.id));
-        const clearedFields: Column[] = [...this.state.columns].filter(c => !colIds.includes(c.id));
+        const clearedColumns: Column[] = [...this.state.columns].filter(c => !colIds.includes(c.id));
         if (to > [...this.state.columns].findIndex(c => c.id == colIds[0]))
-            to = to - colIds.length + 1
-        clearedFields.splice(to, 0, ...movedColumns)
-        return clearedFields
+            to -= colIds.length - 1
+        clearedColumns.splice(to, 0, ...movedColumns)
+        return clearedColumns
     }
 
     private getReorderedRows(rowIds: Id[], to: number) {
         const movedRows = [...this.state.rows].filter(r => rowIds.includes(r.id));
         const clearedRows = [...this.state.rows].filter(r => !rowIds.includes(r.id));
         if (to > [...this.state.rows].findIndex(r => r.id == rowIds[0]))
-            to = to - rowIds.length + 1
+            to -= rowIds.length - 1
         clearedRows.splice(to, 0, ...movedRows)
         return clearedRows
     }
