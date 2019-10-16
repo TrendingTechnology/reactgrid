@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid",
-  "version": "2.0.4-rc.6",
+  "version": "2.0.4-rc.7",
   "main": "dist/reactgrid.js",
   "typings": "dist/reactgrid.d.ts",
   "dependencies": {},
