@@ -1,6 +1,6 @@
 import React from 'react';
-import {ReactGrid} from './ReactGrid'
-import {ColumnProps, RowProps, DataChange, Id} from '../Common/PublicModel'
+import {ReactGrid} from './lib/Components/ReactGrid'
+import {ColumnProps, RowProps, DataChange, Id} from './lib/Common/PublicModel'
 
 const columns_count = 10;
 const columns_width = 100;
@@ -27,13 +27,13 @@ interface DevGridState {
     rows: Row[]
 }
 
-export default class DevGrid extends React.Component<any, DevGridState> {
-    constructor(props: any){
+export default class DevGrid extends React.Component<{}, DevGridState> {
+    constructor(props: {}){
         super(props)
         const columns = new Array(columns_count).fill(columns_width).map((width, idx) => ({id: this.getId(), width, idx}));
         this.state = {
             columns,
-            rows: new Array(rows_count).fill(rows_height).map((height, idx) => columns.reduce((row: Row, column: Column) => { row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row; }, { id: this.getId(), height, data: {} })),
+            rows: new Array(rows_count).fill(rows_height).map((height, idx) => columns.reduce((row: Row, column: Column) => {row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row}, { id: this.getId(), height, data: {} })),
         }
     }
 
