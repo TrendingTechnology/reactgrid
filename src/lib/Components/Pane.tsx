@@ -7,6 +7,7 @@ import { PartialArea } from "./PartialArea";
 
 export interface PaneProps {
     id: string
+    class?: string,
     state: State,
     style: React.CSSProperties,
     range: Range,
@@ -56,7 +57,7 @@ function renderCustomFocuses(props: PaneProps) {
 
 export const Pane: React.FunctionComponent<PaneProps> = (props) => {
     return (
-        <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
+        <div key={props.id} className={`dg-pane ${props.class}`} style={{ width: props.range.width, ...props.style }}>
             <GridContent state={props.state} range={props.range} borders={props.borders} />
             {renderSelectedRanges(props.state, props.range)}
             {props.state.currentBehavior.renderPanePart(props.state, props.range)}

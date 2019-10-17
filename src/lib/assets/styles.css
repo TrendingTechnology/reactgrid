@@ -1,0 +1,327 @@
+/* CELL */
+
+.cell {
+    font-size: 1em;
+    box-sizing: border-box;
+    white-space: nowrap;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+    padding: 0 1px;
+}
+
+.dg-cell-focus {
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #3579f8;
+}
+
+.rg-celleditor {
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 5;
+    padding-top: 1px;
+    background-color: #ffffff;
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-color: #3579f8;
+    border-width: 2px;
+}
+
+/* CONTEXT MENU */
+
+.dg-context-menu {
+    position: fixed;
+    z-index: 1000;
+    background-color: #ffffff;
+    font-size: 1em;
+    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
+}
+
+.dg-context-menu-option {
+    padding: 8px 20px 8px 15px;
+    cursor: pointer;
+}
+
+/* PANES ROW */
+
+.dg-pane-row {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.rg-pane-row-t, .rg-pane-row-b {
+    position: sticky;
+    background-color: #ffffff;
+}
+
+.rg-pane-row-t {
+    top: 0; 
+}
+
+.rg-pane-row-m {
+
+}
+
+.rg-pane-row-b {
+    bottom: 0;
+}
+
+.rg-pane-row-t, .dg-frozen-top {
+    box-shadow: 0 3px 3px -3px rgba(0, 0, 0, .2);
+}
+
+.rg-pane-row-b, .dg-frozen-bottom {
+    box-shadow: 0 -3px 3px -3px rgba(0, 0, 0, .2);
+}
+
+/* PANES */
+
+.dg-pane {
+    position: relative;
+    height: 100%;
+}
+
+.rg-pane-l, .rg-pane-r {
+    background-color: #ffffff;
+}
+
+.rg-pane-l, .rg-pane-tl, .dg-frozen-left, .rg-pane-bl {
+    box-shadow: 3px 0px 3px -3px rgba(0, 0, 0, 0.2);
+}
+
+.rg-pane-r, .rg-pane-tr, .dg-frozen-right, .rg-pane-br {
+    box-shadow: -3px 0px 3px -3px rgba(0, 0, 0, 0.2);
+}
+
+.rg-pane-tl, .rg-pane-tr {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+}
+
+.rg-pane-tl {
+    left: 0;
+}
+
+.rg-pane-tr {
+    right: 0;
+}
+
+.rg-pane-tc, .rg-pane-bc {
+    padding-bottom: 100px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.rg-pane-wrapper {
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+}
+
+.rg-pane-bl, .rg-pane-br {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+}
+
+.rg-pane-bl {
+    left: 0;
+}
+
+.rg-pane-br {
+    right: 0;
+}
+
+.rg-pane-ml, .rg-pane-mr {
+    background-color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-right: 100px;
+}
+
+.rg-pane-mc {
+    position: absolute;
+}
+
+/* FILL HANDLE */
+
+.dg-touch-fill-handle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.01);
+    touch-action: none;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.dg-fill-handle {
+    position: absolute;
+    cursor: crosshair;
+    top: 9px;
+    left: 7px;
+    width: 4.2px;
+    height: 4.5px;
+    background-color: #3579f8;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ffffff;
+}
+
+/* RESIZE HANDLE */
+
+.dg-touch-resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 11px;
+    height: 100%;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.dg-resize-handle {
+    position: absolute;
+    right: 0;
+    width: 6px;
+    height: 100%;
+}
+
+/* LINE */
+
+.rg-line {
+    position: absolute;
+    background-color: #74b9ff;
+    z-index: 3;
+}
+
+/* FROZENS */
+
+.rg-wrapper-x {  /* TODO resolve exact name */
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    border-left: 0.1px transparent solid;
+}
+
+.rg-wrapper-xy {  /* TODO resolve exact name */
+    position: absolute;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.dg-frozen-top {
+    position: absolute;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.dg-frozen-right {
+    position: absolute;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    right: 0;
+}
+
+.dg-frozen-left {
+    position: absolute;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    /* left: 0;     IS NEDDED?  */
+}
+
+.dg-frozen-bottom {
+    position: absolute;
+    background-color: #ffffff;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* MAIN */ 
+
+.dyna-grid-legacy-browser .dyna-grid,
+.dyna-grid-legacy-browser .dg-content{
+    width: unset;
+    height: unset;
+}
+
+.dyna-grid {
+    width: 100%;
+    height: 100%;
+}
+
+.dyna-grid-legacy-browser {
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.dg-viewport {
+    position: absolute;
+    overflow: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.dyna-grid-legacy-browser .dg-viewport {
+    overflow: hidden;
+}
+
+.dg-content {
+    position: relative;
+    outline: none;
+}
+
+.dg-hidden-scrollable-element {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* MISC */
+
+.rg-shadow {
+    position: absolute;
+    background-color: #000000;
+    opacity: 0.1;
+    z-index: 4;
+}
+
+.dg-partial-area {
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.rg-input-xy {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    background-color: #ffffff;
+}

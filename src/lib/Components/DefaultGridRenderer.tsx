@@ -29,27 +29,17 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
         className="dyna-grid"
         onKeyDown={props.onKeyDown}
         onKeyUp={props.onKeyUp}
-        style={{ width: '100%', height: '100%' }}
     >
         <div
             className="dg-viewport"
             ref={props.viewportElementRefHandler}
-            style={{
-                position: 'absolute',
-                top: 0, left: 0, right: 0, bottom: 0,
-                MozUserSelect: 'none',
-                WebkitUserSelect: 'none',
-                msUserSelect: 'none',
-                userSelect: 'none',
-                overflow: 'auto'
-            }}
             onScroll={props.onScroll}
         >
             <div
                 data-cy="dyna-grid"
                 className="dg-content"
                 style={{
-                    width: props.state.cellMatrix.width, height: props.state.cellMatrix.height, position: 'relative', outline: 'none'
+                    width: props.state.cellMatrix.width, height: props.state.cellMatrix.height
                 }}
                 onPointerDown={props.onPointerDown}
                 onCopy={props.onCopy}
@@ -60,8 +50,9 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
             >
                 {props.state.cellMatrix.frozenTopRange.height > 0 &&
                     <PaneRow id='T'
+                        class="rg-pane-row-t"
                         state={props.state}
-                        style={{ background: 'white', top: 0, position: 'sticky', boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)' }}
+                        style={{}}
                         range={props.state.cellMatrix.frozenTopRange}
                         borders={{ bottom: true }}
                         zIndex={3}
@@ -69,6 +60,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.col && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange &&
                     <PaneRow
                         id='M'
+                        class="rg-pane-row-m"
                         state={props.state}
                         style={{ height: props.state.cellMatrix.scrollableRange.height }}
                         range={props.state.cellMatrix.scrollableRange.slice(props.state.visibleRange, 'rows')}
@@ -78,8 +70,9 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 {props.state.cellMatrix.frozenBottomRange.height > 0 && props.state.cellMatrix.rows.length > 1 &&
                     <PaneRow
                         id='B'
+                        class="rg-pane-row-b"
                         state={props.state}
-                        style={{ background: 'white', bottom: 0, position: 'sticky', boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)' }}
+                        style={{}}
                         range={props.state.cellMatrix.frozenBottomRange}
                         borders={{ top: true }}
                         zIndex={3}
