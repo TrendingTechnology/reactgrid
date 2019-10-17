@@ -70,6 +70,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         const range = getActiveSelectedRange(this.state);
         const rowIds = range ? range.rows.map(r => r.id) : []
         const colIds = range ? range.cols.map(c => c.id) : []
+        
         return React.createElement(grid as any, {
             state: this.state,
             onKeyDown: this.keyDownHandler,

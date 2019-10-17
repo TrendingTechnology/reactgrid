@@ -1,24 +1,24 @@
 // COLORS
-$black: #000000;
-$white: #ffffff;
+$bg-color: #ffffff;
 $primary-color: #f89335;
+$shadow-color: #000000;
 $line-color: #ff74c5;
 $row-line-color: #05b0ff;
 $col-line-color: #ff0565;
-// GRID THEMING
+$dashed-line-color: #ff74c5;
 
+// GRID THEMING
 // OPACITIES
 $opacity-light: 0.2;
 $opacity-lighter: 0.15;
 $opacity-lightest: 0.1;
 $opacity-heavy: 0.01;
 
-$white-with-heavy-opacity: rgba($white, $opacity-heavy);
-$black-with-light-opacity: rgba($black, $opacity-light);
+$white-with-heavy-opacity: rgba($bg-color, $opacity-heavy);
+$black-with-light-opacity: rgba($shadow-color, $opacity-light);
 
-$dashed-line-color: $line-color;
-$main-bg-color: $white;
-$shadow-bg: $black;
+$main-bg-color: $bg-color;
+$shadow-bg: $shadow-color;
 $cell-shadow-color: $black-with-light-opacity;
 $fill-handle-bg-color: $white-with-heavy-opacity;
-$fill-handle-border-color: $white;
+$fill-handle-border-color: $bg-color;
