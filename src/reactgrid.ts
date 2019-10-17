@@ -1,3 +1,3 @@
-import DataChangingSample from "./dev-env/DataChangingSample"
-export default DataChangingSample;
+import DevGrid from "./test-grid"
+export default DevGrid;
 export * from "./lib";

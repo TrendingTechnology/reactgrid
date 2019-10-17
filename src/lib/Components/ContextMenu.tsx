@@ -40,19 +40,17 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                     }}
                 >
                     {contextMenuOptions.map((el, idx) => {
-                        return (
-                            <div
-                                key={idx}
-                                className="dg-context-menu-option"
-                                onPointerDown={e => e.stopPropagation()}
-                                onClick={() => {
-                                    el.handler();
-                                    state.updateState((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }))
-                                }}
-                            >
-                                {el.title}
-                            </div>
-                        );
+                        <div
+                            key={idx}
+                            className="dg-context-menu-option"
+                            onPointerDown={e => e.stopPropagation()}
+                            onClick={() => {
+                                el.handler();
+                                state.updateState((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }))
+                            }}
+                        >
+                            {el.title}
+                        </div>
                     })}
                 </div>
             )
