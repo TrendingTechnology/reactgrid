@@ -1,3 +1,6 @@
+
+@import'./theme-light.scss';
+
 /* CELL */
 
 .cell {
@@ -18,7 +21,7 @@
     box-sizing: border-box;
     border-style: solid;
     border-width: 2px;
-    border-color: #3579f8;
+    border-color: $primary-color;
 }
 
 .rg-celleditor {
@@ -26,10 +29,10 @@
     box-sizing: border-box;
     z-index: 5;
     padding-top: 1px;
-    background-color: #ffffff;
-    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+    background-color: $main-bg-color;
+    box-shadow: 1px 1px 6px $cell-shadow-color;
     border-style: solid;
-    border-color: #3579f8;
+    border-color: $primary-color;
     border-width: 2px;
 }
 
@@ -38,9 +41,9 @@
 .dg-context-menu {
     position: fixed;
     z-index: 1000;
-    background-color: #ffffff;
+    background-color: $main-bg-color;
     font-size: 1em;
-    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
+    box-shadow: 0 4px 5px 3px $cell-shadow-color;
 }
 
 .dg-context-menu-option {
@@ -59,7 +62,7 @@
 
 .rg-pane-row-t, .rg-pane-row-b {
     position: sticky;
-    background-color: #ffffff;
+    background-color: $main-bg-color;
 }
 
 .rg-pane-row-t {
@@ -75,11 +78,11 @@
 }
 
 .rg-pane-row-t, .dg-frozen-top {
-    box-shadow: 0 3px 3px -3px rgba(0, 0, 0, .2);
+    box-shadow: 0 3px 3px -3px $cell-shadow-color;
 }
 
 .rg-pane-row-b, .dg-frozen-bottom {
-    box-shadow: 0 -3px 3px -3px rgba(0, 0, 0, .2);
+    box-shadow: 0 -3px 3px -3px $cell-shadow-color;
 }
 
 /* PANES */
@@ -90,15 +93,15 @@
 }
 
 .rg-pane-l, .rg-pane-r {
-    background-color: #ffffff;
+    background-color: $main-bg-color;
 }
 
 .rg-pane-l, .rg-pane-tl, .dg-frozen-left, .rg-pane-bl {
-    box-shadow: 3px 0px 3px -3px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 0px 3px -3px $main-bg-color;
 }
 
 .rg-pane-r, .rg-pane-tr, .dg-frozen-right, .rg-pane-br {
-    box-shadow: -3px 0px 3px -3px rgba(0, 0, 0, 0.2);
+    box-shadow: -3px 0px 3px -3px $main-bg-color;
 }
 
 .rg-pane-tl, .rg-pane-tr {
@@ -142,7 +145,7 @@
 }
 
 .rg-pane-ml, .rg-pane-mr {
-    background-color: #ffffff;
+    background-color: $main-bg-color;
     overflow-x: hidden;
     overflow-y: scroll;
     padding-right: 100px;
@@ -158,7 +161,7 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: $fill-handle-bg-color;
     touch-action: none;
     pointer-events: auto;
     z-index: 1;
@@ -171,10 +174,10 @@
     left: 7px;
     width: 4.2px;
     height: 4.5px;
-    background-color: #3579f8;
+    background-color: $primary-color;
     border-width: 1px;
     border-style: solid;
-    border-color: #ffffff;
+    border-color: $fill-handle-border-color;
 }
 
 /* RESIZE HANDLE */
@@ -200,8 +203,27 @@
 
 .rg-line {
     position: absolute;
-    background-color: #74b9ff;
+    background-color: $line-color;
     z-index: 3;
+}
+
+.rg-separator-line {
+    position: absolute;
+    box-sizing: border-box;
+    pointer-events: none;
+    &-row {
+        width: 100%;
+        border-bottom-width: 1px;
+        border-bottom-color: $row-line-color;
+        border-bottom-style: solid;
+    }
+    &-col {
+        height: 100%;
+        top: 0;
+        border-right-width: 1px;
+        border-right-color: $col-line-color;
+        border-right-style: solid;
+    }
 }
 
 /* FROZENS */
@@ -222,7 +244,7 @@
 .dg-frozen-top {
     position: absolute;
     top: 0;
-    background-color: #ffffff;
+    background-color: $main-bg-color;
     z-index: 3;
     pointer-events: none;
 }
@@ -245,7 +267,7 @@
 
 .dg-frozen-bottom {
     position: absolute;
-    background-color: #ffffff;
+    background-color: $main-bg-color;
     z-index: 3;
     pointer-events: none;
 }
@@ -307,8 +329,8 @@
 
 .rg-shadow {
     position: absolute;
-    background-color: #000000;
-    opacity: 0.1;
+    background-color: $shadow-bg;
+    opacity: $opacity-lightest;
     z-index: 4;
 }
 
@@ -318,10 +340,21 @@
     box-sizing: border-box;
 }
 
+.dg-partial-area-part {
+    border-width: 1px;
+    border-style: dashed;
+    border-color: $dashed-line-color;
+}
+
+.dg-partial-area-selected-range {
+    border: 1px solid $primary-color;
+    background-color: rgba($primary-color, $opacity-lighter);
+}
+
 .rg-input-xy {
     position: fixed;
     width: 1px;
     height: 1px;
     opacity: 0;
-    background-color: #ffffff;
+    background-color: $main-bg-color;
 }

@@ -5,6 +5,7 @@ export interface PartialRangeProps {
     range: Range,
     pane: Range,
     style: React.CSSProperties
+    class?: string
 }
 
 export const PartialArea: React.FunctionComponent<PartialRangeProps> = (props) => {
@@ -19,7 +20,7 @@ export const PartialArea: React.FunctionComponent<PartialRangeProps> = (props) =
     const hasLeftBorder = range.first.col.idx >= pane.first.col.idx;
     return (
         <div
-            className="dg-partial-area"
+            className={`dg-partial-area ${props.class}`}
             key={range.first.col.idx + pane.last.col.idx}
             style={{
                 ...style,
