@@ -1,28 +1,26 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
-import { CellRenderProps as CellRenderProps, CellTemplate } from '../Common';
+import { CellRenderProps as CellRenderProps, CellTemplate, Cell } from '../Common';
 
-export class CheckboxCellTemplate implements CellTemplate<boolean, any> {
+type CheckboxCell = Cell<'checkbox', boolean, {}>
 
-    isValid(cellData: boolean): boolean {
-        return typeof (cellData) === 'boolean';
+export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
+
+    isValid(cell: CheckboxCell): boolean {
+        return typeof (cell.data) === 'boolean';
     }
 
-    textToCellData(text: string): boolean {
-        return text === 'true';
+    toText(cell: CheckboxCell) {
+        return cell ? 'true' : '';
     }
 
-    cellDataToText(cellData: boolean) {
-        return cellData ? 'true' : '';
-    }
-
-    handleKeyDown(cellData: boolean, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    handleKeyDown(cell: CheckboxCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
-            cellData = !cellData
-        return { cellData, enableEditMode: false }
+            cell.data = !cell.data
+        return { cell, enableEditMode: false }
     }
 
-    renderContent: (props: CellRenderProps<boolean, any>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<CheckboxCell>) => React.ReactNode = (props) => {
         return <input
             type="checkbox"
             style={{
@@ -36,8 +34,8 @@ export class CheckboxCellTemplate implements CellTemplate<boolean, any> {
                 pointerEvents: 'auto',
                 zIndex: 1
             }}
-            checked={props.cellData}
-            onChange={() => props.onCellDataChanged(!props.cellData, true)}
+            checked={props.cell.data}
+            onChange={() => props.onCellChanged({...props.cell, data: !props.cell.data}, true)}
         />
     }
 }

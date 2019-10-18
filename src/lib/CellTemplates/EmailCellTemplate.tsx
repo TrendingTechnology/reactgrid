@@ -6,17 +6,14 @@ import { isTextInput, isNavigationKey } from './keyCodeCheckings';
 type EmailCell = Cell<'email', string, {}>;
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
-    isValid1(cellData: string): boolean {
+    
+    isValid(cell: EmailCell): boolean {
         const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return email_regex.test(cellData.replace(/\s+/g, ''));
+        return email_regex.test(cell.data.replace(/\s+/g, ''));
     }
 
-    textToCellData(text: string): string {
-        return text;
-    }
-
-    cellDataToText(cellData: string) {
-        return cellData;
+    toText(cell: EmailCell) {
+        return cell.data;
     }
 
     handleKeyDown1(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
@@ -24,8 +21,8 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
         return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     }
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = props => {
-        if (!props.isInEditMode) return props.cellData;
+    renderContent: (props: CellRenderProps<EmailCell>) => React.ReactNode = props => {
+        if (!props.isInEditMode) return props.cell.data;
         return (
             <input
                 type="email"
@@ -44,15 +41,15 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
                         // input.setSelectionRange(input.value.length, input.value.length);
                     }
                 }}
-                defaultValue={props.cellData}
-                onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
+                defaultValue={props.cell.data}
+                onChange={e => props.onCellChanged({...props.cell, data: e.currentTarget.value}, false)}
                 onCopy={e => e.stopPropagation()}
                 onCut={e => e.stopPropagation()}
                 onPaste={e => e.stopPropagation()}
                 onPointerDown={e => e.stopPropagation()}
                 onKeyDown={e => {
                     if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                    if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
+                    if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cell.data; // reset
                 }}
             />
         );

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
-import { CellRenderProps, CellTemplate } from '../Common';
+import { CellRenderProps, CellTemplate, Cell } from '../Common';
 
 interface GroupHeaderCellData {
     name: string;
@@ -9,34 +9,36 @@ interface GroupHeaderCellData {
     depth: number;
 }
 
-export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData, any> {
+type GroupHeaderCell = Cell<'group', GroupHeaderCellData, {}>
 
-    isValid(cellData: GroupHeaderCellData): boolean {
-        return typeof (cellData.name) === 'string' && (cellData.isExpanded === undefined || typeof (cellData.isExpanded) === 'boolean') && typeof (cellData.depth) === 'number';
+export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCell> {
+
+    isValid(cell: GroupHeaderCell): boolean {
+        return typeof (cell.data.name) === 'string' && (cell.data.isExpanded === undefined || typeof (cell.data.isExpanded) === 'boolean') && typeof (cell.data.depth) === 'number';
     }
 
     textToCellData(text: string): any {
         return { name: text, isExpanded: false, depth: 1 };
     }
 
-    cellDataToText(cellData: GroupHeaderCellData) {
-        return cellData.name;
+    toText(cell: GroupHeaderCell) {
+        return cell.data.name;
     }
 
-    handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    handleKeyDown(cell: GroupHeaderCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
-        const cellDataCopy = { ...cellData };
-        if (keyCode === keyCodes.SPACE && cellDataCopy.isExpanded !== undefined) {
-            cellDataCopy.isExpanded = !cellDataCopy.isExpanded;
+        const cellCopy = { ...cell };
+        if (keyCode === keyCodes.SPACE && cellCopy.data.isExpanded !== undefined) {
+            cellCopy.data.isExpanded = !cellCopy.data.isExpanded;
         } else if (!ctrl && !alt && isTextInput(keyCode)) {
-            cellDataCopy.name = '';
+            cellCopy.data.name = '';
             enableEditMode = true;
         }
-        return { cellData: cellDataCopy, enableEditMode };
+        return { cell: cellCopy, enableEditMode };
     }
 
-    renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
-        const cellData = { ...props.cellData };
+    renderContent: (props: CellRenderProps<GroupHeaderCell>) => React.ReactNode = (props) => {
+        const cellData = { ...props.cell.data };
 
         const isHeaderTreeRoot = cellData.depth !== 1;
         const canBeExpanded = cellData.isExpanded !== undefined;
@@ -68,7 +70,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                     }}
                     defaultValue={cellData.name}
                     onChange={e =>
-                        props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth }, false)
+                        props.onCellChanged({...props.cell, data: { ...cellData, name: e.currentTarget.value }}, false)
                     }
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}
@@ -76,7 +78,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                     onPointerDown={e => e.stopPropagation()}
                     onKeyDown={e => {
                         if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
-                        if (e.keyCode == keyCodes.ESC) (e as any).currentTarget.value = props.cellData.name; // reset
+                        if (e.keyCode == keyCodes.ESC) (e as any).currentTarget.value = props.cell.data.name; // reset
                     }}
                 />
         );
