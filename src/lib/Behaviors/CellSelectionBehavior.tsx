@@ -1,10 +1,9 @@
 import { focusLocation } from '../Functions';
 import { State, Location, Behavior } from '../Common';
-import { PointerEvent } from "../Common/domEvents";
+import { PointerEvent } from '../Common/domEvents';
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
 
 export class CellSelectionBehavior extends Behavior {
-
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
         if (event.shiftKey && state.focusedLocation) {
             const range = state.cellMatrix.getRange(state.focusedLocation, location);
@@ -13,14 +12,13 @@ export class CellSelectionBehavior extends Behavior {
             } else {
                 return selectRange(state, range, false);
             }
-
         } else if (event.ctrlKey) {
-            const pointedRangeIdx = state.selectedRanges.findIndex((range) => range.contains(location));
-            const pointedRange = state.selectedRanges[pointedRangeIdx]
+            const pointedRangeIdx = state.selectedRanges.findIndex(range => range.contains(location));
+            const pointedRange = state.selectedRanges[pointedRangeIdx];
 
             if (pointedRange) {
                 state = focusLocation(state, location, false);
-                state = { ...state, activeSelectedRangeIdx: pointedRangeIdx }
+                state = { ...state, activeSelectedRangeIdx: pointedRangeIdx };
             } else {
                 const range = state.cellMatrix.getRange(location, location);
                 state = selectRange(state, range, true);

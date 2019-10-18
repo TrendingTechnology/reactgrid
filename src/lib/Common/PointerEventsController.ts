@@ -1,13 +1,12 @@
-import { PointerEvent, Location, State, StateUpdater } from ".";
-import { getLocationFromClient, scrollIntoView, isBrowserIE } from "../Functions";
-import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
+import { PointerEvent, Location, State, StateUpdater } from '.';
+import { getLocationFromClient, scrollIntoView, isBrowserIE } from '../Functions';
+import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 
 export class PointerEventsController {
-
-    constructor(private readonly updateState: StateUpdater) { }
+    constructor(private readonly updateState: StateUpdater) {}
 
     private eventTimestamps: number[] = [0, 0];
-    private eventLocations: Array<Location | undefined> = [undefined, undefined]
+    private eventLocations: Array<Location | undefined> = [undefined, undefined];
     private currentIndex: number = 0;
     private pointerDownLocation?: Location;
 
@@ -26,14 +25,12 @@ export class PointerEventsController {
         this.currentIndex = 1 - this.currentIndex;
         this.eventTimestamps[this.currentIndex] = new Date().valueOf();
         this.eventLocations[this.currentIndex] = currentLocation;
-        if (event.pointerType === 'mouse' ||
-            (currentLocation.row.idx === 0 || currentLocation.col.idx === 0) ||
-            currentLocation.equals(previousLocation) ||
-            event.pointerType === undefined) { // === undefined only for cypress tests
+        if (event.pointerType === 'mouse' || (currentLocation.row.idx === 0 || currentLocation.col.idx === 0) || currentLocation.equals(previousLocation) || event.pointerType === undefined) {
+            // === undefined only for cypress tests
             state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
         }
         return state;
-    }
+    };
 
     private handlePointerMove = (event: PointerEvent): void => {
         this.updateState(state => {
@@ -48,12 +45,10 @@ export class PointerEventsController {
             }
             return state;
         });
-    }
+    };
 
     private handlePointerUp = (event: PointerEvent): void => {
-
-        if (event.button !== 0 && event.button !== undefined)
-            return
+        if (event.button !== 0 && event.button !== undefined) return;
 
         this.updateState(state => {
             window.removeEventListener('pointerup', this.handlePointerUp as any);
@@ -63,16 +58,18 @@ export class PointerEventsController {
             const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
             state = state.currentBehavior.handlePointerUp(event, currentLocation, state);
             // TODO explain this case
-            if (event.pointerType !== 'mouse' &&
+            if (
+                event.pointerType !== 'mouse' &&
                 currentLocation.equals(this.pointerDownLocation) &&
                 event.pointerType !== undefined && // !== undefined only for cypress tests
                 currentTimestamp - this.eventTimestamps[this.currentIndex] < 500 &&
-                (currentLocation.row.idx > 0 && currentLocation.col.idx > 0)) {
+                (currentLocation.row.idx > 0 && currentLocation.col.idx > 0)
+            ) {
                 state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }
             state = { ...state, currentBehavior: new DefaultBehavior() };
             if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
-                state = state.currentBehavior.handleDoubleClick(event, currentLocation, state)
+                state = state.currentBehavior.handleDoubleClick(event, currentLocation, state);
             }
             if (event.pointerType !== 'mouse' && currentTimestamp - this.eventTimestamps[this.currentIndex] >= 500) {
                 // TODO is this correct?
@@ -81,6 +78,5 @@ export class PointerEventsController {
             state.hiddenFocusElement.focus();
             return state;
         });
-    }
+    };
 }
-

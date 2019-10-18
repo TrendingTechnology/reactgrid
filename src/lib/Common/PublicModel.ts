@@ -1,58 +1,56 @@
 //
 //  This is the core API for ReactGrid
-//  PLEASE 
+//  PLEASE
 //  ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE
 //  THANKS!
-//
-
-// TODO Range is INTERNAL! Should not be public! 
-import { Range } from "./Range";
+//  Michael Matejko
 
 export type Orientation = 'horizontal' | 'vertical';
 
-export type Direction = 'horizontal' | 'vertical' | 'both'
+export type Direction = 'horizontal' | 'vertical' | 'both';
 
 export type SelectionMode = 'row' | 'column' | 'range';
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Focus {
     columnId: Id;
     rowId: Id;
     color: string;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface ReactGridProps {
-    readonly cellMatrixProps: CellMatrixProps;
-    readonly license: string;
+    readonly columns: Column[];
+    readonly rows: Row[];
+    readonly license: 'non-commercial' | string;
     readonly style?: React.CSSProperties;
-    readonly cellTemplates?: CellTemplates
-    readonly customFocuses?: Focus[];
-    readonly disableFillHandle?: boolean;
-    readonly disableRangeSelection?: boolean;
-    readonly disableRowSelection?: boolean;
-    readonly disableColumnSelection?: boolean;
+    readonly customCellTemplates?: CellTemplates;
+    readonly additionalFocuses?: Focus[];
+    readonly frozenTopRows?: number;
+    readonly frozenBottomRows?: number;
+    readonly frozenLeftColumns?: number;
+    readonly frozenRightColumns?: number;
+    readonly enableFillHandle?: boolean;
+    readonly enableRangeSelection?: boolean;
+    readonly enableRowSelection?: boolean;
+    readonly enableColumnSelection?: boolean;
     readonly onDataChanged?: (dataChanges: DataChange[]) => void;
     readonly onCellFocused?: (cellId: CellId) => void;
-    readonly onRowContextMenu?: (selectedIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
-    readonly onColumnContextMenu?: (selectedColumnIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
-    // TODO Range is INTERNAL! Should not be public! 
-    onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
-    // readonly onContextMenuRequested?: (menuOptions: MenuOption[]) => void
+    readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CellTemplates {
-    [key: string]: CellTemplate<any, any>;
+    [key: string]: CellTemplate;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CellId {
     readonly rowId: Id;
     readonly columnId: Id;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface DataChange {
     readonly rowId: Id;
     readonly columnId: Id;
@@ -61,98 +59,89 @@ export interface DataChange {
     readonly newData: any;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface CellMatrixProps {
-    readonly columns: ColumnProps[];
-    readonly rows: RowProps[];
-    readonly frozenTopRows?: number;
-    readonly frozenBottomRows?: number;
-    readonly frozenLeftColumns?: number;
-    readonly frozenRightColumns?: number;
-}
-
-
-// TODO Proposal
-// type CellFactory<TCellData, TCellProps> = (cellData: TCellData, cellProps: TCellProps) => ICell<TCellData> | null;
-
-// interface ICell<TCellData> {
-//     isReadonly: boolean,
-//     isFocusable: boolean,
-//     text: string,
-//     parseText: (text: string) => void,
-//     handleKeyDown: (keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) => { cellData: TCellData, enableEditMode: boolean };
-//     getCustomStyle?(isInEditMode: boolean): React.CSSProperties;
-//     renderContent(isInEditMode: boolean, onCellDataChanged: (cellData: TCellData, commit: boolean) => void): React.ReactNode;
-// }
-
-
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // This interface is used for the communication between DynaGrid and a cell
-export interface CellTemplate<TCellData, TCellProps> {
+export interface CellTemplate<TCell extends Cell = Cell> {
     // Returns true if the data in the cell is not replacable
     // Default: _ => false
-    isReadonly?(data: TCellData, props?: TCellProps): boolean;
+    isReadonly?(cell: TCell): boolean;
     // Returns true if the data is valid
-    isValid(data: TCellData, props?: TCellProps): boolean;
+    isValid(cell: TCell): boolean;
     // Returns true if accepts focus
     // Default: _ => true
-    isFocusable?(data: TCellData, props?: TCellProps): boolean
+    isFocusable?(cell: TCell): boolean;
     // Convert plain text (not encoded stuff) to cell data
     // Returns null when the data couldn't be converted
-    // Default: _ => null
-    textToCellData?(text: string): TCellData | null;
-    // Convert cell data to plain text (not encoded stuff)
-    cellDataToText(cellData: TCellData, props?: TCellProps): string;
+    // Default: cell => cell
+    update?(cell: TCell, newCell: TCell): TCell;
+
+    toText(cell: TCell): string;
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
-    // Default: _ => { cellData: null, enableEditMode: false }  
-    handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cellData: TCellData, enableEditMode: boolean, props?: any };
+    // Default: _ => { cellData: null, enableEditMode: false }
+    handleKeyDown?(cell: TCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: TCell; enableEditMode: boolean };
     // Custom styles based on cell data applied to the cells div element
     // Default: _ => {}
-    getCustomStyle?(cellData: TCellData, isInEditMode: boolean, props?: any): React.CSSProperties;
+    getCustomStyle?(cell: TCell, isInEditMode: boolean): React.CSSProperties;
     // Render the cell content
-    renderContent(props: CellRenderProps<TCellData, TCellProps>): React.ReactNode;
+    renderContent(props: CellRenderProps<TCell>): React.ReactNode;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface CellRenderProps<TCellData, TCellProps> {
-    cellData: TCellData;
-    props?: TCellProps,
-    onCellDataChanged(cellData: TCellData, commit: boolean): void;
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface CellRenderProps<TCell extends Cell> {
+    cell: TCell;
     readonly isInEditMode: boolean;
+    onCellChanged(cell: TCell, commit: boolean): void;
 }
 
 export type Id = number | string;
 
-export type DropPosition = 'before' | 'on' | 'after'
+export type DropPosition = 'before' | 'on' | 'after';
 
-export interface ColumnProps {
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface Column {
     readonly id: Id;
-    readonly width: number;
-    readonly reorderable: boolean
-    readonly resizable: boolean
+    // default: 150
+    readonly width?: number;
+    // default: false
+    readonly reorderable?: boolean;
+    // default: false
+    readonly resizable?: boolean;
     readonly canDrop?: (columnIds: Id[], position: DropPosition) => boolean;
     readonly onDrop?: (columnIds: Id[], position: DropPosition) => void;
     readonly onResize?: (newWidth: number) => void;
 }
 
-export interface Cell {
-    data: any;
-    type: string;
-    props?: any;
+export interface CellStyle {
+    readonly backgroundColor: string;
+    readonly color: string;
+    //readonly borderLeft
+    //readonly borderRight
+    //readonly borderTop
+    //readonly borderBottom
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface RowProps {
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface Cell<TCellType extends string = string, TCellData = any, TCellProps = any> {
+    type: TCellType;
+    data: TCellData;
+    props?: TCellProps;
+    style?: CellStyle;
+}
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface Row {
     readonly id: Id;
-    cells: Cell[];
-    readonly height: number;
-    readonly reorderable: boolean;
+    readonly cells: Cell[];
+    // default: 25
+    readonly height?: number;
+    // default: false
+    readonly reorderable?: boolean;
     readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;
     readonly onDrop?: (rowIds: Id[], position: DropPosition) => void;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface MenuOption {
     title: string;
     handler: () => void;

@@ -23,7 +23,7 @@ export class RowReorderBehavior extends Behavior {
             lineOrientation: 'horizontal',
             shadowSize: rows.reduce((sum, col) => sum + col.height, 0),
             shadowPosition: this.getShadowPosition(location, state)
-        }
+        };
     }
 
     handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -34,9 +34,7 @@ export class RowReorderBehavior extends Behavior {
         this.lastPossibleDropLocation = this.getLastPossibleDropLocation(location);
         if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.idx !== this.initialRowIdx) {
             const drawDown = this.lastPossibleDropLocation.row.idx > this.initialRowIdx;
-            linePosition = Math.min(this.lastPossibleDropLocation.viewportY - this.lastPossibleDropLocation.cellY + (drawDown ? this.lastPossibleDropLocation.row.height : 0) + state.viewportElement.scrollTop,
-                state.visibleRange.height + state.cellMatrix.frozenTopRange.height + state.cellMatrix.frozenBottomRange.height + state.viewportElement.scrollTop
-            );
+            linePosition = Math.min(this.lastPossibleDropLocation.viewportY - this.lastPossibleDropLocation.cellY + (drawDown ? this.lastPossibleDropLocation.row.height : 0) + state.viewportElement.scrollTop, state.visibleRange.height + state.cellMatrix.frozenTopRange.height + state.cellMatrix.frozenBottomRange.height + state.viewportElement.scrollTop);
             if (!location.row.canDrop) {
                 this.position = drawDown ? 'after' : 'before';
             } else {
@@ -69,7 +67,7 @@ export class RowReorderBehavior extends Behavior {
             shadowPosition,
             linePosition,
             shadowCursor
-        }
+        };
     }
 
     getShadowPosition(location: PointerLocation, state: State): number {
@@ -85,7 +83,7 @@ export class RowReorderBehavior extends Behavior {
 
     getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
         if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIds, this.position)) {
-            return this.lastPossibleDropLocation = currentLocation;
+            return (this.lastPossibleDropLocation = currentLocation);
         }
         return this.lastPossibleDropLocation;
     }

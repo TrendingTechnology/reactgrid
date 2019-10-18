@@ -1,4 +1,4 @@
-import { State, KeyboardEvent, keyCodes, Row, Location, Range } from "../../Common";
+import { State, KeyboardEvent, keyCodes, GridRow, Location, Range } from "../../Common";
 import { focusLocation, trySetDataAndAppendChange, getActiveSelectedRange } from "../../Functions";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
@@ -14,13 +14,12 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
 
     const cellTemplate = state.cellTemplates[location.cell.type];
     if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
-        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
-        if (JSON.stringify(location.cell.data) !== JSON.stringify(cellData) || enableEditMode) {
-            const newCell = { type: location.cell.type, data: cellData };
+        const { cell, enableEditMode } = cellTemplate.handleKeyDown(location.cell, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
+        if (location.cell !== cell || enableEditMode) {
             if (enableEditMode) {
-                return { ...state, currentlyEditedCell: newCell }
+                return { ...state, currentlyEditedCell: cell }
             } else {
-                return trySetDataAndAppendChange(state, location, newCell);
+                return trySetDataAndAppendChange(state, location, cell);
             }
         }
     }
@@ -115,7 +114,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
                 return isSingleCellSelected ?
-                    {...moveFocusDown(state), currentlyEditedCell: undefined } :
+                    { ...moveFocusDown(state), currentlyEditedCell: undefined } :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
             case keyCodes.ESC:
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
@@ -156,7 +155,7 @@ function moveFocusPageUp(state: State): State {
     if (!state.focusedLocation)
         return state;
     const rowsOnScreen = state.cellMatrix.rows.filter(
-        (r: Row) => r.top < state.viewportElement.clientHeight
+        (r: GridRow) => r.top < state.viewportElement.clientHeight
     );
     return focusCell(
         state.focusedLocation.col.idx,
@@ -179,7 +178,7 @@ function moveFocusPageDown(state: State): State {
             state.cellMatrix.frozenBottomRange.rows.length -
             1
         )
-        .filter((r: Row) => r.top + r.height < state.viewportElement.clientHeight);
+        .filter((r: GridRow) => r.top + r.height < state.viewportElement.clientHeight);
     return focusCell(
         state.focusedLocation.col.idx,
         state.focusedLocation.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length
@@ -193,12 +192,11 @@ function moveFocusPageDown(state: State): State {
 function wipeSelectedRanges(state: State): State {
     state.selectedRanges.forEach(range =>
         range.rows.forEach(row =>
-            range.cols.forEach(col =>
-                {   
-                    const location = new Location(row, col);
-                    if(location.cell.data)
-                        state = trySetDataAndAppendChange(state, location, { type: 'text', data: '' })
-                }
+            range.cols.forEach(col => {
+                const location = new Location(row, col);
+                if (location.cell.data)
+                    state = trySetDataAndAppendChange(state, location, { type: 'text', data: '' })
+            }
             )
         )
     )

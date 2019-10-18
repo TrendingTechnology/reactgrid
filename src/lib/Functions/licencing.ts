@@ -1,20 +1,18 @@
-
-
 export function checkLicense(license: string) {
     if (license === 'non-commercial') {
-        console.log("You are using non-commerial license of ReactGrid. Happy coding!")
-    } else {  
+        console.log('You are using ReactGrid with the non-commerial license. Happy coding!');
+    } else {
         const separator: string = '//';
         const licenseHash = getHashFromLicense(license, separator);
-        
+
         if (!licenseHash) {
-            console.warn("Your ReactGrid license is invalid! Please contact your manager.");
+            console.warn('Your ReactGrid license is invalid! Please contact your manager.');
             return;
-        } 
+        }
 
         const licenseWithoutHash = getLicenseWithoutHash(license, separator);
         if (!licenseWithoutHash) {
-            console.warn("ReactGrid your ReactGrid licence is invalid! Please contact your manager.");
+            console.warn('ReactGrid your ReactGrid licence is invalid! Please contact your manager.');
             return;
         }
 
@@ -25,12 +23,12 @@ export function checkLicense(license: string) {
 
         const licenseExpirationDate = getLicenceExpirationDate(license);
         if (!licenseExpirationDate) {
-            console.warn("ReactGrid expiration date is invalid! Please contact your manager.");
+            console.warn('ReactGrid expiration date is invalid! Please contact your manager.');
             return;
         }
 
         if (isLicenseExpired(licenseExpirationDate)) {
-            console.warn("ReactGrid license has expired! Please contact your manager.");
+            console.warn('ReactGrid license has expired! Please contact your manager.');
             return;
         }
 
@@ -38,7 +36,7 @@ export function checkLicense(license: string) {
     }
 }
 
-function isLicenseExpired (expirationDate: Date): boolean{
+function isLicenseExpired(expirationDate: Date): boolean {
     const today = new Date();
     return expirationDate <= today;
 }
@@ -49,41 +47,39 @@ function getLicenseHashStart(license: string, separator: string): number {
 
 function getHashFromLicense(license: string, separator: string): string | null {
     const licenseHashStart = getLicenseHashStart(license, separator);
-    if (licenseHashStart === -1)
-        return null;
-    const hash = license.slice(licenseHashStart + separator.length , license.length).trim()// 2 chars offset for separator and space char
-    if (hash.length === 0)
-        return null
-    return hash
+    if (licenseHashStart === -1) return null;
+    const hash = license.slice(licenseHashStart + separator.length, license.length).trim(); // 2 chars offset for separator and space char
+    if (hash.length === 0) return null;
+    return hash;
 }
 
 function getLicenceExpirationDate(license: string): Date | null {
     const pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/gi;
     const strDate = license.match(pattern);
-    if (!strDate)
-        return null;
+    if (!strDate) return null;
     return new Date(strDate[0]);
 }
 
-function getLicenseWithoutHash(license: string, separator: string) : string | null {
+function getLicenseWithoutHash(license: string, separator: string): string | null {
     let result;
     const licenseHashStart = getLicenseHashStart(license, separator);
-    if (licenseHashStart === -1)
-        return null;
-    result = license.slice(0, licenseHashStart).trim()
+    if (licenseHashStart === -1) return null;
+    result = license.slice(0, licenseHashStart).trim();
     return result;
 }
 
 function hashLicense(license: string): string {
-    return hashCode(license.trim()).toString()
+    return hashCode(license.trim()).toString();
 }
 
 function hashCode(str: string): number {
-    var hash = 0, i, chr;
+    var hash = 0,
+        i,
+        chr;
     if (str.length === 0) return hash;
     for (i = 0; i < str.length; i++) {
-        chr   = str.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
+        chr = str.charCodeAt(i);
+        hash = (hash << 5) - hash + chr;
         hash |= 0;
     }
     return Math.abs(hash);

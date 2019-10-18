@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, Cell } from "../Common";
+import { State, Range, PointerEvent, CellMatrix, Behavior, GridRow, GridColumn, Location, Cell } from "../Common";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { trySetDataAndAppendChange } from '../Functions';
@@ -114,7 +114,7 @@ export class FillHandleBehavior extends Behavior {
 
         switch (this.fillDirection) {
             case 'right':
-                values = activeSelectedRange.rows.map((row: Row) =>
+                values = activeSelectedRange.rows.map((row: GridRow) =>
                     new Location(row, state.cellMatrix.cols[activeSelectedRange.last.col.idx]).cell
                 );
                 state = this.iterateFillRangeRows(state, values);
@@ -125,7 +125,7 @@ export class FillHandleBehavior extends Behavior {
                 };
                 break;
             case 'left':
-                values = activeSelectedRange.rows.map((row: Row) =>
+                values = activeSelectedRange.rows.map((row: GridRow) =>
                     new Location(row, state.cellMatrix.cols[activeSelectedRange.last.col.idx]).cell
                 );
                 state = this.iterateFillRangeRows(state, values);
@@ -136,7 +136,7 @@ export class FillHandleBehavior extends Behavior {
                 };
                 break;
             case 'up':
-                values = activeSelectedRange.cols.map((col: Column) =>
+                values = activeSelectedRange.cols.map((col: GridColumn) =>
                     new Location(state.cellMatrix.rows[activeSelectedRange.last.row.idx], col).cell
                 );
                 state = this.iterateFillRangeCols(state, values);
@@ -147,7 +147,7 @@ export class FillHandleBehavior extends Behavior {
                 };
                 break;
             case 'down':
-                values = activeSelectedRange.cols.map((col: Column) =>
+                values = activeSelectedRange.cols.map((col: GridColumn) =>
                     new Location(state.cellMatrix.rows[activeSelectedRange.last.row.idx], col).cell
                 );
                 state = this.iterateFillRangeCols(state, values);
@@ -162,8 +162,8 @@ export class FillHandleBehavior extends Behavior {
     }
 
     private iterateFillRangeRows(state: State, values: Cell[]): State {
-        this.fillRange && this.fillRange.rows.forEach((row: Row, i: number) =>
-            this.fillRange!.cols.forEach((col: Column) => {
+        this.fillRange && this.fillRange.rows.forEach((row: GridRow, i: number) =>
+            this.fillRange!.cols.forEach((col: GridColumn) => {
                 state = trySetDataAndAppendChange(state, new Location(row, col), values[i]);
             })
         );
@@ -171,8 +171,8 @@ export class FillHandleBehavior extends Behavior {
     }
 
     private iterateFillRangeCols(state: State, values: Cell[]): State {
-        this.fillRange && this.fillRange.rows.forEach((row: Row) =>
-            this.fillRange!.cols.forEach((col: Column, i: number) => {
+        this.fillRange && this.fillRange.rows.forEach((row: GridRow) =>
+            this.fillRange!.cols.forEach((col: GridColumn, i: number) => {
                 state = trySetDataAndAppendChange(state, new Location(row, col), values[i]);
             })
         );

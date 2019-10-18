@@ -75,10 +75,9 @@ export class DefaultBehavior extends Behavior {
         if (state.focusedLocation && location.equals(state.focusedLocation)) {
             const cellTemplate = state.cellTemplates[location.cell.type];
             if (cellTemplate.handleKeyDown) {
-                const { cellData, enableEditMode } = cellTemplate.handleKeyDown(state.focusedLocation.cell.data, 1, event.ctrlKey, event.shiftKey, event.altKey);
+                const { cell, enableEditMode } = cellTemplate.handleKeyDown(state.focusedLocation.cell, 1, event.ctrlKey, event.shiftKey, event.altKey);
                 if (enableEditMode) {
-
-                    return { ...state, currentlyEditedCell: { data: cellData, type: location.cell.type } };
+                    return { ...state, currentlyEditedCell: cell };
                 }
             }
         }

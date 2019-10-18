@@ -1,12 +1,12 @@
-import { Column, Row, Location } from ".";
+import { GridColumn, GridRow, Location } from '.';
 
 export class Range {
-    readonly width: number = 0;
-    readonly height: number = 0;
-    readonly first!: Location;
-    readonly last!: Location;
+    readonly width: number;
+    readonly height: number;
+    readonly first: Location;
+    readonly last: Location;
 
-    constructor(public readonly cols: Column[], public readonly rows: Row[]) {
+    constructor(public readonly cols: GridColumn[], public readonly rows: GridRow[]) {
         this.first = new Location(this.rows[0], this.cols[0]);
         this.last = new Location(this.rows[this.rows.length - 1], this.cols[this.cols.length - 1]);
         this.height = this.rows.map(c => c.height).reduce((a, b) => a + b, 0);
@@ -14,30 +14,15 @@ export class Range {
     }
 
     contains(location: Location): boolean {
-        return (
-            location.col.idx >= this.first.col.idx &&
-            location.col.idx <= this.last.col.idx &&
-            location.row.idx >= this.first.row.idx &&
-            location.row.idx <= this.last.row.idx
-        );
+        return location.col.idx >= this.first.col.idx && location.col.idx <= this.last.col.idx && location.row.idx >= this.first.row.idx && location.row.idx <= this.last.row.idx;
     }
 
     containsRange(range: Range): boolean {
-        return (
-            range.first.col.idx >= this.first.col.idx &&
-            range.first.row.idx >= this.first.row.idx &&
-            range.last.col.idx <= this.last.col.idx &&
-            range.last.row.idx <= this.last.row.idx
-        );
+        return range.first.col.idx >= this.first.col.idx && range.first.row.idx >= this.first.row.idx && range.last.col.idx <= this.last.col.idx && range.last.row.idx <= this.last.row.idx;
     }
 
     intersectsWith(range: Range): boolean {
-        return (
-            range.first.col.idx <= this.last.col.idx &&
-            range.first.row.idx <= this.last.row.idx &&
-            range.last.col.idx >= this.first.col.idx &&
-            range.last.row.idx >= this.first.row.idx
-        )
+        return range.first.col.idx <= this.last.col.idx && range.first.row.idx <= this.last.row.idx && range.last.col.idx >= this.first.col.idx && range.last.row.idx >= this.first.row.idx;
     }
 
     slice(range: Range, direction: 'columns' | 'rows' | 'both'): Range {

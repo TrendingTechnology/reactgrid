@@ -1,13 +1,13 @@
-import * as React from "react";
-import { Location, State } from "../Common";
-import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
+import * as React from 'react';
+import { Location, State } from '../Common';
+import { FillHandleBehavior } from '../Behaviors/FillHandleBehavior';
 
 interface FillHandleProps {
-    state: State,
-    location: Location
+    state: State;
+    location: Location;
 }
 
-export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
+export const FillHandle: React.FunctionComponent<FillHandleProps> = props => (
     <div
         className="dg-touch-fill-handle"
         style={{
@@ -23,7 +23,8 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
         }}
         data-cy="dg-touch-fill-handle"
         onPointerDown={event => {
-            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined (disabled this event for cypress tests)
+            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) {
+                // !== undefined (disabled this event for cypress tests)
                 props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
             }
         }}
@@ -38,8 +39,9 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
                 height: 4.5,
                 backgroundColor: '#3579f8',
                 border: '1px solid white',
-                cursor: 'crosshair',
+                cursor: 'crosshair'
             }}
             data-cy="dg-fill-handle"
         />
     </div>
+);

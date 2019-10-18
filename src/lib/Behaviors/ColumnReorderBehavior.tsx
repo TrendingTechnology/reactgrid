@@ -1,4 +1,4 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction, Column } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Common';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
@@ -14,12 +14,12 @@ export class ColumnReorderBehavior extends Behavior {
         const columns = this.selectedIdxs.map(i => state.cellMatrix.cols[i]);
         const leftIndexes = this.selectedIdxs.filter(i => i < location.col.idx);
         const leftColumns = leftIndexes.map(i => state.cellMatrix.cols[i]);
-        const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width, 0);
+        const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width!, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
         return {
             ...state,
             lineOrientation: 'vertical',
-            shadowSize: columns.reduce((sum, col) => sum + col.width, 0),
+            shadowSize: columns.reduce((sum, col) => sum + col.width!, 0),
             shadowPosition: this.getShadowPosition(location, state)
         }
     }

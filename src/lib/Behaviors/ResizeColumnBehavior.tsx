@@ -1,8 +1,8 @@
-import { Column, Behavior, PointerLocation, State, PointerEvent, Direction } from '../Common';
+import { GridColumn, Behavior, PointerLocation, State, PointerEvent, Direction } from '../Common';
 
 export class ResizeColumnBehavior extends Behavior {
     private minColumnWidth: number = 40;
-    private resizedColumn!: Column;
+    private resizedColumn!: GridColumn;
     private initialLocation!: PointerLocation;
     autoScrollDirection: Direction = 'horizontal';
 

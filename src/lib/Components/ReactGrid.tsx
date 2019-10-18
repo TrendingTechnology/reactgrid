@@ -1,25 +1,23 @@
-import * as React from "react";
-import { ReactGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
-import { recalcVisibleRange, isBrowserIE, isBrowserEdge, getActiveSelectedRange } from "../Functions";
-import { KeyboardEvent, ClipboardEvent } from "../Common";
-import { PointerEventsController } from "../Common/PointerEventsController";
-import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
-import { DefaultGridRenderer } from "./DefaultGridRenderer";
-import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
-import { defaultCellTemplates } from "../Common/DefaultCellTemplates";
-import { checkLicense } from "../Functions/licencing";
+import * as React from 'react';
+import { ReactGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from '../Common';
+import { recalcVisibleRange, isBrowserIE, isBrowserEdge, getActiveSelectedRange } from '../Functions';
+import { KeyboardEvent, ClipboardEvent } from '../Common';
+import { PointerEventsController } from '../Common/PointerEventsController';
+import { updateSelectedRows, updateSelectedColumns } from '../Functions/updateState';
+import { DefaultGridRenderer } from './DefaultGridRenderer';
+import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
+import { defaultCellTemplates } from '../Common/DefaultCellTemplates';
+import { checkLicense } from '../Functions/licencing';
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
-
     private updateState: StateUpdater = modifier => this.updateOnNewState(modifier(this.state));
     private pointerEventsController = new PointerEventsController(this.updateState);
     state = new State(this.updateState);
 
     static getDerivedStateFromProps(props: ReactGridProps, state: State) {
-
-        const dataHasChanged = !state.cellMatrix || props.cellMatrixProps !== state.cellMatrix.props
+        const dataHasChanged = !state.cellMatrix || props.rows !== state.cellMatrix.rows;
         if (dataHasChanged) {
-            state = { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps) }
+            state = { ...state, cellMatrix: new CellMatrix(props) };
         }
 
         if (state.selectionMode === 'row' && state.selectedIds.length > 0) {
@@ -27,27 +25,29 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         } else if (state.selectionMode === 'column' && state.selectedIds.length > 0) {
             state = updateSelectedColumns(state);
         } else {
-            state = { ...state, selectedRanges: [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range)) }
+            state = { ...state, selectedRanges: [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range)) };
         }
 
         if (state.cellMatrix.cols.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
-            state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) }
+            state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) };
             // TODO check it
-            setTimeout(() => { if (document.activeElement !== state.hiddenFocusElement) state.hiddenFocusElement.focus(); });
+            setTimeout(() => {
+                if (document.activeElement !== state.hiddenFocusElement) state.hiddenFocusElement.focus();
+            });
         }
 
         if (state.visibleRange && dataHasChanged) {
-            state = recalcVisibleRange(state)
+            state = recalcVisibleRange(state);
         }
 
         return {
             ...state,
-            cellTemplates: { ...defaultCellTemplates, ...props.cellTemplates },
-            customFocuses: props.customFocuses,
-            disableFillHandle: props.disableFillHandle,
-            disableRangeSelection: props.disableRangeSelection,
-            disableColumnSelection: props.disableColumnSelection,
-            disableRowSelection: props.disableRowSelection,
+            cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates },
+            customFocuses: props.additionalFocuses,
+            disableFillHandle: props.enableFillHandle,
+            disableRangeSelection: props.enableRangeSelection,
+            disableColumnSelection: props.enableColumnSelection,
+            disableRowSelection: props.enableRowSelection
         };
     }
 
@@ -65,10 +65,10 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
 
     render() {
-        const grid = (typeof window !== 'undefined' && (isBrowserIE() || isBrowserEdge())) ? LegacyBrowserGridRenderer : DefaultGridRenderer;
+        const grid = typeof window !== 'undefined' && (isBrowserIE() || isBrowserEdge()) ? LegacyBrowserGridRenderer : DefaultGridRenderer;
         const range = getActiveSelectedRange(this.state);
-        const rowIds = range ? range.rows.map(r => r.id) : []
-        const colIds = range ? range.cols.map(c => c.id) : []
+        const rowIds = range ? range.rows.map(r => r.id) : [];
+        const colIds = range ? range.cols.map(c => c.id) : [];
         return React.createElement(grid as any, {
             state: this.state,
             onKeyDown: this.keyDownHandler,
@@ -80,34 +80,32 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             onPointerDown: this.pointerDownHandler,
             onContextMenu: this.handleContextMenu,
             onScroll: this.scrollHandler,
-            onRowContextMenu: (menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(rowIds, menuOptions) : [],
-            onColumnContextMenu: (menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(colIds, menuOptions) : [],
-            onRangeContextMenu: (menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(rowIds, colIds, menuOptions) : [],
+            onContextMenu: (menuOptions: MenuOption[]) => (this.props.onRowContextMenu ? this.props.onRowContextMenu(rowIds, menuOptions) : []),
+            onColumnContextMenu: (menuOptions: MenuOption[]) => (this.props.onColumnContextMenu ? this.props.onColumnContextMenu(colIds, menuOptions) : []),
+            onRangeContextMenu: (menuOptions: MenuOption[]) => (this.props.onRangeContextMenu ? this.props.onRangeContextMenu(rowIds, colIds, menuOptions) : []),
             viewportElementRefHandler: this.viewportElementRefHandler,
             hiddenElementRefHandler: this.hiddenElementRefHandler
-        })
+        });
     }
 
     private hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => {
         (this.state as State).hiddenFocusElement = hiddenFocusElement;
-    }
+    };
 
     private pasteCaptureHandler = (event: ClipboardEvent) => {
         const htmlData = event.clipboardData!.getData('text/html');
-        const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
+        const parsedData = new DOMParser().parseFromString(htmlData, 'text/html');
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             event.bubbles = false;
         }
-    }
+    };
 
     private scrollHandler = () => {
         const { scrollTop, scrollLeft } = this.state.viewportElement;
-        if (scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop ||
-            scrollLeft < this.state.minScrollLeft || scrollLeft > this.state.maxScrollLeft
-        ) {
+        if (scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop || scrollLeft < this.state.minScrollLeft || scrollLeft > this.state.maxScrollLeft) {
             this.updateOnNewState(recalcVisibleRange(this.state));
         }
-    }
+    };
 
     private viewportElementRefHandler = (viewportElement: HTMLDivElement) => viewportElement && this.updateOnNewState(recalcVisibleRange({ ...this.state, viewportElement }));
     private pointerDownHandler = (event: PointerEvent) => this.updateOnNewState(this.pointerEventsController.handlePointerDown(event, this.state));

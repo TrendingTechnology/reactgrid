@@ -1,7 +1,7 @@
-import * as React from "react";
+import * as React from 'react';
 
 export const ResizeHandle: React.FunctionComponent = () => {
-    const [hover, setHover] = React.useState(false)
+    const [hover, setHover] = React.useState(false);
     return (
         <div
             className="dg-touch-resize-handle"
@@ -31,5 +31,5 @@ export const ResizeHandle: React.FunctionComponent = () => {
                 }}
             />
         </div>
-    )
-}
+    );
+};

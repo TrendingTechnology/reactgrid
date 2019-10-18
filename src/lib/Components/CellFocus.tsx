@@ -1,12 +1,12 @@
-import * as React from "react";
-import { Location, Id } from "../Common";
+import * as React from 'react';
+import { Location, Id } from '../Common';
 
 interface CellFocusProps {
     location: Location;
     color?: string;
 }
 
-export const CellFocus: React.FunctionComponent<CellFocusProps> = (props) =>
+export const CellFocus: React.FunctionComponent<CellFocusProps> = props => (
     <div
         key={props.color}
         className="dg-cell-focus"
@@ -21,4 +21,4 @@ export const CellFocus: React.FunctionComponent<CellFocusProps> = (props) =>
             pointerEvents: 'none' // prevent delegating events around cell
         }}
     />
-
+);

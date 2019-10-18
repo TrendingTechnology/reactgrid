@@ -1,6 +1,6 @@
-import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
-import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { CellTemplates, Id, Focus, Cell } from "./PublicModel";
+import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from '.';
+import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
+import { CellTemplates, Id, Focus, Cell } from './PublicModel';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -9,7 +9,7 @@ export type StateUpdater = (modifier: (state: State) => State) => void;
 
 export class State {
     constructor(public readonly updateState: StateUpdater) {
-        //    this.isLegacyBrowser = 
+        //    this.isLegacyBrowser =
     }
     //readonly isLegacyBrowser: boolean;
     readonly cellMatrix!: CellMatrix;
@@ -33,7 +33,7 @@ export class State {
     readonly disableRowSelection?: boolean;
 
     // CONTEXT MENU
-    readonly contextMenuPosition: number[] = [-1, -1] // [top, left]
+    readonly contextMenuPosition: number[] = [-1, -1]; // [top, left]
 
     // LINE AND SHADOW
     readonly lineOrientation: Orientation = 'horizontal';
@@ -43,7 +43,7 @@ export class State {
     readonly shadowCursor: string = 'default';
 
     // SELECTION
-    readonly selectionMode: SelectionMode = 'range'
+    readonly selectionMode: SelectionMode = 'range';
     readonly selectedRanges: Range[] = [];
     readonly selectedIndexes: number[] = [];
     readonly selectedIds: Id[] = [];
@@ -58,5 +58,5 @@ export class State {
     readonly maxScrollLeft: number = -1;
 
     // LOGGING
-    readonly log = (text: string) => { };
+    readonly log = (text: string) => {};
 }

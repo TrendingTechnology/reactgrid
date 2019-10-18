@@ -2,18 +2,18 @@ import * as React from 'react';
 import { MenuOption, Location, State } from '../Common';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
 import { isBrowserIE, getDataToPasteInIE } from '../Functions';
+
 interface ContextMenuProps {
-    contextMenuPosition: number[],
-    focusedLocation?: Location,
-    state: State,
-    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    contextMenuPosition: number[];
+    focusedLocation?: Location;
+    state: State;
+    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
+    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
     onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
-
 export class ContextMenu extends React.Component<ContextMenuProps> {
-    state = { isHovered: false }
+    state = { isHovered: false };
     render() {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
@@ -32,7 +32,9 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
             }
         }
         return (
-            (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
+            contextMenuPosition[0] !== -1 &&
+            contextMenuPosition[1] !== -1 &&
+            contextMenuOptions.length > 0 && (
                 <div
                     className="dg-context-menu"
                     style={{
@@ -52,12 +54,12 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                                 className="dg-context-menu-option"
                                 style={{
                                     padding: '8px 20px 8px 15px',
-                                    cursor: 'pointer',
+                                    cursor: 'pointer'
                                 }}
                                 onPointerDown={e => e.stopPropagation()}
                                 onClick={() => {
                                     el.handler();
-                                    state.updateState((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }))
+                                    state.updateState((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }));
                                 }}
                             >
                                 {el.title}

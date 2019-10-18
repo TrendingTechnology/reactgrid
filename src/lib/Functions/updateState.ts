@@ -1,8 +1,8 @@
-import { State, Column, Row, Location } from "../Common";
+import { State, GridColumn, GridRow, Location } from '../Common';
 
 // export function updateFocusedLocation(state: State): State {
 //     if (state.focusedLocation) {
-//         // TODO REMOVE FIND 
+//         // TODO REMOVE FIND
 //         const newFocusedCol = state.cellMatrix.cols.find(c => c.id === state.focusedLocation!.col.id)
 //         const newFocusedRow = state.cellMatrix.rows.find(r => r.id === state.focusedLocation!.row.id)
 //         const selectedRanges = state.selectedRanges
@@ -43,7 +43,7 @@ export function updateSelectedRows(state: State): State {
                 if (state.focusedLocation!.row.id === row.id) {
                     activeSelectedRangeIdx = idx;
                 }
-            })
+            });
         });
     }
 
@@ -54,7 +54,7 @@ export function updateSelectedRows(state: State): State {
         selectedRanges: [...ranges],
         selectedIndexes: updatedRows.map(row => row.idx),
         selectedIds: updatedRows.map(row => row.id)
-    }
+    };
 }
 
 export function updateSelectedColumns(state: State): State {
@@ -62,7 +62,7 @@ export function updateSelectedColumns(state: State): State {
     const lastRow = state.cellMatrix.last.row;
     // TODO this filter is very inefficient for big tables
     const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
-    const columns = groupedColumns(updatedColumns)
+    const columns = groupedColumns(updatedColumns);
     const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
     let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
@@ -72,7 +72,7 @@ export function updateSelectedColumns(state: State): State {
                 if (state.focusedLocation!.col.id === col.id) {
                     activeSelectedRangeIdx = idx;
                 }
-            })
+            });
         });
     }
 
@@ -83,7 +83,7 @@ export function updateSelectedColumns(state: State): State {
         selectedRanges: [...ranges],
         selectedIndexes: updatedColumns.map(col => col.idx),
         selectedIds: updatedColumns.map(col => col.id)
-    }
+    };
 }
 
 // export function updateSelectedRanges(state: State): State {
@@ -123,48 +123,48 @@ export function updateSelectedColumns(state: State): State {
 //     }
 // }
 
-const groupedRows = (array: Row[]) => {
-    const grouped: Row[][] = [];
+const groupedRows = (array: GridRow[]) => {
+    const grouped: GridRow[][] = [];
     let sortIndex = 0;
-    array.forEach((current: Row, index) => {
+    array.forEach((current: GridRow, index) => {
         if (!array[index - 1]) {
-            grouped.push([current])
-            return
+            grouped.push([current]);
+            return;
         }
-        const prev: Row = array[index - 1]
+        const prev: GridRow = array[index - 1];
         if (current.idx - prev.idx == 1) {
             if (!grouped[sortIndex]) {
-                grouped.push([prev, current])
+                grouped.push([prev, current]);
             } else {
-                grouped[sortIndex].push(current)
+                grouped[sortIndex].push(current);
             }
         } else {
-            grouped.push([current])
-            sortIndex += 1
+            grouped.push([current]);
+            sortIndex += 1;
         }
-    })
-    return grouped
-}
+    });
+    return grouped;
+};
 
-const groupedColumns = (array: Column[]) => {
-    const grouped: Column[][] = [];
+const groupedColumns = (array: GridColumn[]) => {
+    const grouped: GridColumn[][] = [];
     let sortIndex = 0;
-    array.forEach((current: Column, index) => {
+    array.forEach((current: GridColumn, index) => {
         if (!array[index - 1]) {
-            grouped.push([current])
-            return
+            grouped.push([current]);
+            return;
         }
-        const prev: Column = array[index - 1]
+        const prev: GridColumn = array[index - 1];
         if (current.idx - prev.idx == 1) {
             if (!grouped[sortIndex]) {
-                grouped.push([prev, current])
+                grouped.push([prev, current]);
             } else {
-                grouped[sortIndex].push(current)
+                grouped[sortIndex].push(current);
             }
         } else {
-            grouped.push([current])
-            sortIndex += 1
+            grouped.push([current]);
+            sortIndex += 1;
         }
-    })
-    return grouped
-}
+    });
+    return grouped;
+};
