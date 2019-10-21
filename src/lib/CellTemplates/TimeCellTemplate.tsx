@@ -2,30 +2,28 @@ import * as React from 'react';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
 import { CellRenderProps, CellTemplate, keyCodes } from '../Model';
 
-export class TimeCellTemplate implements CellTemplate<string, any> {
+type TimeCell = Cell<'time', string, {}>
 
-    isValid(cellData: string): boolean {
+export class TimeCellTemplate implements CellTemplate<TimeCell> {
+
+    isValid(cell: TimeCell): boolean {
         const time_regex = /^\d{2}\:\d{2}$/;
-        return time_regex.test(cellData.replace(/\s+/g, ''));
+        return time_regex.test(cell.data.replace(/\s+/g, ''));
     }
 
-    textToCellData(text: string): string {
-        return text;
+    toText(cell: TimeCell) {
+        return cell.data;
     }
 
-    cellDataToText(cellData: string) {
-        return cellData;
-    }
-
-    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    handleKeyDown(cell: TimeCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cellData: '', enableEditMode: true }
-        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+            return { cell: { ...cell, data: '' }, enableEditMode: true }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<TimeCell>) => React.ReactNode = (props) => {
         if (!props.isInEditMode)
-            return props.cellData;
+            return props.cell.data;
 
         return <input
             type='time'
@@ -44,15 +42,15 @@ export class TimeCellTemplate implements CellTemplate<string, any> {
                     // input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={props.cellData}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
+            defaultValue={props.cell.data}
+            onChange={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, false)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
                 if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cell.data; // reset
             }}
         />
     }

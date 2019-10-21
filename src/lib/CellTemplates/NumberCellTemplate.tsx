@@ -3,29 +3,31 @@ import { keyCodes } from '../Model/keyCodes';
 import { CellRenderProps, CellTemplate } from '../Model';
 import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
 
-export class NumberCellTemplate implements CellTemplate<number, any> {
+type NumberCell = Cell<'number', number, {}>
 
-    isValid(cellData: number): boolean {
-        return typeof (cellData) === 'number';
+export class NumberCellTemplate implements CellTemplate<NumberCell> {
+
+    isValid(cell: NumberCell): boolean {
+        return typeof (cell.data) === 'number';
     }
 
     textToCellData(text: string): number {
         return parseFloat(text);
     }
 
-    cellDataToText(cellData: number): string {
-        return isNaN(cellData) ? '' : cellData.toString();
+    toText(cell: NumberCell): string {
+        return isNaN(cell.data) ? '' : cell.data.toString();
     }
 
-    handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    handleKeyDown(cell: NumberCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (!ctrl && !alt && !shift && isNumberInput(keyCode))
-            return { cellData: NaN, enableEditMode: true }
-        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+            return { cell: { ...cell, data: NaN }, enableEditMode: true }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<number, any>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<NumberCell>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {
-            return this.cellDataToText(props.cellData);
+            return this.toText(props.cell);
         }
 
         return <input
@@ -44,11 +46,11 @@ export class NumberCellTemplate implements CellTemplate<number, any> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            value={this.cellDataToText(props.cellData)}
-            onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value), false)}
+            value={this.toText(props.cell)}
+            onChange={e => props.onCellChanged({ ...props.cell, data: parseFloat(e.currentTarget.value) }, false)}
             onKeyDown={e => {
                 if (isNumberInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData.toString(); // reset
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cell.data.toString(); // reset
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

@@ -2,29 +2,28 @@ import * as React from 'react';
 import { keyCodes } from '../Model/keyCodes';
 import { CellRenderProps, CellTemplate } from '../Model';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
-export class TextCellTemplate implements CellTemplate<string, any> {
 
-    isValid(cellData: string): boolean {
-        return typeof (cellData) === 'string';
+type TextCell = Cell<'text', string, {}>
+
+export class TextCellTemplate implements CellTemplate<TextCell> {
+
+    isValid(cell: TextCell): boolean {
+        return typeof (cell.data) === 'string';
     }
 
-    textToCellData(text: string): string {
-        return text;
+    toText(cell: TextCell) {
+        return cell.data;
     }
 
-    cellDataToText(cellData: string) {
-        return cellData;
-    }
-
-    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    handleKeyDown(cell: TextCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cellData: '', enableEditMode: true }
-        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+            return { cell: { ...cell, data: '' }, enableEditMode: true }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<TextCell>) => React.ReactNode = (props) => {
         if (!props.isInEditMode)
-            return props.cellData;
+            return props.cell.data;
 
         return <input
             style={{
@@ -43,16 +42,16 @@ export class TextCellTemplate implements CellTemplate<string, any> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={props.cellData}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
-            onBlur={e => props.onCellDataChanged(e.currentTarget.value, true)} // TODO should it be added to each cell? // additional question, because everything works without that
+            defaultValue={props.cell.data}
+            onChange={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, false)}
+            onBlur={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, true)} // TODO should it be added to each cell? // additional question, because everything works without that
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
                 if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cell.data; // reset
             }}
         />
     }
