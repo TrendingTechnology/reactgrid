@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, Borders, State } from '../Common';
+import { Range, Borders, State } from '../Model';
 import { CellFocus } from './CellFocus';
 import { FillHandle } from './FillHandle';
 import { RowRenderer } from './RowRenderer';
@@ -23,7 +23,7 @@ interface RowsProps {
 class GridContent extends React.Component<RowsProps> {
     shouldComponentUpdate(nextProps: RowsProps) {
         if (this.props.state.focusedLocation && nextProps.state.focusedLocation) {
-            if (this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id || this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id)
+            if (this.props.state.focusedLocation.column.columnId !== nextProps.state.focusedLocation.column.columnId || this.props.state.focusedLocation.row.rowId !== nextProps.state.focusedLocation.row.rowId)
                 // && // needed when select range by touch
                 //nextProps.state.lastKeyCode !== keyCodes.ENTER && nextProps.state.lastKeyCode !== keyCodes.TAB) // improved performance during moving focus inside range
                 return true;

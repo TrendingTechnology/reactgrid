@@ -1,4 +1,4 @@
-export function checkLicense(license: string) {
+export function isLicenseValid(license: string) {
     if (license === 'non-commercial') {
         console.log('You are using ReactGrid with the non-commerial license. Happy coding!');
     } else {

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
+import { keyCodes } from '../Model/keyCodes';
 import { isNumberInput, isNavigationKey, isTextInput } from './keyCodeCheckings'
-import { CellRenderProps, CellTemplate } from '../Common';
+import { CellRenderProps, CellTemplate } from '../Model';
 
 export class DateCellTemplate implements CellTemplate<string, any> {
 

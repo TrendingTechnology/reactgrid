@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
-import { CellRenderProps as CellRenderProps, CellTemplate } from '../Common';
+import { keyCodes } from '../Model/keyCodes';
+import { CellRenderProps as CellRenderProps, CellTemplate } from '../Model';
 
 export class CheckboxCellTemplate implements CellTemplate<boolean, any> {
 

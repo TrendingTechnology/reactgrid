@@ -3,7 +3,7 @@ import { PaneRow } from './PaneRow';
 import { Line } from './Line';
 import { Shadow } from './Shadow';
 import { ContextMenu } from './ContextMenu';
-import { MenuOption, State, Id, Range, KeyboardEvent, ClipboardEvent, PointerEvent } from '../Common';
+import { MenuOption, State, Id, Range, KeyboardEvent, ClipboardEvent, PointerEvent } from '../Model';
 import { CellEditor } from './CellEditor';
 
 interface DefaultGridRendererProps {
@@ -60,7 +60,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 onContextMenu={props.onContextMenu}
             >
                 {props.state.cellMatrix.frozenTopRange.height > 0 && <PaneRow id="T" state={props.state} style={{ background: 'white', top: 0, position: 'sticky', boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)' }} range={props.state.cellMatrix.frozenTopRange} borders={{ bottom: true }} zIndex={3} />}
-                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.col && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange && <PaneRow id="M" state={props.state} style={{ height: props.state.cellMatrix.scrollableRange.height }} range={props.state.cellMatrix.scrollableRange.slice(props.state.visibleRange, 'rows')} borders={{}} zIndex={0} />}
+                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange && <PaneRow id="M" state={props.state} style={{ height: props.state.cellMatrix.scrollableRange.height }} range={props.state.cellMatrix.scrollableRange.slice(props.state.visibleRange, 'rows')} borders={{}} zIndex={0} />}
                 {props.state.cellMatrix.frozenBottomRange.height > 0 && props.state.cellMatrix.rows.length > 1 && <PaneRow id="B" state={props.state} style={{ background: 'white', bottom: 0, position: 'sticky', boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)' }} range={props.state.cellMatrix.frozenBottomRange} borders={{ top: true }} zIndex={3} />}
                 <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} />
                 <Line linePosition={props.state.linePosition} orientation={props.state.lineOrientation} cellMatrix={props.state.cellMatrix} />

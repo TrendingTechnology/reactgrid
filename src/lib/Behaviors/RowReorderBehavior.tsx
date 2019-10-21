@@ -1,4 +1,4 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction, DropPosition, Id } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction, DropPosition, Id } from '../Model';
 
 export class RowReorderBehavior extends Behavior {
     private initialRowIdx!: number;
@@ -17,7 +17,7 @@ export class RowReorderBehavior extends Behavior {
         const upperRows = upperIndexes.map(i => state.cellMatrix.rows[i]);
         const upperRowsHeight = upperRows.reduce((sum, row) => sum + row.height, 0);
         this.pointerOffset = upperRowsHeight + location.cellY;
-        this.selectedIds = rows.map(r => r.id);
+        this.selectedIds = rows.map(r => r.rowId);
         return {
             ...state,
             lineOrientation: 'horizontal',

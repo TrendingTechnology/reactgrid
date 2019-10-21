@@ -1,4 +1,4 @@
-import { GridColumn, GridRow, Range, State } from '../Common';
+import { GridColumn, GridRow, Range, State } from '../Model';
 
 export function recalcVisibleRange(state: State): State {
     const matrix = state.cellMatrix;
@@ -11,8 +11,8 @@ export function recalcVisibleRange(state: State): State {
     const visibleRange = new Range(visibleCols, visibleRows);
     return {
         ...state,
-        minScrollLeft: visibleRange.first.col == undefined ? 0 : visibleRange.first.col.left,
-        maxScrollLeft: visibleRange.last.col == undefined ? 0 : visibleRange.last.col.right - scrollAreaWidth,
+        minScrollLeft: visibleRange.first.column == undefined ? 0 : visibleRange.first.column.left,
+        maxScrollLeft: visibleRange.last.column == undefined ? 0 : visibleRange.last.column.right - scrollAreaWidth,
         minScrollTop: visibleRows.length > 0 ? visibleRange.first.row.top : 0,
         maxScrollTop: visibleCols.length > 0 ? (visibleRange.last.row == undefined ? 0 : visibleRange.last.row.bottom - scrollAreaHeight) : 0,
         visibleRange: visibleRange

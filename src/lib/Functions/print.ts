@@ -1,4 +1,4 @@
-import { State } from '../Common';
+import { State } from '../Model';
 
 // TODO
 export function print(state: State, title: string) {

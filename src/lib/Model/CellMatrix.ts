@@ -49,7 +49,7 @@ export class CellMatrix {
                 const height = row.height || DEFAULT_ROW_HEIGHT;
                 rows.push({ ...row, top, height, idx, bottom: top + height });
                 totalHeight += height;
-                this.rowIndexLookup[row.id] = idx;
+                this.rowIndexLookup[row.rowId] = idx;
                 return rows;
             },
             [] as GridRow[]
@@ -60,7 +60,7 @@ export class CellMatrix {
                 const width = column.width || DEFAULT_COLUMN_WIDTH;
                 cols.push({ ...column, idx, left, width, right: left + width });
                 totalWidth += width;
-                this.columnIndexLookup[column.id] = idx;
+                this.columnIndexLookup[column.columnId] = idx;
                 return cols;
             },
             [] as GridColumn[]
@@ -77,7 +77,7 @@ export class CellMatrix {
     }
 
     getRange(start: Location, end: Location): Range {
-        const cols = this.cols.slice(start.col.idx < end.col.idx ? start.col.idx : end.col.idx, start.col.idx > end.col.idx ? start.col.idx + 1 : end.col.idx + 1);
+        const cols = this.cols.slice(start.column.idx < end.column.idx ? start.column.idx : end.column.idx, start.column.idx > end.column.idx ? start.column.idx + 1 : end.column.idx + 1);
         const rows = this.rows.slice(start.row.idx < end.row.idx ? start.row.idx : end.row.idx, start.row.idx > end.row.idx ? start.row.idx + 1 : end.row.idx + 1);
         return new Range(cols, rows);
     }
@@ -93,8 +93,8 @@ export class CellMatrix {
     }
 
     validateLocation(location: Location): Location {
-        const colIdx = this.columnIndexLookup[location.col.id] !== undefined ? this.columnIndexLookup[location.col.id] : location.col.idx < this.last.col.idx ? location.col.idx : this.last.col.idx;
-        const rowIdx = this.rowIndexLookup[location.row.id] !== undefined ? this.rowIndexLookup[location.row.id] : location.row.idx < this.last.row.idx ? location.row.idx : this.last.row.idx;
+        const colIdx = this.columnIndexLookup[location.column.columnId] !== undefined ? this.columnIndexLookup[location.column.columnId] : location.column.idx < this.last.column.idx ? location.column.idx : this.last.column.idx;
+        const rowIdx = this.rowIndexLookup[location.row.rowId] !== undefined ? this.rowIndexLookup[location.row.rowId] : location.row.idx < this.last.row.idx ? location.row.idx : this.last.row.idx;
         return this.getLocation(rowIdx, colIdx);
     }
 

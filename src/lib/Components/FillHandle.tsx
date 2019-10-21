@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Location, State } from '../Common';
+import { Location, State } from '../Model';
 import { FillHandleBehavior } from '../Behaviors/FillHandleBehavior';
 
 interface FillHandleProps {
@@ -13,7 +13,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = props => (
         style={{
             position: 'absolute',
             top: props.location.row.bottom - 13,
-            left: props.location.col.right - 11,
+            left: props.location.column.right - 11,
             width: 20,
             height: 20,
             touchAction: 'none', // prevent scrolling
@@ -25,7 +25,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = props => (
         onPointerDown={event => {
             if (event.pointerType !== 'mouse' && event.pointerType !== undefined) {
                 // !== undefined (disabled this event for cypress tests)
-                props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
+                props.state.update(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
             }
         }}
     >

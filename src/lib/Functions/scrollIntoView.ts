@@ -1,4 +1,4 @@
-import { State, Direction, PointerLocation } from '../Common';
+import { State, Direction, PointerLocation } from '../Model';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
@@ -50,7 +50,7 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
 }
 
 function getScrollLeft(state: State, location: PointerLocation, dontChange: boolean): number {
-    const column = location.col;
+    const column = location.column;
     const { scrollLeft, clientWidth } = state.viewportElement;
     const { frozenLeftRange, frozenRightRange, cols } = state.cellMatrix;
     if (dontChange || !column) return scrollLeft;
@@ -58,7 +58,7 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
     const visibleContentWidth = Math.min(clientWidth, state.cellMatrix.width);
     const visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
     const isRightColFrozen = frozenRightRange.cols.some(col => column.idx === col.idx);
-    const shouldScrollToRight = () => (location.cellX ? column.left + location.cellX : column.right) > visibleScrollAreaWidth + scrollLeft - 1 || state.cellMatrix.last.col.idx === location.col.idx;
+    const shouldScrollToRight = () => (location.cellX ? column.left + location.cellX : column.right) > visibleScrollAreaWidth + scrollLeft - 1 || state.cellMatrix.last.column.idx === location.column.idx;
     const shouldScrollToLeft = () => column.left + (location.cellX ? location.cellX : 0) < scrollLeft + 1 && !isRightColFrozen;
     const isColumnBelowRightPane = () => column.right > visibleScrollAreaWidth + scrollLeft;
     const isColumnBelowLeftPane = () => column.left < scrollLeft && !isRightColFrozen;
@@ -69,7 +69,7 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
         } else {
             return column.right - visibleScrollAreaWidth + 1;
         }
-    } else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.cols.length > 0) && state.focusedLocation.col.idx < frozenRightRange.cols[0].idx) {
+    } else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.cols.length > 0) && state.focusedLocation.column.idx < frozenRightRange.cols[0].idx) {
         return column.right - visibleScrollAreaWidth + 1;
     } else if (frozenLeftRange.cols.length === 0 && shouldScrollToLeft()) {
         if (location.cellX) {
@@ -77,7 +77,7 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
         } else {
             return column.left - 1;
         }
-    } else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.col.idx > frozenLeftRange.cols.length) {
+    } else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.column.idx > frozenLeftRange.cols.length) {
         return column.left - 1;
     } else {
         return scrollLeft;

@@ -1,5 +1,6 @@
-import { State, GridColumn, GridRow, Location } from '../Common';
+import { State, Location, GridRow, GridColumn } from '../Model';
 
+// TODO cleanup
 // export function updateFocusedLocation(state: State): State {
 //     if (state.focusedLocation) {
 //         // TODO REMOVE FIND
@@ -29,18 +30,18 @@ import { State, GridColumn, GridRow, Location } from '../Common';
 // }
 
 export function updateSelectedRows(state: State): State {
-    const firstCol = state.cellMatrix.first.col;
-    const lastCol = state.cellMatrix.last.col;
+    const firstCol = state.cellMatrix.first.column;
+    const lastCol = state.cellMatrix.last.column;
     // TODO this filter is very inefficient for big tables
-    const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
+    const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.rowId)).sort((a, b) => a.idx - b.idx);
     const rows = groupedRows(updatedRows);
-    const ranges = rows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
+    const ranges = rows.map(row => state.cellMatrix.getRange(new Location(row[0], firstCol), new Location(row[row.length - 1], lastCol)));
     let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
     if (state.focusedLocation) {
         ranges.forEach((range, idx) => {
             range.rows.forEach(row => {
-                if (state.focusedLocation!.row.id === row.id) {
+                if (state.focusedLocation!.row.rowId === row.rowId) {
                     activeSelectedRangeIdx = idx;
                 }
             });
@@ -53,7 +54,7 @@ export function updateSelectedRows(state: State): State {
         activeSelectedRangeIdx,
         selectedRanges: [...ranges],
         selectedIndexes: updatedRows.map(row => row.idx),
-        selectedIds: updatedRows.map(row => row.id)
+        selectedIds: updatedRows.map(row => row.rowId)
     };
 }
 
@@ -61,7 +62,7 @@ export function updateSelectedColumns(state: State): State {
     const firstRow = state.cellMatrix.first.row;
     const lastRow = state.cellMatrix.last.row;
     // TODO this filter is very inefficient for big tables
-    const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
+    const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.columnId)).sort((a, b) => a.idx - b.idx);
     const columns = groupedColumns(updatedColumns);
     const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
     let activeSelectedRangeIdx = state.selectedRanges.length - 1;
@@ -69,7 +70,7 @@ export function updateSelectedColumns(state: State): State {
     if (state.focusedLocation) {
         ranges.forEach((range, idx) => {
             range.cols.forEach(col => {
-                if (state.focusedLocation!.col.id === col.id) {
+                if (state.focusedLocation!.column.columnId === col.columnId) {
                     activeSelectedRangeIdx = idx;
                 }
             });
@@ -82,10 +83,11 @@ export function updateSelectedColumns(state: State): State {
         activeSelectedRangeIdx,
         selectedRanges: [...ranges],
         selectedIndexes: updatedColumns.map(col => col.idx),
-        selectedIds: updatedColumns.map(col => col.id)
+        selectedIds: updatedColumns.map(col => col.columnId)
     };
 }
 
+// TODO cleanup
 // export function updateSelectedRanges(state: State): State {
 //     const newSelectedRanges: Range[] = [];
 //     state.selectedRanges.forEach(range => {

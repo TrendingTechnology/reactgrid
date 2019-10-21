@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { State, Location } from '../Common';
-import { trySetDataAndAppendChange } from '../Functions';
+import { State, Location } from '../Model';
+import { tryAppendChange } from '../Functions';
 
 interface CellEditorProps {
     state: State;
@@ -22,7 +22,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 top: position.top - 1,
                 left: position.left - 1,
                 height: location.row.height + 1,
-                width: location.col.width + 1,
+                width: location.column.width + 1,
                 paddingTop: 1,
                 border: '2px #3579f8 solid',
                 background: 'white',
@@ -30,13 +30,13 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 zIndex: 5
             }}
         >
-            {cellTemplate.renderContent({
+            {cellTemplate.render({
                 cell: cell,
                 isInEditMode: true,
                 onCellChanged: (cellData, commit) => {
                     const newCell = { data: cellData, type: cell.type };
                     props.state.currentlyEditedCell = commit ? undefined : newCell;
-                    if (commit) props.state.updateState(state => trySetDataAndAppendChange(state, location, newCell));
+                    if (commit) props.state.update(state => tryAppendChange(state, location, newCell));
                     else setCell(newCell);
                 }
             })}
@@ -45,9 +45,9 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
 };
 
 const calculatedXAxisOffset = (location: Location, state: State) => {
-    if (state.cellMatrix.frozenRightRange.first.col && location.col.idx >= state.cellMatrix.frozenRightRange.first.col.idx) {
+    if (state.cellMatrix.frozenRightRange.first.column && location.column.idx >= state.cellMatrix.frozenRightRange.first.column.idx) {
         return Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width;
-    } else if (location.col.idx > (state.cellMatrix.frozenLeftRange.last.col ? state.cellMatrix.frozenLeftRange.last.col.idx : state.cellMatrix.first.col.idx) || location.col.idx == state.cellMatrix.last.col.idx) {
+    } else if (location.column.idx > (state.cellMatrix.frozenLeftRange.last.column ? state.cellMatrix.frozenLeftRange.last.column.idx : state.cellMatrix.first.column.idx) || location.column.idx == state.cellMatrix.last.column.idx) {
         return state.cellMatrix.frozenLeftRange.width - state.viewportElement.scrollLeft;
     }
     return 0;
@@ -64,7 +64,7 @@ const calculatedYAxisOffset = (location: Location, state: State) => {
 
 const calculatedEditorPosition = (location: Location, state: State) => {
     return {
-        left: location.col.left + calculatedXAxisOffset(location, state),
+        left: location.column.left + calculatedXAxisOffset(location, state),
         top: location.row.top + calculatedYAxisOffset(location, state)
     };
 };

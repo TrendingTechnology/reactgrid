@@ -1,4 +1,4 @@
-import { State, Range, GridColumn, GridRow, Location } from '../Common';
+import { State, Range, GridColumn, GridRow, Location } from '../Model';
 
 export function selectRange(state: State, range: Range, incremental: boolean): State {
     return {
@@ -27,13 +27,13 @@ export function selectOneColumn(state: State, col: GridColumn, incremental: bool
         ...state,
         selectionMode: 'column',
         selectedIndexes: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(col.idx),
-        selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIds : []).concat(col.id)
+        selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIds : []).concat(col.columnId)
     };
 }
 
 export function unSelectOneColumn(state: State, col: GridColumn): State {
     const updatedIndexes = state.selectedIndexes.filter(idx => idx !== col.idx);
-    const updatedIds = state.selectedIds.filter(id => id !== col.id);
+    const updatedIds = state.selectedIds.filter(id => id !== col.columnId);
 
     return {
         ...state,
@@ -52,7 +52,7 @@ export function selectMultipleColumns(state: State, firstCol: GridColumn, lastCo
         ...state,
         selectionMode: 'column',
         selectedIndexes: incremental ? state.selectedIndexes.concat(range.cols.map(col => col.idx)) : range.cols.map(col => col.idx),
-        selectedIds: incremental ? state.selectedIds.concat(range.cols.map(col => col.id)) : range.cols.map(col => col.id)
+        selectedIds: incremental ? state.selectedIds.concat(range.cols.map(col => col.columnId)) : range.cols.map(col => col.columnId)
     };
 }
 
@@ -61,13 +61,13 @@ export function selectOneRow(state: State, row: GridRow, incremental: boolean): 
         ...state,
         selectionMode: 'row',
         selectedIndexes: (incremental && state.selectionMode === 'row' ? state.selectedIndexes : []).concat(row.idx),
-        selectedIds: (incremental && state.selectionMode === 'row' ? state.selectedIds : []).concat(row.id)
+        selectedIds: (incremental && state.selectionMode === 'row' ? state.selectedIds : []).concat(row.rowId)
     };
 }
 
 export function unSelectOneRow(state: State, row: GridRow): State {
     const updatedIndexes = state.selectedIndexes.filter(idx => idx !== row.idx);
-    const updatedIds = state.selectedIds.filter(id => id !== row.id);
+    const updatedIds = state.selectedIds.filter(id => id !== row.rowId);
 
     return {
         ...state,
@@ -78,14 +78,14 @@ export function unSelectOneRow(state: State, row: GridRow): State {
 }
 
 export function selectMultipleRows(state: State, firstRow: GridRow, lastRow: GridRow, incremental?: boolean): State {
-    const firstCol = state.cellMatrix.first.col;
-    const lastCol = state.cellMatrix.last.col;
+    const firstCol = state.cellMatrix.first.column;
+    const lastCol = state.cellMatrix.last.column;
     const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol));
 
     return {
         ...state,
         selectionMode: 'row',
         selectedIndexes: incremental ? state.selectedIndexes.concat(range.rows.map(row => row.idx)) : range.rows.map(row => row.idx),
-        selectedIds: incremental ? state.selectedIds.concat(range.rows.map(row => row.id)) : range.rows.map(row => row.id)
+        selectedIds: incremental ? state.selectedIds.concat(range.rows.map(row => row.rowId)) : range.rows.map(row => row.rowId)
     };
 }

@@ -1,20 +1,16 @@
-import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from '.';
+import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, CellChange } from '.';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 import { CellTemplates, Id, Focus, Cell } from './PublicModel';
 
+export type StateModifier = (state: State) => State;
+export type StateUpdater = (modifier: StateModifier) => void;
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
-
-export type StateUpdater = (modifier: (state: State) => State) => void;
-
 export class State {
-    constructor(public readonly updateState: StateUpdater) {
-        //    this.isLegacyBrowser =
-    }
-    //readonly isLegacyBrowser: boolean;
+    update: StateUpdater = state => state;
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
-    readonly floatingCellEditor: boolean = false;
 
     readonly cellTemplates!: CellTemplates;
     hiddenFocusElement!: HTMLDivElement; // updated without setState
@@ -24,7 +20,7 @@ export class State {
     // TODO try to eliminate
     hiddenScrollableElement!: HTMLDivElement;
 
-    readonly queuedDataChanges: DataChange[] = [];
+    readonly queuedChanges: CellChange[] = [];
     currentlyEditedCell?: Cell;
     readonly customFocuses: Focus[] = [];
     readonly disableFillHandle?: boolean;

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { State, Borders, Location } from '../Common';
-import { trySetDataAndAppendChange } from '../Functions';
+import { State, Borders, Location } from '../Model';
+import { tryAppendChange } from '../Functions';
 import { ResizeHandle } from './ResizeHandle';
 
 export interface CellRendererProps {
@@ -13,7 +13,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
     const state = { ...props.state };
     const location = props.location;
     const cell = location.cell;
-    const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
+    const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === props.location.column.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const cellTemplate = state.cellTemplates[cell.type];
     const style: React.CSSProperties = {
         ...((cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false)) || {}),
@@ -24,9 +24,9 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         flexDirection: 'row',
         alignItems: 'center',
         overflow: 'hidden',
-        left: location.col.left,
+        left: location.column.left,
         top: location.row.top,
-        width: location.col.width,
+        width: location.column.width,
         height: location.row.height,
         padding: '0 1px',
         fontSize: 14,
@@ -42,23 +42,23 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         //     : 'solid 1px #e5e5e5',
 
         // TODO hardcoded type "header" - can we do better?
-        touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto' // prevent scrolling
+        touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.rowId, props.location.column.columnId).type === 'header' ? 'none' : 'auto' // prevent scrolling
     };
     if (!cellTemplate.isValid(cell)) {
-        throw `cell invalid (columnId: ${location.col.id}, rowId: ${location.row.id})`;
+        throw `cell invalid (columnId: ${location.column.columnId}, rowId: ${location.row.rowId})`;
     }
 
     return (
         <div className="cell" style={style}>
-            {cellTemplate.renderContent({
+            {cellTemplate.render({
                 cell,
                 isInEditMode: false,
                 onCellChanged: (cellData, commit) => {
                     if (!commit) throw 'commit should be set to true.';
-                    props.state.updateState(state => trySetDataAndAppendChange(state, location, cell));
+                    props.state.update(state => tryAppendChange(state, location, cell));
                 }
             })}
-            {location.row.idx === 0 && location.col.resizable && <ResizeHandle />}
+            {location.row.idx === 0 && location.column.resizable && <ResizeHandle />}
         </div>
     );
 };

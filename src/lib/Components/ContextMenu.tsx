@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuOption, Location, State } from '../Common';
+import { MenuOption, Location, State } from '../Model';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
 import { isBrowserIE, getDataToPasteInIE } from '../Functions';
 
@@ -23,9 +23,9 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
         const rangeOptions = onRangeContextMenu && onRangeContextMenu(customContextMenuOptions(state));
 
         if (focusedLocation) {
-            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
+            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.rowId) && rowOptions) {
                 contextMenuOptions = rowOptions;
-            } else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
+            } else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.column.columnId) && colOptions) {
                 contextMenuOptions = colOptions;
             } else if (state.selectionMode == 'range' && rangeOptions) {
                 contextMenuOptions = rangeOptions;
@@ -59,7 +59,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                                 onPointerDown={e => e.stopPropagation()}
                                 onClick={() => {
                                     el.handler();
-                                    state.updateState((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }));
+                                    state.update((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }));
                                 }}
                             >
                                 {el.title}
@@ -87,9 +87,9 @@ function customContextMenuOptions(state: State): MenuOption[] {
             title: 'Paste',
             handler: () => {
                 if (isBrowserIE()) {
-                    setTimeout(() => state.updateState((state: State) => pasteData(state, getDataToPasteInIE())));
+                    setTimeout(() => state.update((state: State) => pasteData(state, getDataToPasteInIE())));
                 } else {
-                    navigator.clipboard.readText().then(e => state.updateState((state: State) => pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' }))))));
+                    navigator.clipboard.readText().then(e => state.update((state: State) => pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' }))))));
                 }
             }
         }

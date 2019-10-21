@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { PointerLocation, State } from './';
+import { PointerLocation, State, Direction } from '.';
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from './domEvents';
-import { Direction } from './PublicModel';
 import { Range } from './Range';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!

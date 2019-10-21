@@ -1,4 +1,4 @@
-import { PointerLocation, GridRow, GridColumn, Direction, State } from '../Common';
+import { PointerLocation, GridRow, GridColumn, Direction, State } from '../Model';
 
 export function getLocationFromClient(state: State, clientX: number, clientY: number, favorScrollableContent?: Direction): PointerLocation {
     const viewportX = clientX - state.viewportElement.getBoundingClientRect().left;
@@ -41,12 +41,12 @@ function getColumn(state: State, viewportX: number, favorScrollableContent: bool
         const column = cellMatrix.frozenLeftRange.cols.find(col => col.right > viewportX)!;
         return [viewportX - column.left, column];
     } else if (cellMatrix.frozenRightRange.cols && viewportX >= rightPaneLeft && !(favorScrollableContent && scrollLeft < maxScrollLeft)) {
-        const column = cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft) || cellMatrix.last.col;
+        const column = cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft) || cellMatrix.last.column;
         return [viewportX - rightPaneLeft - column.left, column];
     } else {
         // TODO find is expensive, quickfind ?
         const scrollableContentX = viewportX - cellMatrix.frozenLeftRange.width + scrollLeft;
-        const column = cellMatrix.scrollableRange.cols.find(col => col.right >= scrollableContentX) || cellMatrix.scrollableRange.last.col;
+        const column = cellMatrix.scrollableRange.cols.find(col => col.right >= scrollableContentX) || cellMatrix.scrollableRange.last.column;
         return [scrollableContentX - column.left, column];
     }
 }

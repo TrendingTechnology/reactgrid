@@ -1,4 +1,4 @@
-import { PointerEvent, Location, State, StateUpdater } from '.';
+import { Location, State, StateUpdater } from '../Model';
 import { getLocationFromClient, scrollIntoView, isBrowserIE } from '../Functions';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 
@@ -25,7 +25,7 @@ export class PointerEventsController {
         this.currentIndex = 1 - this.currentIndex;
         this.eventTimestamps[this.currentIndex] = new Date().valueOf();
         this.eventLocations[this.currentIndex] = currentLocation;
-        if (event.pointerType === 'mouse' || (currentLocation.row.idx === 0 || currentLocation.col.idx === 0) || currentLocation.equals(previousLocation) || event.pointerType === undefined) {
+        if (event.pointerType === 'mouse' || (currentLocation.row.idx === 0 || currentLocation.column.idx === 0) || currentLocation.equals(previousLocation) || event.pointerType === undefined) {
             // === undefined only for cypress tests
             state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
         }
@@ -63,7 +63,7 @@ export class PointerEventsController {
                 currentLocation.equals(this.pointerDownLocation) &&
                 event.pointerType !== undefined && // !== undefined only for cypress tests
                 currentTimestamp - this.eventTimestamps[this.currentIndex] < 500 &&
-                (currentLocation.row.idx > 0 && currentLocation.col.idx > 0)
+                (currentLocation.row.idx > 0 && currentLocation.column.idx > 0)
             ) {
                 state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }

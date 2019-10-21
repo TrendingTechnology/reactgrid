@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Pane } from './Pane';
-import { State, Borders, Range } from '../Common';
+import { State, Borders, Range } from '../Model';
 
 export interface PaneRowProps {
     id: string;

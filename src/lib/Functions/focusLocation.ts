@@ -1,19 +1,19 @@
-import { State, Location } from "../Common";
-import { scrollIntoView } from "./scrollIntoView";
-import { trySetDataAndAppendChange } from "./trySetDataAndAppendChange";
+import { State, Location } from '../Model';
+import { scrollIntoView } from './scrollIntoView';
+import { tryAppendChange } from './tryAppendChange';
 
 export function focusLocation(state: State, location: Location, resetSelection = true): State {
-    // TODO scroll into view after changing state !? 
+    // TODO scroll into view after changing state !?
     scrollIntoView(state, location);
     // cell.onFocusChanged(location);
     // TODO external event needed?
     // TODO move resetSelection out to an other function
     if (state.focusedLocation && state.currentlyEditedCell) {
-        state = trySetDataAndAppendChange(state, state.focusedLocation, state.currentlyEditedCell)
+        state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
 
     const cellTemplate = state.cellTemplates[location.cell.type];
-    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(location.cell.data)
+    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(location.cell.data);
 
     if (resetSelection)
         state = {

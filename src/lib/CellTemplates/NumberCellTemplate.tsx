@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate } from '../Common';
+import { keyCodes } from '../Model/keyCodes';
+import { CellRenderProps, CellTemplate } from '../Model';
 import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
 
 export class NumberCellTemplate implements CellTemplate<number, any> {

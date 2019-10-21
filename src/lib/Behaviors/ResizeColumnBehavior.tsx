@@ -1,4 +1,4 @@
-import { GridColumn, Behavior, PointerLocation, State, PointerEvent, Direction } from '../Common';
+import { GridColumn, Behavior, PointerLocation, State, PointerEvent, Direction } from '../Model';
 
 export class ResizeColumnBehavior extends Behavior {
     private minColumnWidth: number = 40;
@@ -8,12 +8,12 @@ export class ResizeColumnBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialLocation = location;
-        this.resizedColumn = location.col;
+        this.resizedColumn = location.column;
         return state;
     }
     handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State {
         let linePosition;
-        if (location.col.idx == this.resizedColumn.idx && location.cellX > this.minColumnWidth || location.col.idx > this.resizedColumn.idx) {
+        if (location.column.idx == this.resizedColumn.idx && location.cellX > this.minColumnWidth || location.column.idx > this.resizedColumn.idx) {
             linePosition = location.viewportX + state.viewportElement.scrollLeft;
         } else if (location.viewportX > state.cellMatrix.width - state.viewportElement.scrollLeft) {
             linePosition = location.viewportX;

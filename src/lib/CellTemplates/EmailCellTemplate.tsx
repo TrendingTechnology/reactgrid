@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate, Cell } from '../Common';
+import { keyCodes } from '../Model/keyCodes';
+import { CellRenderProps, CellTemplate, Cell } from '../Model';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings';
 
 type EmailCell = Cell<'email', string, {}>;
@@ -24,7 +24,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
         return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     }
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = props => {
+    render: (props: CellRenderProps<string, any>) => React.ReactNode = props => {
         if (!props.isInEditMode) return props.cellData;
         return (
             <input

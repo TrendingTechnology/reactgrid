@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Line } from './Line';
 import { Shadow } from './Shadow';
 import { ContextMenu } from './ContextMenu';
-import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent } from '../Common';
+import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent } from '../Model';
 import { CellEditor } from './CellEditor';
 import { Pane } from './Pane';
 import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from '../Functions';
@@ -36,7 +36,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         const cellMatrix = state.cellMatrix;
         const hiddenScrollableElement = state.hiddenScrollableElement;
         return (
-            <div className="dyna-grid-legacy-browser" onCopy={(e: ClipboardEvent) => (isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e))} onCut={(e: ClipboardEvent) => (isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e))} onPaste={(e: ClipboardEvent) => (isBrowserIE() ? state.updateState((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e))} onKeyDown={props.onKeyDown} onKeyUp={props.onKeyUp} onPointerDown={props.onPointerDown} onContextMenu={props.onContextMenu} style={{ width: '100%', height: '100%', MozUserSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none', userSelect: 'none' }}>
+            <div className="dyna-grid-legacy-browser" onCopy={(e: ClipboardEvent) => (isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e))} onCut={(e: ClipboardEvent) => (isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e))} onPaste={(e: ClipboardEvent) => (isBrowserIE() ? state.update((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e))} onKeyDown={props.onKeyDown} onKeyUp={props.onKeyUp} onPointerDown={props.onPointerDown} onContextMenu={props.onContextMenu} style={{ width: '100%', height: '100%', MozUserSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none', userSelect: 'none' }}>
                 <div
                     ref={(hiddenScrollableElement: HTMLDivElement) => hiddenScrollableElement && this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement)}
                     // TODO this div is not hidden.
@@ -243,7 +243,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                     }}
                 >
                     <div data-cy="dyna-grid" className="dg-content" style={{ width: cellMatrix.width, height: cellMatrix.height }}>
-                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.col && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange && (
+                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.column && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange && (
                             <Pane
                                 id="MC"
                                 state={state}
@@ -331,7 +331,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
 
         // TODO this is done outside of the GridRenderer
         if (scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop || scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft) {
-            state.updateState((state: State) => recalcVisibleRange(state));
+            state.update((state: State) => recalcVisibleRange(state));
         }
     };
 

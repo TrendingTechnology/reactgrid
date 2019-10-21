@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
-import { CellRenderProps, CellTemplate, keyCodes } from '../Common';
+import { CellRenderProps, CellTemplate, keyCodes } from '../Model';
 
 export class TimeCellTemplate implements CellTemplate<string, any> {
 

@@ -14,24 +14,24 @@ export class Range {
     }
 
     contains(location: Location): boolean {
-        return location.col.idx >= this.first.col.idx && location.col.idx <= this.last.col.idx && location.row.idx >= this.first.row.idx && location.row.idx <= this.last.row.idx;
+        return location.column.idx >= this.first.column.idx && location.column.idx <= this.last.column.idx && location.row.idx >= this.first.row.idx && location.row.idx <= this.last.row.idx;
     }
 
     containsRange(range: Range): boolean {
-        return range.first.col.idx >= this.first.col.idx && range.first.row.idx >= this.first.row.idx && range.last.col.idx <= this.last.col.idx && range.last.row.idx <= this.last.row.idx;
+        return range.first.column.idx >= this.first.column.idx && range.first.row.idx >= this.first.row.idx && range.last.column.idx <= this.last.column.idx && range.last.row.idx <= this.last.row.idx;
     }
 
     intersectsWith(range: Range): boolean {
-        return range.first.col.idx <= this.last.col.idx && range.first.row.idx <= this.last.row.idx && range.last.col.idx >= this.first.col.idx && range.last.row.idx >= this.first.row.idx;
+        return range.first.column.idx <= this.last.column.idx && range.first.row.idx <= this.last.row.idx && range.last.column.idx >= this.first.column.idx && range.last.row.idx >= this.first.row.idx;
     }
 
     slice(range: Range, direction: 'columns' | 'rows' | 'both'): Range {
         const firstRow = direction === 'rows' ? range.first.row : this.first.row;
-        const firstCol = direction === 'columns' ? range.first.col : this.first.col;
+        const firstCol = direction === 'columns' ? range.first.column : this.first.column;
         const lastRow = direction === 'rows' ? range.last.row : this.last.row;
-        const lastCol = direction === 'columns' ? range.last.col : this.last.col;
+        const lastCol = direction === 'columns' ? range.last.column : this.last.column;
         const slicedRows = this.rows.slice(firstRow.idx - this.first.row.idx, lastRow.idx - this.first.row.idx + 1);
-        const slicedCols = this.cols.slice(firstCol.idx - this.first.col.idx, lastCol.idx - this.first.col.idx + 1);
+        const slicedCols = this.cols.slice(firstCol.idx - this.first.column.idx, lastCol.idx - this.first.column.idx + 1);
         return new Range(slicedCols, slicedRows);
     }
 }

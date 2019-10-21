@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
+import { keyCodes } from '../Model/keyCodes';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
-import { CellRenderProps, CellTemplate } from '../Common';
+import { CellRenderProps, CellTemplate } from '../Model';
 
 interface GroupHeaderCellData {
     name: string;
@@ -45,7 +45,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
             !props.isInEditMode ?
                 <div
                     style={{ display: 'flex', alignItems: 'center', width: '100%', marginLeft: `calc( 1.4em * ${(cellData.depth ? elementMarginMultiplier : 1)} )` }}>
-                    {cellData.isExpanded !== undefined &&<Chevron cellData={cellData} cellProps={props}/>}
+                    {cellData.isExpanded !== undefined && <Chevron cellData={cellData} cellProps={props} />}
                     <div style={{ display: 'flex', alignItems: 'center' }}>{cellData.name}</div>
                 </div>
                 :
@@ -109,7 +109,7 @@ class Chevron extends React.Component<IChevronProps> {
                     cursor: 'pointer',
                 }}
             >
-                <div 
+                <div
                     style={{
                         transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
                         transition: '200ms all',

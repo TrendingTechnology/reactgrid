@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CellMatrix, Orientation } from '../Common';
+import { CellMatrix, Orientation } from '../Model';
 
 interface ShadowProps {
     shadowPosition: number;

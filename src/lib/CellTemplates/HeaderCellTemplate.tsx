@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CellTemplate, CellRenderProps } from '../Common';
+import { CellTemplate, CellRenderProps } from '../Model';
 
 export class HeaderCellTemplate implements CellTemplate<string, any> {
 

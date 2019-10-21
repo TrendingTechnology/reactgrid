@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, DataChange } from '..';
+import { ReactGrid, CellChange } from '..';
 
 export default class DataChangingSample extends React.Component<{}, {}> {
     state = {
@@ -39,7 +39,7 @@ export default class DataChangingSample extends React.Component<{}, {}> {
         ]
     };
 
-    private prepareDataChanges = (dataChanges: DataChange[]): {} => {
+    private prepareDataChanges = (dataChanges: CellChange[]): {} => {
         const state = { ...this.state };
         dataChanges.forEach(change => {
             state.rows.forEach(row => {
@@ -53,6 +53,6 @@ export default class DataChangingSample extends React.Component<{}, {}> {
     };
 
     render() {
-        return <ReactGrid columns={this.state.columns} rows={this.state.rows} onDataChanged={changes => this.setState(this.prepareDataChanges(changes))} license={'non-commercial'} />;
+        return <ReactGrid columns={this.state.columns} rows={this.state.rows} onCellsChanged={changes => this.setState(this.prepareDataChanges(changes))} license={'non-commercial'} />;
     }
 }
