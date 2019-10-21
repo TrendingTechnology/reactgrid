@@ -1,9 +1,9 @@
-import { StateUpdater } from '../Model';
+import { StateUpdater, PointerEvent, ClipboardEvent, KeyboardEvent } from '../Model';
 import { PointerEventsController } from './PointerEventsController';
 import { recalcVisibleRange } from '../Functions';
 
 export class EventHandlers {
-    constructor(private updateState: StateUpdater) {}
+    constructor(private updateState: StateUpdater) { }
 
     private pointerEventsController = new PointerEventsController(this.updateState);
 

@@ -144,17 +144,18 @@ function moveFocusPageUp(state: State): State {
 function moveFocusPageDown(state: State): State {
     if (!state.focusedLocation) return state;
 
-    const rowsOnScreen = state.cellMatrix.rows.slice(state.cellMatrix.frozenTopRange.rows.length, state.cellMatrix.rows.length - state.cellMatrix.frozenBottomRange.rows.length - 1).filter((r: GridRow) => r.top + r.height < state.viewportElement.clientHeight);
+    const rowsOnScreen = state.cellMatrix.rows
+        .slice(state.cellMatrix.frozenTopRange.rows.length, state.cellMatrix.rows.length - state.cellMatrix.frozenBottomRange.rows.length - 1)
+        .filter((r: GridRow) => r.top + r.height < state.viewportElement.clientHeight);
     return focusCell(state.focusedLocation.column.idx, state.focusedLocation.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length ? state.focusedLocation.row.idx + rowsOnScreen.length - state.cellMatrix.frozenBottomRange.rows.length : state.cellMatrix.rows.length - 1, state);
 }
 
 function wipeSelectedRanges(state: State): State {
     state.selectedRanges.forEach(range =>
         range.rows.forEach(row =>
-            range.cols.forEach(col => {
-                const location = new Location(row, col);
-                if (location.cell.data) state = tryAppendChange(state, location, { type: 'text', data: '' });
-            })
+            range.cols.forEach(col =>
+                state = tryAppendChange(state, new Location(row, col), { type: 'text', text: '', value: 0, style: {} })
+            )
         )
     );
     return state;
@@ -166,7 +167,9 @@ function moveFocusInsideSelectedRange(state: State, direction: 'left' | 'right' 
     const rowCount = asr ? asr.rows.length : 0;
     const delta = direction === 'up' || direction === 'left' ? -1 : 1;
 
-    const currentPosInRange = direction === 'up' || direction === 'down' ? location.row.idx - asr.first.row.idx + (location.column.idx - asr.first.column.idx) * rowCount : (location.row.idx - asr.first.row.idx) * colCount + (location.column.idx - asr.first.column.idx);
+    const currentPosInRange = direction === 'up' || direction === 'down' ?
+        location.row.idx - asr.first.row.idx + (location.column.idx - asr.first.column.idx) * rowCount :
+        (location.row.idx - asr.first.row.idx) * colCount + (location.column.idx - asr.first.column.idx);
 
     const newPosInRange = (currentPosInRange + delta) % (asr.rows.length * asr.cols.length);
 
@@ -174,13 +177,13 @@ function moveFocusInsideSelectedRange(state: State, direction: 'left' | 'right' 
         // shift + tab/enter and first cell focused in active range
         const nextSelectionRangeIdx = selectedRangeIdx === 0 ? state.selectedRanges.length - 1 : (selectedRangeIdx - 1) % state.selectedRanges.length;
         const nextSelection = state.selectedRanges[nextSelectionRangeIdx];
-        state = focusLocation(state, new Location(nextSelection.last.row, nextSelection.last.col), false);
+        state = focusLocation(state, new Location(nextSelection.last.row, nextSelection.last.column), false);
         return { ...state, activeSelectedRangeIdx: nextSelectionRangeIdx };
     } else if (newPosInRange === 0 && currentPosInRange === asr.rows.length * asr.cols.length - 1) {
         // tab/enter and last cell focused in active range
         const nextSelectionRangeIdx = (selectedRangeIdx + 1) % state.selectedRanges.length;
         const nextSelection = state.selectedRanges[nextSelectionRangeIdx];
-        state = focusLocation(state, new Location(nextSelection.first.row, nextSelection.first.col), false);
+        state = focusLocation(state, new Location(nextSelection.first.row, nextSelection.first.column), false);
         return { ...state, activeSelectedRangeIdx: nextSelectionRangeIdx };
     } else {
         // tab/enter and all cells inside active range except last cell && shift + tab/enter and all cells inside active range except first cell
@@ -194,19 +197,35 @@ function moveFocusInsideSelectedRange(state: State, direction: 'left' | 'right' 
 }
 
 function resizeSelectionUp(state: State, asr: Range, location: Location): State {
-    return asr.first.row.idx > 0 ? (asr.last.row.idx > location.row.idx ? resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx - 1) : resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx - 1)) : state;
+    return asr.first.row.idx > 0 ?
+        (asr.last.row.idx > location.row.idx ?
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx - 1) :
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx - 1)) :
+        state;
 }
 
 function resizeSelectionDown(state: State, asr: Range, location: Location): State {
-    return asr.last.row.idx < state.cellMatrix.last.row.idx ? (asr.first.row.idx < location.row.idx ? resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx + 1) : resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx + 1)) : state;
+    return asr.last.row.idx < state.cellMatrix.last.row.idx ?
+        (asr.first.row.idx < location.row.idx ?
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx + 1) :
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx + 1)) :
+        state;
 }
 
 function resizeSelectionLeft(state: State, asr: Range, location: Location): State {
-    return asr.first.column.idx > 0 ? (asr.last.column.idx > location.column.idx ? resizeSelection(state, asr.first.column.idx, asr.last.column.idx - 1, asr.first.row.idx, asr.last.row.idx) : resizeSelection(state, asr.last.column.idx, asr.first.column.idx - 1, asr.last.row.idx, asr.first.row.idx)) : state;
+    return asr.first.column.idx > 0 ?
+        (asr.last.column.idx > location.column.idx ?
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx - 1, asr.first.row.idx, asr.last.row.idx) :
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx - 1, asr.last.row.idx, asr.first.row.idx)) :
+        state;
 }
 
 function resizeSelectionRight(state: State, asr: Range, location: Location): State {
-    return asr.last.column.idx < state.cellMatrix.last.column.idx ? (asr.first.column.idx < location.column.idx ? resizeSelection(state, asr.last.column.idx, asr.first.column.idx + 1, asr.last.row.idx, asr.first.row.idx) : resizeSelection(state, asr.first.column.idx, asr.last.column.idx + 1, asr.first.row.idx, asr.last.row.idx)) : state;
+    return asr.last.column.idx < state.cellMatrix.last.column.idx ?
+        (asr.first.column.idx < location.column.idx ?
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx + 1, asr.last.row.idx, asr.first.row.idx) :
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx + 1, asr.first.row.idx, asr.last.row.idx)) :
+        state;
 }
 
 function resizeSelection(state: State, firstColIdx: number, lastColIdx: number, firstRowIdx: number, lastRowIdx: number): State {
