@@ -1,9 +1,9 @@
-import { Location, State, StateUpdater } from '../Model';
+import { Location, State, StateUpdater, PointerEvent } from '../Model';
 import { getLocationFromClient, scrollIntoView, isBrowserIE } from '../Functions';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 
 export class PointerEventsController {
-    constructor(private readonly updateState: StateUpdater) {}
+    constructor(private readonly updateState: StateUpdater) { }
 
     private eventTimestamps: number[] = [0, 0];
     private eventLocations: Array<Location | undefined> = [undefined, undefined];

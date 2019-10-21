@@ -60,11 +60,9 @@ export interface CellTemplate<TCell extends Cell = Cell> {
     isValid(cell: TCell): boolean;
     // Returns true if the data in the cell is not replacable
     // Default: _ => false
-    isReadonly?(cell: TCell): boolean;
-    // Returns true if accepts primary focus
-    // Default: _ => true
     isFocusable?(cell: TCell): boolean;
     // Reduces current cell and new cell to one cell
+    // If not implemented, cell will be read-only
     // Default: (_, newCell) => newCell;
     update?(cell: TCell, newCell: TCell | CommonCell): TCell;
     // Convert to common cell (used for copy-pase / fill-handle)
@@ -108,13 +106,15 @@ export interface CellStyle {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Cell<TCellType extends string = string> {
-    type: TCellType;
+export interface Cell {
+    type: string;
     style?: CellStyle;
 }
 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CommonCell extends Cell {
     text: string;
+    value: number;
     style: CellStyle;
 }
 
