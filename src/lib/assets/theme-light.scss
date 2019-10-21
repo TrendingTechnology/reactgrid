@@ -1,17 +1,12 @@
 // COLORS
 $primary-color: #f89335;
 $bg-color: #ffffff;
+$frozens-bg-color: #ffffff;
 $shadow-color: #000000;
-$resize-line-color: #ff74c5;
+$resize-line-color: #74ffb3;
 $row-line-color: #05b0ff;
 $col-line-color: #ff0565;
-$fillhandle-border-color: #ff74c5;
-
-// OPACITIES
-$opacity-light: 0.2;
-$opacity-lighter: 0.15;
-$opacity-lightest: 0.1;
-$opacity-heavy: 0.01;
+$fillhandle-action-border-color: #ff74c5;
 
 // SHADOWS
 $shadow-bottom-right: 3px 0px 3px -3px;
@@ -21,8 +16,13 @@ $shadow-bottom: 0 -3px 3px -3px;
 $cell-editor-shadow: 1px 1px 6px;
 
 // CONTEXT MENU
-$context-menu-option-padding: 8px 20px 8px 15px;
 $context-menu-shadow: 8px 20px 8px 15px;
+
+// OPACITIES
+$opacity-light: 0.2;
+$opacity-lighter: 0.15;
+$opacity-lightest: 0.1;
+$opacity-heavy: 0.01;
 
 // OTHER
 $white-with-heavy-opacity: rgba($bg-color, $opacity-heavy);

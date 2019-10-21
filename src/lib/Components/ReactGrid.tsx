@@ -8,7 +8,7 @@ import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
 import { defaultCellTemplates } from "../Common/DefaultCellTemplates";
 import { checkLicense } from "../Functions/licencing";
-import '../assets/styles.scss';
+import '../assets/core.scss';
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
 

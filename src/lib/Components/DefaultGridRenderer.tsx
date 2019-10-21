@@ -60,7 +60,6 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.col && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange &&
                     <PaneRow
                         id='M'
-                        class="rg-pane-row-m"
                         state={props.state}
                         style={{ height: props.state.cellMatrix.scrollableRange.height }}
                         range={props.state.cellMatrix.scrollableRange.slice(props.state.visibleRange, 'rows')}
@@ -77,7 +76,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                         borders={{ top: true }}
                         zIndex={3}
                     />}
-                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} />
+                <input className="dg-hidden-element" readOnly={true} ref={props.hiddenElementRefHandler} />
                 <Line
                     linePosition={props.state.linePosition}
                     orientation={props.state.lineOrientation}

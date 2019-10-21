@@ -63,7 +63,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 {
                     cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
                     <div
-                        className="dg-frozen-top"
+                        className="dg-frozen dg-frozen-top"
                         style={{
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
                             height: cellMatrix.frozenTopRange.height,
@@ -112,7 +112,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 {
                     cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && 
                     <div
-                        className="rg-wrapper-x"
+                        className="rg-middle-wrapper"
                         style={{
                             top: cellMatrix.frozenTopRange.height,
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
@@ -121,7 +121,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                     >
                         {cellMatrix.frozenLeftRange.width > 0 &&
                             <div
-                                className="dg-frozen-left"
+                                className="rg-middle dg-frozen-left"
                                 ref={(frozenLeftScrollableElement: HTMLDivElement) => frozenLeftScrollableElement && this.frozenLeftScrollableElementRefHandler(state, frozenLeftScrollableElement)}
                                 style={{
                                     width: cellMatrix.frozenLeftRange.width,
@@ -140,7 +140,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         }
                         {cellMatrix.frozenRightRange.width > 0 &&
                             <div
-                                className="dg-frozen-right"
+                                className="rg-middle dg-frozen-right"
                                 ref={(frozenRightScrollableElement: HTMLDivElement) => frozenRightScrollableElement && this.frozenRightScrollableElementRefHandler(state, frozenRightScrollableElement)}
                                 style={{
                                     width: cellMatrix.frozenRightRange.width, 
@@ -163,7 +163,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 {
                     cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 &&
                     <div
-                        className="dg-frozen-bottom"
+                        className="dg-frozen dg-frozen-bottom"
                         style={{
                             bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : (!this.isVerticalScrollbarVisible() ? `calc(100% - ${cellMatrix.frozenTopRange.height + state.visibleRange.height + cellMatrix.frozenBottomRange.height}px)` : 0),
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
@@ -181,7 +181,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         }
                         {state.visibleRange && state.visibleRange.width > 0 &&
                             <div
-                                className="rg-wrapper-xy"
+                                className="rg-pane-bl-wrapper"
                                 ref={(frozenBottomScrollableElement: HTMLDivElement) => frozenBottomScrollableElement && this.frozenBottomScrollableElementRefHandler(state, frozenBottomScrollableElement)}
                                 style={{
                                     left: cellMatrix.frozenLeftRange.width,

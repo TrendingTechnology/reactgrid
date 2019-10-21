@@ -29,15 +29,7 @@ export class EmailCellTemplate implements CellTemplate<string, any> {
             return props.cellData;
         return <input
             type='email'
-            style={{
-                width: '100%',
-                height: '100%',
-                padding: 0,
-                border: 0,
-                background: 'transparent',
-                fontSize: 14,
-                outline: 'none'
-            }}
+            className="rg-email-cell-template"
             ref={input => {
                 if (input) {
                     input.focus();

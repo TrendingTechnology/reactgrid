@@ -17,7 +17,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
     const state = props.state;
     return (
         <div
-            className={`dg-pane-row ${props.class}`}
+            className={`dg-pane-row ${props.class ? props.class : ''}`}
             style={{
                 height: props.range.height,
                 zIndex: props.zIndex,
