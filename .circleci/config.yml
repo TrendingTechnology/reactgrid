@@ -4,7 +4,7 @@ defaults: &defaults
 
 version: 2
 jobs:
-  upgrade-version-develop:
+  upgrade-rc-version:
     <<: *defaults
 
     steps:
@@ -22,7 +22,7 @@ jobs:
           name: Push upgraded version
           command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
 
-  upgrade-version-master-and-publish:
+  upgrade-version-and-publish:
     <<: *defaults
 
     steps:
@@ -74,15 +74,39 @@ jobs:
           name: Push upgraded version
           command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git master
 
+      - run:
+          name: Change branch to develop
+          command: git checkout develop
+
+      - run:
+          name: Remove suffix from develop package version
+          command: npm run remove-suffix
+
+      - run: 
+          name: Update package-lock.json
+          command: npm install
+
+      - run:
+          name: Add changes
+          command: git add .
+
+      - run:
+          name: Commit updated package version
+          command: git commit -m "upgrade version [ci skip]"
+
+      - run:
+          name: Push upgraded version
+          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
+          
 workflows:
   version: 2
   main:
     jobs:
-      - upgrade-version-master-and-publish:
+      - upgrade-version-and-publish:
           filters:
             branches:
               only: master
-      - upgrade-version-develop:
+      - upgrade-rc-version:
           filters:
             branches:
               only: develop
