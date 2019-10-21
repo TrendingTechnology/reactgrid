@@ -6,3 +6,5 @@ export * from "./InternalModel";
 export * from "./Range";
 export * from "./domEvents";
 export * from "./State";
+export * from "./Constants";
+export * from "./../CellTemplates/keyCodeCheckings";

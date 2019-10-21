@@ -1,3 +1,3 @@
-import DynaGridDemo from "./demo/Views/DynaGridDemo"
-export default DynaGridDemo;
+import DevGrid from "./test-grid"
+export default DevGrid;
 export * from "./lib";

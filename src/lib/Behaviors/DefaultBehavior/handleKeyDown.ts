@@ -8,15 +8,14 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 }
 
 function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
-
     const location = state.focusedLocation;
     if (!location)
         return state
 
     const cellTemplate = state.cellTemplates[location.cell.type];
-    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) {
+    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
         const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
-        if (location.cell.data !== cellData || enableEditMode) {
+        if (JSON.stringify(location.cell.data) !== JSON.stringify(cellData) || enableEditMode) {
             const newCell = { type: location.cell.type, data: cellData };
             if (enableEditMode) {
                 return { ...state, currentlyEditedCell: newCell }
@@ -91,7 +90,6 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
 
     } else {
         // === NO SHIFT OR CONTROL ===
-
         switch (event.keyCode) {
             case keyCodes.DELETE:
             case keyCodes.BACKSPACE:
@@ -117,7 +115,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
                 return isSingleCellSelected ?
-                    moveFocusDown(state) :
+                    {...moveFocusDown(state), currentlyEditedCell: undefined} :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
             case keyCodes.ESC:
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
@@ -127,11 +125,6 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
     return state;
 
 }
-// state.hiddenFocusElement.focus();
-
-
-
-
 
 function focusCell(colIdx: number, rowIdx: number, state: State): State {
     const location = state.cellMatrix.getLocation(rowIdx, colIdx);
@@ -154,8 +147,12 @@ function moveFocusUp(state: State): State {
 }
 
 function moveFocusDown(state: State): State {
-    return (state.focusedLocation && state.focusedLocation.row.idx < state.cellMatrix.last.row.idx) ?
-        focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx + 1, state) : state;
+    if(state.focusedLocation){
+        if(state.focusedLocation.row.idx == state.cellMatrix.last.row.idx)
+            return focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx, state)
+        return focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx + 1, state)
+    }
+    return state;
 }
 
 // TODO this should be rewritten
@@ -201,7 +198,11 @@ function wipeSelectedRanges(state: State): State {
     state.selectedRanges.forEach(range =>
         range.rows.forEach(row =>
             range.cols.forEach(col =>
-                state = trySetDataAndAppendChange(state, new Location(row, col), { type: 'text', data: '' })
+                {   
+                    const location = new Location(row, col);
+                    if(location.cell.data)
+                        state = trySetDataAndAppendChange(state, location, { type: 'text', data: '' })
+                }
             )
         )
     )

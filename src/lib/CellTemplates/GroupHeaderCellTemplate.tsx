@@ -2,20 +2,6 @@ import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
 import { CellRenderProps, CellTemplate } from '../Common';
-import styled from 'styled-components';
-
-const ChevronIcon = styled.div`
-    display: inline-block;
-    margin-right: 7px;
-    color: grey;
-    font-weight: bold;
-    /* transition: transform .2s ease-in-out; */
-
-    &:hover {
-        color: black;
-        cursor: pointer;
-    }
-`;
 
 interface GroupHeaderCellData {
     name: string;
@@ -38,37 +24,29 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
     }
 
     handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER
-        if (keyCode === keyCodes.SPACE && cellData.isExpanded !== undefined) {
-            cellData.isExpanded = !cellData.isExpanded;
+        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
+        const cellDataCopy = { ...cellData };
+        if (keyCode === keyCodes.SPACE && cellDataCopy.isExpanded !== undefined) {
+            cellDataCopy.isExpanded = !cellDataCopy.isExpanded;
         } else if (!ctrl && !alt && isTextInput(keyCode)) {
-            cellData.name = ''
-            enableEditMode = true
+            cellDataCopy.name = '';
+            enableEditMode = true;
         }
-        return { cellData, enableEditMode }
+        return { cellData: cellDataCopy, enableEditMode };
     }
 
     renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
-        const cellData = Object.assign({}, props.cellData);
+        const cellData = { ...props.cellData };
 
+        const isHeaderTreeRoot = cellData.depth !== 1;
+        const canBeExpanded = cellData.isExpanded !== undefined;
+        const elementMarginMultiplier = canBeExpanded && isHeaderTreeRoot ? cellData.depth - 2 : cellData.depth - 1;
         return (
             !props.isInEditMode ?
                 <div
-                    style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
-                    {cellData.isExpanded !== undefined &&
-                        <ChevronIcon
-                            onPointerDown={e => {
-                                e.stopPropagation();
-                                cellData.isExpanded = !cellData.isExpanded;
-                                props.onCellDataChanged(cellData, true);
-                            }}
-                            style={{
-                                transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
-                                zIndex: 1,
-                                pointerEvents: 'auto'
-                            }}
-                        >❯</ChevronIcon>}
-                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.name}</span>
+                    style={{ display: 'flex', alignItems: 'center', width: '100%', marginLeft: `calc( 1.4em * ${(cellData.depth ? elementMarginMultiplier : 1)} )` }}>
+                    {cellData.isExpanded !== undefined &&<Chevron cellData={cellData} cellProps={props}/>}
+                    <div style={{ display: 'flex', alignItems: 'center' }}>{cellData.name}</div>
                 </div>
                 :
                 <input
@@ -79,7 +57,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                         padding: 0,
                         border: 0,
                         background: 'transparent',
-                        fontSize: 14,
+                        fontSize: '1em',
                         outline: 'none',
                     }}
                     ref={input => {
@@ -96,7 +74,48 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}
                     onPointerDown={e => e.stopPropagation()}
+                    onKeyDown={e => {
+                        if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
+                        if (e.keyCode == keyCodes.ESC) (e as any).currentTarget.value = props.cellData.name; // reset
+                    }}
                 />
         );
     }
 }
+
+interface IChevronProps {
+    cellData: GroupHeaderCellData;
+    cellProps: any;
+}
+
+class Chevron extends React.Component<IChevronProps> {
+    render() {
+        const { cellData, cellProps } = this.props;
+        return (
+            <div
+                onPointerDown={e => {
+                    e.stopPropagation();
+                    cellData.isExpanded = !cellData.isExpanded;
+                    cellProps.onCellDataChanged(cellData, true);
+                }}
+                style={{
+                    zIndex: 1,
+                    pointerEvents: 'auto',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    height: '1.4em',
+                    width: '1.4em',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                }}
+            >
+                <div 
+                    style={{
+                        transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
+                        transition: '200ms all',
+                    }}>❯</div>
+            </div>
+        )
+    }
+}
+
