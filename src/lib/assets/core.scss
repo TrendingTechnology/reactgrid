@@ -1,4 +1,5 @@
 @import './theme-light.scss';
+@import './mapping.scss';
 @import './sizing.scss';
 @import './cell-templates.scss';
 
@@ -41,6 +42,7 @@
         top: 50%;
         left: 50%;
         transform: translate(calc(-50% - ( #{$fill-handle-border-width}/2 )), calc(-50% - ( #{$fill-handle-border-width}/2 )));
+        -ms-transform: translate(-50%, -50%);
         width: $fill-handle-square;
         height: $fill-handle-square;
         background-color: $primary-color;

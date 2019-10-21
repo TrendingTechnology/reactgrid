@@ -1,35 +1,25 @@
 // COLORS
-$primary-color: #f89335;
-$bg-color: #ffffff;
-$frozens-bg-color: #ffffff;
-$shadow-color: #000000;
-$resize-line-color: #74ffb3;
-$row-line-color: #05b0ff;
-$col-line-color: #ff0565;
-$fillhandle-action-border-color: #ff74c5;
+$primary-color:                     #f89335 !default;
+$bg-color:                          #ffffff !default;
+$frozens-bg-color:                  #ffffff !default;
+$shadow-color:                      #000000 !default;
+$resize-line-color:                 #74ffb3 !default;
+$row-line-color:                    #05b0ff !default;
+$col-line-color:                    #ff0565 !default;
+$fillhandle-action-border-color:    #000000 !default;
 
 // SHADOWS
-$shadow-bottom-right: 3px 0px 3px -3px;
-$shadow-top-right: -3px 0px 3px -3px;
-$shadow-top: 0 3px 3px -3px;
-$shadow-bottom: 0 -3px 3px -3px;
-$cell-editor-shadow: 1px 1px 6px;
+$shadow-bottom-right:   3px 0px 3px -3px !default;
+$shadow-top-right:      -3px 0px 3px -3px !default;
+$shadow-top:            0 3px 3px -3px !default;
+$shadow-bottom:         0 -3px 3px -3px !default;
+$cell-editor-shadow:    1px 1px 6px !default;
 
 // CONTEXT MENU
-$context-menu-shadow: 8px 20px 8px 15px;
+$context-menu-shadow: 8px 20px 8px 15px !default;
 
 // OPACITIES
-$opacity-light: 0.2;
-$opacity-lighter: 0.15;
-$opacity-lightest: 0.1;
-$opacity-heavy: 0.01;
-
-// OTHER
-$white-with-heavy-opacity: rgba($bg-color, $opacity-heavy);
-$black-with-light-opacity: rgba($shadow-color, $opacity-light);
-
-$main-bg-color: $bg-color;
-$shadow-bg: $shadow-color;
-$cell-shadow-color: $black-with-light-opacity;
-$fill-handle-bg-color: $white-with-heavy-opacity;
-$fill-handle-border-color: $bg-color;
+$opacity-light:     0.2 !default;
+$opacity-lighter:   0.15 !default;
+$opacity-lightest:  0.1 !default;
+$opacity-heavy:     0.01 !default;
