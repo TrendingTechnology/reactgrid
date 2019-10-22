@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, CellChange } from '..';
+import { ReactGrid, CellChange } from '../lib';
 
 export default class DataChangingSample extends React.Component<{}, {}> {
     state = {
@@ -51,6 +51,7 @@ export default class DataChangingSample extends React.Component<{}, {}> {
     };
 
     render() {
+        console.log('test');
         return <ReactGrid columns={this.state.columns} rows={this.state.rows} onCellsChanged={changes => this.setState(this.prepareDataChanges(changes))} license={'non-commercial'} />;
     }
 }

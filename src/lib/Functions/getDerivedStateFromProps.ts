@@ -1,5 +1,5 @@
-import { ReactGridProps } from '../..';
-import { State, CellMatrix } from '../Model';
+
+import { State, CellMatrix, ReactGridProps } from '../Model';
 import { updateSelectedRows, updateSelectedColumns } from './updateState';
 import { recalcVisibleRange } from '.';
 import { defaultCellTemplates } from './defaultCellTemplates';

@@ -1,6 +1,5 @@
 import React from 'react';
-import { ReactGridProps } from '../..';
-import { State } from '../Model';
+import { State, ReactGridProps } from '../Model';
 import { handleStateUpdate } from './handleStateUpdate';
 import { getDerivedStateFromProps } from './getDerivedStateFromProps';
 

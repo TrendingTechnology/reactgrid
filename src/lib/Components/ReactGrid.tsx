@@ -8,6 +8,7 @@ import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export const ReactGrid: React.FunctionComponent<ReactGridProps> = props => {
     const state = useState(props);
+    console.log(state);
     const eventHandlers = React.useMemo(() => new EventHandlers(state.update), [0]);
     React.useEffect(() => {
         window.addEventListener('resize', eventHandlers.windowResizeHandler);

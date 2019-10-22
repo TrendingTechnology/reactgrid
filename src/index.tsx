@@ -6,8 +6,8 @@ import "core-js/stable";
 
 // DO NOT MOVE
 // this index.tsx is required by react-scripts-ts
-
+console.log('render')
 ReactDOM.render(
-  <DataChangingSample/>,  // replace with DevGrid
+  <DataChangingSample />,  // replace with DevGrid
   document.getElementById('root') as HTMLElement
 );
