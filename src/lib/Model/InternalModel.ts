@@ -1,4 +1,5 @@
-import { Row, Column, Cell } from '.';
+import { Row, Column, Cell, State } from '.';
+import { EventHandlers } from '../Functions/EventHandlers';
 
 export type Orientation = 'horizontal' | 'vertical';
 
@@ -34,7 +35,7 @@ export interface Borders {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
 export class Location {
-    constructor(public readonly row: GridRow, public readonly column: GridColumn) {}
+    constructor(public readonly row: GridRow, public readonly column: GridColumn) { }
     get cell(): Cell {
         return this.row.cells[this.column.idx];
     }
@@ -50,3 +51,9 @@ export class PointerLocation extends Location {
         super(row, column);
     }
 }
+
+export interface GridRendererProps {
+    state: State;
+    eventHandlers: EventHandlers;
+}
+

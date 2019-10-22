@@ -10,5 +10,5 @@ export function handleStateUpdate(props: ReactGridProps, prevState: State, newSt
             return { ...newState, queuedChanges: [] };
         }
     }
-    return prevState;
+    return newState;
 }

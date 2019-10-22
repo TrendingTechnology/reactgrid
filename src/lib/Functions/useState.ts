@@ -5,6 +5,7 @@ import { getDerivedStateFromProps } from './getDerivedStateFromProps';
 
 export function useState(props: ReactGridProps): State {
     const [state, setState] = React.useState(() => new State());
-    state.update = modifier => setState(handleStateUpdate(props, state, modifier(state)));
-    return React.useMemo(() => getDerivedStateFromProps(props, state), [props, state]);
+    const derivedState = React.useMemo(() => getDerivedStateFromProps(props, state), [props, state]);
+    derivedState.update = modifier => { console.log('update state'); console.log(derivedState); setState(handleStateUpdate(props, derivedState, modifier(derivedState))) };
+    return derivedState;
 }

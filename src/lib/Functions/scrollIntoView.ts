@@ -6,6 +6,7 @@ export function scrollIntoView(state: State, location: any, direction: Direction
     const left = getScrollLeft(state, location, direction === 'vertical');
 
     if (isBrowserIE() || isBrowserEdge()) {
+        // TODO use viewportElement in LegacyRenderer
         state.hiddenScrollableElement.scrollTop = top;
         state.hiddenScrollableElement.scrollLeft = left;
     } else {

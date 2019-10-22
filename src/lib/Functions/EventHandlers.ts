@@ -8,7 +8,7 @@ export class EventHandlers {
     private pointerEventsController = new PointerEventsController(this.updateState);
 
     pointerDownHandler = (event: PointerEvent) => this.updateState(state => this.pointerEventsController.handlePointerDown(event, state));
-    viewportElementRefHandler = (viewportElement: HTMLDivElement) => viewportElement && this.updateState(state => recalcVisibleRange({ ...state, viewportElement }));
+    viewportElementRefHandler = (viewportElement: HTMLDivElement) => { if (viewportElement) this.updateState(state => recalcVisibleRange({ ...state, viewportElement })) };
     keyDownHandler = (event: KeyboardEvent) => this.updateState(state => state.currentBehavior.handleKeyDown(event, state));
     keyUpHandler = (event: KeyboardEvent) => this.updateState(state => state.currentBehavior.handleKeyUp(event, state));
     copyHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handleCopy(event, state));

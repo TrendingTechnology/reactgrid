@@ -30,6 +30,7 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
         state = recalcVisibleRange(state);
     }
 
+
     return {
         ...state,
         cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates },

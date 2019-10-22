@@ -8,7 +8,7 @@ export type StateUpdater = (modifier: StateModifier) => void;
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
 export class State {
-    update: StateUpdater = state => state;
+    update!: StateUpdater;
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
 

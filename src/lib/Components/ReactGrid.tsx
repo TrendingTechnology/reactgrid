@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGridProps } from '../Model';
+import { ReactGridProps, GridRendererProps } from '../Model';
 import { DefaultGridRenderer } from './DefaultGridRenderer';
 import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { useState } from '../Functions/useState';
@@ -8,7 +8,6 @@ import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export const ReactGrid: React.FunctionComponent<ReactGridProps> = props => {
     const state = useState(props);
-    console.log(state);
     const eventHandlers = React.useMemo(() => new EventHandlers(state.update), [0]);
     React.useEffect(() => {
         window.addEventListener('resize', eventHandlers.windowResizeHandler);
@@ -16,8 +15,5 @@ export const ReactGrid: React.FunctionComponent<ReactGridProps> = props => {
     }, [0]);
 
     const grid = isBrowserIE() || isBrowserEdge() ? LegacyBrowserGridRenderer : DefaultGridRenderer;
-    return React.createElement(grid as any, {
-        state: state,
-        eventHandlers: EventHandlers
-    });
+    return React.createElement(grid as any, { state, eventHandlers } as GridRendererProps);
 };

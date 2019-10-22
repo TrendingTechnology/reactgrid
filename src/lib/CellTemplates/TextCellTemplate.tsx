@@ -11,7 +11,7 @@ export interface TextCell extends Cell {
 export class TextCellTemplate implements CellTemplate<TextCell> {
 
     validate(cell: TextCell): CompatibleCell<TextCell> {
-        if (cell.text !== undefined || cell.text !== null)
+        if (cell.text === undefined || cell.text === null)
             throw 'TextCell is missing text property'
         return cell;
     }
