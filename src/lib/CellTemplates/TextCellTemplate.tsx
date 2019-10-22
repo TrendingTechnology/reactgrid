@@ -1,29 +1,36 @@
 import * as React from 'react';
-import { keyCodes } from '../Model/keyCodes';
-import { CellRenderProps, CellTemplate } from '../Model';
+import { keyCodes } from '../Functions/keyCodes';
+import { CellTemplate, Cell, CompatibleCell } from '../Model';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
 
-type TextCell = Cell<'text', string, {}>
+export interface TextCell extends Cell {
+    type: 'text',
+    text: string
+}
 
 export class TextCellTemplate implements CellTemplate<TextCell> {
 
-    isValid(cell: TextCell): boolean {
-        return typeof (cell.data) === 'string';
+    validate(cell: TextCell): CompatibleCell<TextCell> {
+        if (cell.text !== undefined || cell.text !== null)
+            throw 'TextCell is missing text property'
+        return cell;
     }
 
-    toText(cell: TextCell) {
-        return cell.data;
+    reduce(cell: TextCell, newCell: TextCell | CompatibleCell): TextCell {
+        // A CompatibleCell will provide the properties a TextCell needs
+        return newCell as TextCell;
     }
 
-    handleKeyDown(cell: TextCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+    handleKeyDown(cell: TextCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: TextCell, enableEditMode: boolean } {
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cell: { ...cell, data: '' }, enableEditMode: true }
+            return { cell: { ...cell, text: '' }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<TextCell>) => React.ReactNode = (props) => {
-        if (!props.isInEditMode)
-            return props.cell.data;
+    render(cell: TextCell, isInEditMode: boolean, onCellChanged: (cell: TextCell, commit: boolean) => void): React.ReactNode {
+
+        if (!isInEditMode)
+            return cell.text;
 
         return <input
             style={{
@@ -42,16 +49,16 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={props.cell.data}
-            onChange={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, false)}
-            onBlur={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, true)} // TODO should it be added to each cell? // additional question, because everything works without that
+            defaultValue={cell.text}
+            onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
+            //onBlur={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, true)} // TODO should it be added to each cell? // additional question, because everything works without that
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
                 if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cell.data; // reset
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.text; // reset
             }}
         />
     }

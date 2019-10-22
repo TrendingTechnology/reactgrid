@@ -3,39 +3,37 @@ import { ReactGrid, CellChange } from '..';
 
 export default class DataChangingSample extends React.Component<{}, {}> {
     state = {
-        columns: [{ id: 'player', reorderable: false, resizable: false, width: 200 }, { id: 'age', reorderable: false, resizable: false, width: 50 }, { id: 'rate', reorderable: false, resizable: false, width: 130 }, { id: 'club', reorderable: false, resizable: false, width: 200 }],
+        columns: [{ columnId: 'player', width: 200 }, { columnId: 'age', width: 50 }, { columnId: 'rate', width: 130 }, { columnId: 'club', width: 200 }],
         rows: [
             {
-                id: 'header',
-                height: 25,
-                reorderable: false,
+                rowId: 'header',
                 cells: [{ type: 'header', data: 'Player' }, { type: 'header', data: 'Age' }, { type: 'header', data: 'Rate' }, { type: 'header', data: 'Club' }]
             },
-            { id: '1', height: 45, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '2', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '3', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '4', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '5', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '6', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '7', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '8', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '9', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '10', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '11', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '12', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '13', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '14', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '15', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '16', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '17', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '18', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '19', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '21', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '22', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '23', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '24', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '25', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] },
-            { id: '26', height: 25, reorderable: false, cells: [{ type: 'text', data: 'Lionel Messi' }, { type: 'number', data: 32 }, { type: 'number', data: 9 }, { type: 'text', data: 'Barcelona' }] }
+            { rowId: '1', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '2', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '3', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '4', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '5', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '6', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '7', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '8', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '9', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '10', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '11', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '12', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '13', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '14', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '15', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '16', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '17', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '18', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '19', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '21', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '22', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '23', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '24', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '25', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
+            { rowId: '26', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] }
         ]
     };
 
@@ -43,9 +41,9 @@ export default class DataChangingSample extends React.Component<{}, {}> {
         const state = { ...this.state };
         dataChanges.forEach(change => {
             state.rows.forEach(row => {
-                if (row.id == change.rowId) {
-                    const field = this.state.columns.findIndex(column => column.id == change.columnId);
-                    if (field !== undefined) row.cells[field].data = change.newData;
+                if (row.rowId == change.rowId) {
+                    const field = this.state.columns.findIndex(column => column.columnId == change.columnId);
+                    //if (field !== undefined) row.cells[field] = change.newCell;
                 }
             });
         });

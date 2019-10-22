@@ -6,7 +6,7 @@ import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEve
 import { CellEditor } from './CellEditor';
 import { Pane } from './Pane';
 import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from '../Functions';
-import { pasteData, copySelectedRangeToClipboardInIE } from '../Behaviors/DefaultBehavior';
+import { pasteData } from '../Behaviors/DefaultBehavior';
 
 interface LegacyBrowserGridRendererProps {
     state: State;
@@ -273,7 +273,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                 }
                             }}
                             value="&nbsp;"
-                            onChange={() => {}}
+                            onChange={() => { }}
                         />
                         <Line linePosition={state.linePosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} />
                         <Shadow shadowPosition={state.shadowPosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} shadowSize={state.shadowSize} cursor={state.shadowCursor} />
@@ -363,4 +363,55 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
     private isVerticalScrollbarVisible(): boolean {
         return this.props.state.hiddenScrollableElement && this.props.state.cellMatrix.height > this.props.state.hiddenScrollableElement.clientHeight;
     }
+}
+
+export function copySelectedRangeToClipboardInIE(state: State, removeValues = false) {
+    // const div = document.createElement('div');
+    // const activeSelectedRange = getActiveSelectedRange(state);
+    // if (!activeSelectedRange) return;
+
+    // let text = '';
+    // activeSelectedRange.rows.forEach((row, rowIdx) => {
+    //     activeSelectedRange.cols.forEach((col, colIdx) => {
+    //         const prevCol = colIdx - 1 >= 0 ? activeSelectedRange.cols[colIdx - 1] : undefined;
+    //         const nextCol = colIdx + 1 < activeSelectedRange.cols.length ? activeSelectedRange.cols[colIdx + 1] : undefined;
+    //         const cell = state.cellMatrix.getCell(row.rowId, col.columnId);
+    //         const prevCell = prevCol ? state.cellMatrix.getCell(row.rowId, prevCol.columnId) : undefined;
+    //         const nextCell = nextCol ? state.cellMatrix.getCell(row.rowId, nextCol.columnId) : undefined;
+    //         const cellData = cell.data ? cell.data.toString() : '';
+    //         const prevCellData = prevCell && prevCell.data ? prevCell.data.toString() : '';
+    //         const nextCellData = nextCell && nextCell.data ? nextCell.data.toString() : '';
+    //         text = text + cellData;
+    //         if (!cellData) {
+    //             text = text + '\t';
+    //             if (prevCellData.length > 0 && nextCellData.length > 0) {
+    //                 text = text + '\t';
+    //             }
+    //         } else {
+    //             if (nextCellData.length > 0) {
+    //                 text = text + '\t';
+    //             }
+    //         }
+    //         if (removeValues) {
+    //             state = tryAppendChange(state, new Location(row, col), emptyCell);
+    //         }
+    //     });
+    //     const areAllEmptyCells = activeSelectedRange.cols.every(el => {
+    //         const cellData = state.cellMatrix.getCell(row.rowId, el.columnId).data;
+    //         if (!cellData) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     });
+    //     if (areAllEmptyCells) {
+    //         text = text.substring(0, text.length - 1);
+    //     }
+    //     text = activeSelectedRange.rows.length > 1 && rowIdx < activeSelectedRange.rows.length - 1 ? text + '\n' : text;
+    // });
+    // div.setAttribute('contenteditable', 'true');
+    // document.body.appendChild(div);
+    // div.focus();
+    // (window as any).clipboardData.setData('text', text);
+    // document.body.removeChild(div);
 }

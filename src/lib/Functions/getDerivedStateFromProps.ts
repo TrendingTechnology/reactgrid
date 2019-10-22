@@ -2,6 +2,7 @@ import { ReactGridProps } from '../..';
 import { State, CellMatrix } from '../Model';
 import { updateSelectedRows, updateSelectedColumns } from './updateState';
 import { recalcVisibleRange } from '.';
+import { defaultCellTemplates } from './defaultCellTemplates';
 
 export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
     const dataHasChanged = !state.cellMatrix || props.rows !== state.cellMatrix.rows;

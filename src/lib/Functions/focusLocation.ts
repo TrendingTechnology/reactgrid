@@ -13,7 +13,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
     }
 
     const cellTemplate = state.cellTemplates[location.cell.type];
-    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(location.cell.data);
+    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(location.cell);
 
     if (resetSelection)
         state = {

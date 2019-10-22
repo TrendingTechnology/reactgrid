@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id, SelectionMode, Cell } from '../Model';
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation, SelectionMode, Cell, CompatibleCell } from '../Model';
 import { handleKeyDown } from '../Functions/handleKeyDown';
 import { CellSelectionBehavior } from './CellSelectionBehavior';
 import { ColumnSelectionBehavior } from './ColumnSelectionBehavior';
@@ -6,16 +6,10 @@ import { ColumnReorderBehavior } from './ColumnReorderBehavior';
 import { RowSelectionBehavior } from './RowSelectionBehavior';
 import { RowReorderBehavior } from './RowReorderBehavior';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
-import { tryAppendChange } from '../Functions';
+import { tryAppendChange, keyCodes, emptyCell } from '../Functions';
 import { FillHandleBehavior } from './FillHandleBehavior';
 import { getLocationFromClient, focusLocation } from '../Functions';
 import { ResizeColumnBehavior } from './ResizeColumnBehavior';
-
-export interface ClipboardData {
-    type?: string | null;
-    data: any;
-    text: string;
-}
 
 export class DefaultBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -25,7 +19,7 @@ export class DefaultBehavior extends Behavior {
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
-        if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.column.width - 7 && location.column.resizable) {
+        if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.column.width - 7 && location.column.onResize) {
             return new ResizeColumnBehavior();
         } else if (location.row.idx == 0 && state.selectedIds.includes(location.column.columnId) && !event.ctrlKey && state.selectionMode == 'column' && location.column.reorderable) {
             return new ColumnReorderBehavior();
@@ -82,8 +76,9 @@ export class DefaultBehavior extends Behavior {
         // } else
         if (state.focusedLocation && location.equals(state.focusedLocation)) {
             const cellTemplate = state.cellTemplates[location.cell.type];
+            const validatedCell = cellTemplate.validate(location.cell);
             if (cellTemplate.handleKeyDown) {
-                const { cell, enableEditMode } = cellTemplate.handleKeyDown(state.focusedLocation.cell, 1, event.ctrlKey, event.shiftKey, event.altKey);
+                const { cell, enableEditMode } = cellTemplate.handleKeyDown(validatedCell, 1, event.ctrlKey, event.shiftKey, event.altKey);
                 if (enableEditMode) {
                     return { ...state, currentlyEditedCell: cell };
                 }
@@ -115,21 +110,21 @@ export class DefaultBehavior extends Behavior {
         if (!activeSelectedRange) {
             return state;
         }
-        let pasteContent: ClipboardData[][] = [];
+        let pasteContent: CompatibleCell[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html');
         const selectionMode = parsedData.body.firstElementChild && (parsedData.body.firstElementChild.getAttribute('data-selection') as SelectionMode);
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             const cells = parsedData.body.firstElementChild!.firstElementChild!.children;
             for (let i = 0; i < cells.length; i++) {
-                const row: ClipboardData[] = [];
+                const row: CompatibleCell[] = [];
                 for (let j = 0; j < cells[i].children.length; j++) {
                     // TODO Use REACT-GRID in attribute
                     const rawData = cells[i].children[j].getAttribute('data-data');
                     const data = rawData && JSON.parse(rawData);
                     const type = cells[i].children[j].getAttribute('data-type');
                     const textValue = data ? cells[i].children[j].innerHTML : '';
-                    row.push({ text: textValue, data: data, type: type });
+                    row.push({ ...data, text: textValue, type: type || 'text' } as CompatibleCell);
                 }
                 pasteContent.push(row);
             }
@@ -137,7 +132,7 @@ export class DefaultBehavior extends Behavior {
             pasteContent = event.clipboardData
                 .getData('text/plain')
                 .split('\n')
-                .map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })));
+                .map(line => line.split('\t').map(t => ({ type: 'text', text: t })));
         }
         event.preventDefault();
         return { ...pasteData(state, pasteContent), selectionMode: selectionMode || 'range' };
@@ -150,30 +145,24 @@ export class DefaultBehavior extends Behavior {
     }
 }
 
-export function validateOuterData(state: State, clipboardData: ClipboardData): Cell {
-    const type = clipboardData.type;
-    if (type && state.cellTemplates[type] && state.cellTemplates[type].isValid(clipboardData.data)) return { data: clipboardData.data, type };
-    return { data: clipboardData.text, type: 'text' };
-}
-
-export function pasteData(state: State, pasteContent: ClipboardData[][]): State {
+export function pasteData(state: State, pasteContent: CompatibleCell[][]): State {
     const activeSelectedRange = getActiveSelectedRange(state);
     if (pasteContent.length === 1 && pasteContent[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>
             activeSelectedRange.cols.forEach(col => {
-                state = tryAppendChange(state, new Location(row, col), validateOuterData(state, pasteContent[0][0]));
+                state = tryAppendChange(state, new Location(row, col), pasteContent[0][0]);
             })
         );
     } else {
         let lastLocation: Location;
         const cellMatrix = state.cellMatrix;
         pasteContent.forEach((row, pasteRowIdx) =>
-            row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
+            row.forEach((pasteValue, pasteColIdx) => {
                 const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx;
                 const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx;
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.column.idx) {
                     lastLocation = cellMatrix.getLocation(rowIdx, colIdx);
-                    state = tryAppendChange(state, lastLocation, validateOuterData(state, pasteValue));
+                    state = tryAppendChange(state, lastLocation, pasteValue);
                 }
             })
         );
@@ -199,18 +188,16 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
         activeSelectedRange.cols.forEach(col => {
             const tableCell = tableRow.insertCell();
             const cell = state.cellMatrix.getCell(row.rowId, col.columnId)!;
-            let data = cell.data;
-            // TODO remove hardcoded stuff
-            data = cell.type === 'group' ? data.name : data;
-            tableCell.textContent = data; // for undefined values
-            if (!cell.data) {
+            const validatedCell = state.cellTemplates[cell.type].validate(cell);
+            tableCell.textContent = validatedCell.text; // for undefined values
+            if (!validatedCell.text) {
                 tableCell.innerHTML = '<img>';
             }
-            tableCell.setAttribute('data-data', JSON.stringify(data));
+            tableCell.setAttribute('data-data', JSON.stringify(cell));
             tableCell.setAttribute('data-type', cell.type);
             tableCell.style.border = '1px solid #D3D3D3';
             if (removeValues) {
-                state = tryAppendChange(state, new Location(row, col), { data: '', type: 'text' });
+                state = tryAppendChange(state, new Location(row, col), emptyCell);
             }
         });
     });
@@ -222,56 +209,5 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
     document.execCommand('copy');
     document.body.removeChild(div);
     state.hiddenFocusElement.focus();
-}
-
-export function copySelectedRangeToClipboardInIE(state: State, removeValues = false) {
-    const div = document.createElement('div');
-    const activeSelectedRange = getActiveSelectedRange(state);
-    if (!activeSelectedRange) return;
-
-    let text = '';
-    activeSelectedRange.rows.forEach((row, rowIdx) => {
-        activeSelectedRange.cols.forEach((col, colIdx) => {
-            const prevCol = colIdx - 1 >= 0 ? activeSelectedRange.cols[colIdx - 1] : undefined;
-            const nextCol = colIdx + 1 < activeSelectedRange.cols.length ? activeSelectedRange.cols[colIdx + 1] : undefined;
-            const cell = state.cellMatrix.getCell(row.rowId, col.columnId);
-            const prevCell = prevCol ? state.cellMatrix.getCell(row.rowId, prevCol.columnId) : undefined;
-            const nextCell = nextCol ? state.cellMatrix.getCell(row.rowId, nextCol.columnId) : undefined;
-            const cellData = cell.data ? cell.data.toString() : '';
-            const prevCellData = prevCell && prevCell.data ? prevCell.data.toString() : '';
-            const nextCellData = nextCell && nextCell.data ? nextCell.data.toString() : '';
-            text = text + cellData;
-            if (!cellData) {
-                text = text + '\t';
-                if (prevCellData.length > 0 && nextCellData.length > 0) {
-                    text = text + '\t';
-                }
-            } else {
-                if (nextCellData.length > 0) {
-                    text = text + '\t';
-                }
-            }
-            if (removeValues) {
-                state = tryAppendChange(state, new Location(row, col), { data: '', type: 'text' });
-            }
-        });
-        const areAllEmptyCells = activeSelectedRange.cols.every(el => {
-            const cellData = state.cellMatrix.getCell(row.rowId, el.columnId).data;
-            if (!cellData) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        if (areAllEmptyCells) {
-            text = text.substring(0, text.length - 1);
-        }
-        text = activeSelectedRange.rows.length > 1 && rowIdx < activeSelectedRange.rows.length - 1 ? text + '\n' : text;
-    });
-    div.setAttribute('contenteditable', 'true');
-    document.body.appendChild(div);
-    div.focus();
-    (window as any).clipboardData.setData('text', text);
-    document.body.removeChild(div);
 }
 

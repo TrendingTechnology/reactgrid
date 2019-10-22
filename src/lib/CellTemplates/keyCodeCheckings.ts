@@ -1,4 +1,4 @@
-import { keyCodes } from '../Model/keyCodes';
+import { keyCodes } from '../Functions/keyCodes';
 import { KeyboardEvent } from '../Model';
 
 export const isTextInput = (keyCode: number) =>

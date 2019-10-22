@@ -12,11 +12,12 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state));
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
     const cellTemplate = props.state.cellTemplates[cell.type];
-    const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
+    // TODO custom style
+    //const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
     return (
         <div
             style={{
-                ...customStyle,
+                //...customStyle,
                 boxSizing: 'border-box',
                 position: 'absolute',
                 top: position.top - 1,
@@ -30,15 +31,11 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 zIndex: 5
             }}
         >
-            {cellTemplate.render({
-                cell: cell,
-                isInEditMode: true,
-                onCellChanged: (cellData, commit) => {
-                    const newCell = { data: cellData, type: cell.type };
-                    props.state.currentlyEditedCell = commit ? undefined : newCell;
-                    if (commit) props.state.update(state => tryAppendChange(state, location, newCell));
-                    else setCell(newCell);
-                }
+            {cellTemplate.render(cell, true, (cellData, commit) => {
+                const newCell = { data: cellData, type: cell.type };
+                props.state.currentlyEditedCell = commit ? undefined : newCell;
+                if (commit) props.state.update(state => tryAppendChange(state, location, newCell));
+                else setCell(newCell);
             })}
         </div>
     );

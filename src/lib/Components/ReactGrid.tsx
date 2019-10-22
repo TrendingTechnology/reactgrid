@@ -3,7 +3,7 @@ import { ReactGridProps } from '../Model';
 import { DefaultGridRenderer } from './DefaultGridRenderer';
 import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { useState } from '../Functions/useState';
-import { EventHandlers } from '../Helper/EventHandlers';
+import { EventHandlers } from '../Functions/EventHandlers';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export const ReactGrid: React.FunctionComponent<ReactGridProps> = props => {

@@ -135,7 +135,6 @@ export class FillHandleBehavior extends Behavior {
                     range={state.cellMatrix.validateRange(this.fillRange)}
                     pane={pane}
                     style={{
-                        backgroundColor: '',
                         borderTop: this.fillDirection === 'down' ? '' : '1px dashed #666',
                         borderBottom: this.fillDirection === 'up' ? '' : '1px dashed #666',
                         borderLeft: this.fillDirection === 'right' ? '' : '1px dashed #666',

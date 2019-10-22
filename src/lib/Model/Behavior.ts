@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PointerLocation, State, Direction } from '.';
-import { KeyboardEvent, ClipboardEvent, PointerEvent } from './domEvents';
+import { KeyboardEvent, ClipboardEvent, PointerEvent } from '../Functions/domEvents';
 import { Range } from './Range';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!

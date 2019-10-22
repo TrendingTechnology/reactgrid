@@ -1,5 +1,6 @@
-import { State, GridRow, Location, Range } from '../Model';
+import { State, GridRow, Location, Range, KeyboardEvent } from '../Model';
 import { focusLocation, tryAppendChange, getActiveSelectedRange, keyCodes } from '.';
+import { emptyCell } from './emptyCell';
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const newState = handleKeyDownInternal(state, event);
@@ -154,7 +155,7 @@ function wipeSelectedRanges(state: State): State {
     state.selectedRanges.forEach(range =>
         range.rows.forEach(row =>
             range.cols.forEach(col =>
-                state = tryAppendChange(state, new Location(row, col), { type: 'text', text: '', value: 0, style: {} })
+                state = tryAppendChange(state, new Location(row, col), emptyCell)
             )
         )
     );

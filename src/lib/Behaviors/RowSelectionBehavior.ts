@@ -1,6 +1,6 @@
 import { focusLocation } from '../Functions';
 import { State, Location, Behavior, Direction } from '../Model';
-import { PointerEvent } from '../Model/domEvents';
+import { PointerEvent } from '../Functions/domEvents';
 import { selectOneRow, selectMultipleRows, unSelectOneRow } from '../Functions/selectRange';
 
 export class RowSelectionBehavior extends Behavior {

@@ -7,4 +7,8 @@ export * from './tryAppendChange';
 export * from './internetExplorer';
 export * from './microsoftEdge';
 export * from './getActiveSelectedRange';
-export * from '../Model/keyCodes';
+export * from './keyCodes';
+export * from './emptyCell';
+export * from './domEvents';
+
+

@@ -1,11 +1,12 @@
-import { Location, State, Cell, CommonCell } from '../Model';
+import { Location, State, Cell } from '../Model';
 
 export function tryAppendChange(state: State, location: Location, cell: Cell): State {
 
     const cellTemplate = state.cellTemplates[location.cell.type];
-    if (location.cell === cell || JSON.stringify(location.cell) === JSON.stringify(cell) || cellTemplate.update === undefined) return state;
+    if (location.cell === cell || JSON.stringify(location.cell) === JSON.stringify(cell) || cellTemplate.reduce === undefined)
+        return state;
 
-    const newCell = cellTemplate.update(location.cell, cell);
+    const newCell = cellTemplate.reduce(location.cell, cell);
 
     state.queuedChanges.push({
         initialCell: location.cell,

@@ -5,30 +5,21 @@ import { Shadow } from './Shadow';
 import { ContextMenu } from './ContextMenu';
 import { MenuOption, State, Id, Range, KeyboardEvent, ClipboardEvent, PointerEvent } from '../Model';
 import { CellEditor } from './CellEditor';
+import { EventHandlers } from '../Functions/EventHandlers';
 
-interface DefaultGridRendererProps {
+interface GridRendererProps {
     state: State;
-    viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
-    hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
-    onScroll: () => void;
-    onKeyDown: (event: KeyboardEvent) => void;
-    onKeyUp: (event: KeyboardEvent) => void;
-    onPointerDown: (event: PointerEvent) => void;
-    onCopy: (event: ClipboardEvent) => void;
-    onCut: (event: ClipboardEvent) => void;
-    onPaste: (event: ClipboardEvent) => void;
-    onPasteCapture: (event: ClipboardEvent) => void;
-    onContextMenu: (event: PointerEvent) => void;
-    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
+    eventHandlers: EventHandlers;
 }
 
-export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererProps> = props => (
-    <div className="dyna-grid" onKeyDown={props.onKeyDown} onKeyUp={props.onKeyUp} style={{ width: '100%', height: '100%' }}>
+export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = props => (
+    <div className="reactgrid"
+        onKeyDown={props.eventHandlers.keyDownHandler}
+        onKeyUp={props.eventHandlers.keyUpHandler}
+        style={{ width: '100%', height: '100%' }}>
         <div
             className="dg-viewport"
-            ref={props.viewportElementRefHandler}
+            ref={props.eventHandlers.viewportElementRefHandler}
             style={{
                 position: 'absolute',
                 top: 0,
@@ -41,10 +32,10 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 userSelect: 'none',
                 overflow: 'auto'
             }}
-            onScroll={props.onScroll}
+            onScroll={props.eventHandlers.scrollHandler}
         >
             <div
-                data-cy="dyna-grid"
+                data-cy="reactgrid"
                 className="dg-content"
                 style={{
                     width: props.state.cellMatrix.width,
@@ -52,20 +43,30 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                     position: 'relative',
                     outline: 'none'
                 }}
-                onPointerDown={props.onPointerDown}
-                onCopy={props.onCopy}
-                onCut={props.onCut}
-                onPaste={props.onPaste}
-                onPasteCapture={props.onPasteCapture}
-                onContextMenu={props.onContextMenu}
+                onPointerDown={props.eventHandlers.pointerDownHandler}
+                onCopy={props.eventHandlers.copyHandler}
+                onCut={props.eventHandlers.cutHandler}
+                onPaste={props.eventHandlers.pasteHandler}
+                onPasteCapture={props.eventHandlers.pasteCaptureHandler}
+                onContextMenu={props.eventHandlers.handleContextMenu}
             >
-                {props.state.cellMatrix.frozenTopRange.height > 0 && <PaneRow id="T" state={props.state} style={{ background: 'white', top: 0, position: 'sticky', boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)' }} range={props.state.cellMatrix.frozenTopRange} borders={{ bottom: true }} zIndex={3} />}
-                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange && <PaneRow id="M" state={props.state} style={{ height: props.state.cellMatrix.scrollableRange.height }} range={props.state.cellMatrix.scrollableRange.slice(props.state.visibleRange, 'rows')} borders={{}} zIndex={0} />}
-                {props.state.cellMatrix.frozenBottomRange.height > 0 && props.state.cellMatrix.rows.length > 1 && <PaneRow id="B" state={props.state} style={{ background: 'white', bottom: 0, position: 'sticky', boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)' }} range={props.state.cellMatrix.frozenBottomRange} borders={{ top: true }} zIndex={3} />}
-                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} />
+                {props.state.cellMatrix.frozenTopRange.height > 0 &&
+                    <PaneRow
+                        id="T"
+                        state={props.state}
+                        style={{ background: 'white', top: 0, position: 'sticky', boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)' }}
+                        range={props.state.cellMatrix.frozenTopRange}
+                        borders={{ bottom: true }} zIndex={3} />}
+                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column &&
+                    props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row &&
+                    props.state.visibleRange &&
+                    <PaneRow id="M" state={props.state} style={{ height: props.state.cellMatrix.scrollableRange.height }} range={props.state.cellMatrix.scrollableRange.slice(props.state.visibleRange, 'rows')} borders={{}} zIndex={0} />}
+                {props.state.cellMatrix.frozenBottomRange.height > 0 && props.state.cellMatrix.rows.length > 1 &&
+                    <PaneRow id="B" state={props.state} style={{ background: 'white', bottom: 0, position: 'sticky', boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)' }} range={props.state.cellMatrix.frozenBottomRange} borders={{ top: true }} zIndex={3} />}
+                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.eventHandlers.hiddenElementRefHandler} />
                 <Line linePosition={props.state.linePosition} orientation={props.state.lineOrientation} cellMatrix={props.state.cellMatrix} />
                 <Shadow shadowPosition={props.state.shadowPosition} orientation={props.state.lineOrientation} cellMatrix={props.state.cellMatrix} shadowSize={props.state.shadowSize} cursor={props.state.shadowCursor} />
-                <ContextMenu state={props.state} onRowContextMenu={(menuOptions: MenuOption[]) => (props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : [])} onColumnContextMenu={(menuOptions: MenuOption[]) => (props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : [])} onRangeContextMenu={(menuOptions: MenuOption[]) => (props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : [])} contextMenuPosition={props.state.contextMenuPosition} />
+                {/* <ContextMenu state={props.state} onRowContextMenu={(menuOptions: MenuOption[]) => (props.eventHandlers.handleContextMenu ? props.eventHandlers.handleContextMenu(menuOptions) : [])} onColumnContextMenu={(menuOptions: MenuOption[]) => (props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : [])} onRangeContextMenu={(menuOptions: MenuOption[]) => (props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : [])} contextMenuPosition={props.state.contextMenuPosition} /> */}
             </div>
         </div>
         {props.state.currentlyEditedCell && <CellEditor state={props.state} />}

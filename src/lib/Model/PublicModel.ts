@@ -23,7 +23,7 @@ export interface ReactGridProps {
     readonly enableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
-    readonly onCellsChanged?: (cellChanges: CellChange[]) => boolean;
+    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => boolean | void;
     readonly onCellFocused?: (cellId: CellId) => boolean;
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
 }
@@ -56,17 +56,14 @@ export interface CellChange<TCell extends Cell = Cell> {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCell extends Cell = Cell> {
-    // Returns true if the data is valid
-    isValid(cell: TCell): boolean;
+    // Validate and convert to exchangable cell type
+    validate(cell: TCell): CompatibleCell<TCell>
     // Returns true if the data in the cell is not replacable
-    // Default: _ => false
+    // Default: _ => true
     isFocusable?(cell: TCell): boolean;
     // Reduces current cell and new cell to one cell
     // If not implemented, cell will be read-only
-    // Default: (_, newCell) => newCell;
-    update?(cell: TCell, newCell: TCell | CommonCell): TCell;
-    // Convert to common cell (used for copy-pase / fill-handle)
-    toCommonCell(cell: TCell): CommonCell
+    reduce?(cell: TCell, newCell: TCell | CompatibleCell): TCell;
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
     // Default: cell => { cell, enableEditMode: false }
@@ -97,7 +94,8 @@ export interface Column {
 
 export interface CellStyle {
     readonly color?: string;
-    readonly backgroundColor?: string;
+    readonly background?: string;
+    readonly className?: string;
     // TODO
     //readonly borderLeft
     //readonly borderRight
@@ -112,11 +110,11 @@ export interface Cell {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CommonCell extends Cell {
+// Extended & excangable cell (compatible between different types)
+export type CompatibleCell<TCell extends Cell = Cell> = TCell & {
     text: string;
-    value: number;
-    style: CellStyle;
-}
+    value?: number;
+};
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Row {

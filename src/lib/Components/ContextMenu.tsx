@@ -62,7 +62,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                                     state.update((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }));
                                 }}
                             >
-                                {el.title}
+                                {el.label}
                             </div>
                         );
                     })}
@@ -76,16 +76,20 @@ function customContextMenuOptions(state: State): MenuOption[] {
     // TODO use document.execCommand('copy') and paste
     return [
         {
-            title: 'Copy',
+            id: 'copy',
+            label: 'Copy',
             handler: () => copySelectedRangeToClipboard(state, false)
         },
         {
-            title: 'Cut',
+            id: 'cut',
+            label: 'Cut',
             handler: () => copySelectedRangeToClipboard(state, true)
         },
         {
-            title: 'Paste',
+            id: 'paste',
+            label: 'Paste',
             handler: () => {
+                // TODO 
                 if (isBrowserIE()) {
                     setTimeout(() => state.update((state: State) => pasteData(state, getDataToPasteInIE())));
                 } else {

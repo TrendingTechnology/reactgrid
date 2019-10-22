@@ -1,20 +1,20 @@
 import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
-import { NumberCellTemplate } from '../CellTemplates/NumberCellTemplate';
-import { HeaderCellTemplate } from '../CellTemplates/HeaderCellTemplate';
-import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
-import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
-import { EmailCellTemplate } from '../CellTemplates/EmailCellTemplate';
-import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
+// import { NumberCellTemplate } from '../CellTemplates/NumberCellTemplate';
+// import { HeaderCellTemplate } from '../CellTemplates/HeaderCellTemplate';
+// import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
+// import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
+// import { EmailCellTemplate } from '../CellTemplates/EmailCellTemplate';
+// import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
+// import { GroupHeaderCellTemplate } from '../CellTemplates/GroupHeaderCellTemplate';
 import { CellTemplates } from '../Model/PublicModel';
-import { GroupHeaderCellTemplate } from '../CellTemplates/GroupHeaderCellTemplate';
 
 export const defaultCellTemplates: CellTemplates = {
     text: new TextCellTemplate(),
-    number: new NumberCellTemplate(),
-    header: new HeaderCellTemplate(),
-    checkbox: new CheckboxCellTemplate(),
-    date: new DateCellTemplate(),
-    email: new EmailCellTemplate(),
-    time: new TimeCellTemplate(),
-    group: new GroupHeaderCellTemplate()
+    //number: new NumberCellTemplate(),
+    //header: new HeaderCellTemplate(),
+    //checkbox: new CheckboxCellTemplate(),
+    //date: new DateCellTemplate(),
+    //email: new EmailCellTemplate(),
+    //time: new TimeCellTemplate(),
+    //group: new GroupHeaderCellTemplate()
 };
