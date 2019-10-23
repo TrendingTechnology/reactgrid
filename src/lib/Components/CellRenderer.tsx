@@ -16,11 +16,11 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const cellTemplate = state.cellTemplates[cell.type];
     const style: React.CSSProperties = {
-        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false, props) || {}),
         left: location.col.left,
         top: location.row.top,
         width: location.col.width,
         height: location.row.height,
+        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false, props) || {}),
         // TODO hardcoded type "header" - can we do better?
         touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto' // prevent scrolling
     }
