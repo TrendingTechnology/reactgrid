@@ -1,3 +1,11 @@
+import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
+addMatchImageSnapshotCommand({
+  failureThreshold: 0.00,
+  failureThresholdType: 'percent',
+  customDiffConfig: { threshold: 0.0 },
+  capture: 'viewport',
+});
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite

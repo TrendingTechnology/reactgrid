@@ -22,10 +22,11 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
     if (dontChange || !row)
         return scrollTop;
 
+
     const visibleContentHeight = Math.min(clientHeight, state.cellMatrix.height);
     const visibleScrollAreaHeight = visibleContentHeight - frozenTopRange.height - frozenBottomRange.height;
     const isBottomRowFrozen = frozenBottomRange.rows.some(r => row.idx === r.idx);
-    const shouldScrollToBottom = () => ((location.cellY ? row.top + location.cellY : row.bottom) > visibleScrollAreaHeight + scrollTop - 1) || state.cellMatrix.last.row.idx === row.idx;
+    const shouldScrollToBottom = () => ((location.cellY ? row.top + location.cellY : row.bottom) > visibleScrollAreaHeight + scrollTop - 4) || state.cellMatrix.last.row.idx === row.idx;
     const shouldScrollToTop = () => row.top + (location.cellY ? location.cellY : 0) < scrollTop + 1 && !isBottomRowFrozen;
     const isColumnBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
     const isColumnBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;

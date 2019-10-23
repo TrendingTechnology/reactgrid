@@ -26,30 +26,21 @@ interface DefaultGridRendererProps {
 
 export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererProps> = props =>
     <div
-        className="dyna-grid"
+        className="react-grid"
         onKeyDown={props.onKeyDown}
         onKeyUp={props.onKeyUp}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150 }}
     >
         <div
-            className="dg-viewport"
+            className="rg-viewport"
             ref={props.viewportElementRefHandler}
-            style={{
-                position: 'absolute',
-                top: 0, left: 0, right: 0, bottom: 0,
-                MozUserSelect: 'none',
-                WebkitUserSelect: 'none',
-                msUserSelect: 'none',
-                userSelect: 'none',
-                overflow: 'auto'
-            }}
             onScroll={props.onScroll}
         >
             <div
-                data-cy="dyna-grid"
-                className="dg-content"
+                data-cy="react-grid"
+                className="rg-content"
                 style={{
-                    width: props.state.cellMatrix.width, height: props.state.cellMatrix.height, position: 'relative', outline: 'none'
+                    width: props.state.cellMatrix.width, height: props.state.cellMatrix.height
                 }}
                 onPointerDown={props.onPointerDown}
                 onCopy={props.onCopy}
@@ -60,8 +51,9 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
             >
                 {props.state.cellMatrix.frozenTopRange.height > 0 &&
                     <PaneRow id='T'
+                        class="rg-pane-row-t"
                         state={props.state}
-                        style={{ background: 'white', top: 0, position: 'sticky', boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)' }}
+                        style={{}}
                         range={props.state.cellMatrix.frozenTopRange}
                         borders={{ bottom: true }}
                         zIndex={3}
@@ -78,13 +70,14 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 {props.state.cellMatrix.frozenBottomRange.height > 0 && props.state.cellMatrix.rows.length > 1 &&
                     <PaneRow
                         id='B'
+                        class="rg-pane-row-b"
                         state={props.state}
-                        style={{ background: 'white', bottom: 0, position: 'sticky', boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)' }}
+                        style={{}}
                         range={props.state.cellMatrix.frozenBottomRange}
                         borders={{ top: true }}
                         zIndex={3}
                     />}
-                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} />
+                <input className="rg-hidden-element" readOnly={true} ref={props.hiddenElementRefHandler} />
                 <Line
                     linePosition={props.state.linePosition}
                     orientation={props.state.lineOrientation}

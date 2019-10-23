@@ -29,15 +29,7 @@ export class TimeCellTemplate implements CellTemplate<string, any> {
 
         return <input
             type='time'
-            style={{
-                width: '100%',
-                height: '100%',
-                padding: 0,
-                border: 0,
-                background: 'transparent',
-                fontSize: 14,
-                outline: 'none'
-            }}
+            className="rg-time-cell-template"
             ref={input => {
                 if (input) {
                     input.focus();

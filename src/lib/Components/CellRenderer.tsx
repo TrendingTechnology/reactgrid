@@ -16,31 +16,11 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const cellTemplate = state.cellTemplates[cell.type];
     const style: React.CSSProperties = {
-        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false) || {}),
-        boxSizing: 'border-box',
-        whiteSpace: 'nowrap',
-        position: 'absolute',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        overflow: 'hidden',
         left: location.col.left,
         top: location.row.top,
         width: location.col.width,
         height: location.row.height,
-        padding: '0 1px',
-        fontSize: 14,
-        // paddingLeft: 2,
-        // paddingRight: 2,
-        //borderTop: borders.top ? 'solid 1px #ccc' : '',
-        //borderLeft: borders.left ? 'solid 1px #ccc' : '',
-        // borderBottom: borders.bottom
-        //     ? 'solid 1px #ccc'
-        //     : 'solid 1px #e5e5e5',
-        // borderRight: borders.right
-        //     ? 'solid 1px #ccc'
-        //     : 'solid 1px #e5e5e5',
-
+        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false, props) || {}),
         // TODO hardcoded type "header" - can we do better?
         touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto' // prevent scrolling
     }

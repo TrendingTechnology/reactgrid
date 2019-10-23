@@ -14,14 +14,12 @@ export class Line extends React.Component<LineProps> {
         return (
             linePosition !== -1 &&
             <div
+                className="rg-line"
                 style={{
-                    position: 'absolute',
-                    background: '#74b9ff',
                     top: isVertical ? 0 : this.props.linePosition,
                     left: isVertical ? this.props.linePosition : 0,
                     width: isVertical ? 2 : cellMatrix.width,
                     height: isVertical ? cellMatrix.height : 2,
-                    zIndex: 3
                 }}
             />
         )

@@ -29,15 +29,7 @@ export class NumberCellTemplate implements CellTemplate<number, any> {
         }
 
         return <input
-            style={{
-                width: '100%',
-                height: '100%',
-                padding: 0,
-                border: 0,
-                background: 'transparent',
-                fontSize: 14,
-                outline: 'none',
-            }}
+            className="rg-number-cell-template"
             ref={input => {
                 if (input) {
                     input.focus();

@@ -44,22 +44,14 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
         return (
             !props.isInEditMode ?
                 <div
-                    style={{ display: 'flex', alignItems: 'center', width: '100%', marginLeft: `calc( 1.4em * ${(cellData.depth ? elementMarginMultiplier : 1)} )` }}>
+                    className="rg-group-header-cell-template-wrapper"
+                    style={{ marginLeft: `calc( 1.4em * ${(cellData.depth ? elementMarginMultiplier : 1)} )` }}>
                     {cellData.isExpanded !== undefined &&<Chevron cellData={cellData} cellProps={props}/>}
-                    <div style={{ display: 'flex', alignItems: 'center' }}>{cellData.name}</div>
+                    <div className="rg-group-header-cell-template-wrapper-content">{cellData.name}</div>
                 </div>
                 :
                 <input
-                    style={{
-                        position: 'inherit',
-                        width: '100%',
-                        height: '100%',
-                        padding: 0,
-                        border: 0,
-                        background: 'transparent',
-                        fontSize: '1em',
-                        outline: 'none',
-                    }}
+                    className="rg-group-header-cell-template-input"
                     ref={input => {
                         if (input) {
                             input.focus();
@@ -98,22 +90,11 @@ class Chevron extends React.Component<IChevronProps> {
                     cellData.isExpanded = !cellData.isExpanded;
                     cellProps.onCellDataChanged(cellData, true);
                 }}
-                style={{
-                    zIndex: 1,
-                    pointerEvents: 'auto',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    height: '1.4em',
-                    width: '1.4em',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                }}
+                className="rg-group-header-cell-template-chevron-wrapper"
             >
-                <div 
-                    style={{
-                        transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
-                        transition: '200ms all',
-                    }}>❯</div>
+                <div style={{ transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all',}}>
+                    ❯
+                </div>
             </div>
         )
     }
