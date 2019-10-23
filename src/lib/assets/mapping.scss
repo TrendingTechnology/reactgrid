@@ -1,0 +1,8 @@
+$white-with-heavy-opacity: rgba($bg-color, $opacity-heavy);
+$black-with-light-opacity: rgba($shadow-color, $opacity-light);
+
+$main-bg-color: $bg-color;
+$shadow-bg: $shadow-color;
+$cell-shadow-color: $black-with-light-opacity;
+$fill-handle-bg-color: $white-with-heavy-opacity;
+$fill-handle-border-color: $bg-color;

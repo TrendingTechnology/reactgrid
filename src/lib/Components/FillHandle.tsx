@@ -7,39 +7,38 @@ interface FillHandleProps {
     location: Location
 }
 
-export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
-    <div
-        className="dg-touch-fill-handle"
-        style={{
-            position: 'absolute',
-            top: props.location.row.bottom - 13,
-            left: props.location.col.right - 11,
-            width: 20,
-            height: 20,
-            touchAction: 'none', // prevent scrolling
-            background: 'rgba(255, 255, 255, 0.01)',
-            pointerEvents: 'auto',
-            zIndex: 1
-        }}
-        data-cy="dg-touch-fill-handle"
-        onPointerDown={event => {
-            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined (disabled this event for cypress tests)
-                props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
-            }
-        }}
-    >
+export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) => {
+    const targetRef: any = React.useRef();
+    const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
+
+    React.useLayoutEffect(() => {
+        if (targetRef.current) {
+            setDimensions({
+                width: targetRef.current.offsetWidth,
+                height: targetRef.current.offsetHeight
+            });
+        }
+    }, []);
+    return (
         <div
-            className="dg-fill-handle"
+            className="rg-touch-fill-handle"
+            ref={targetRef}
             style={{
-                position: 'absolute',
-                top: 9,
-                left: 7,
-                width: 4.2,
-                height: 4.5,
-                backgroundColor: '#3579f8',
-                border: '1px solid white',
-                cursor: 'crosshair',
+                top: props.location.row.bottom - (dimensions.width / 2),
+                left: props.location.col.right - (dimensions.height / 2),
             }}
-            data-cy="dg-fill-handle"
-        />
-    </div>
+            data-cy="rg-touch-fill-handle"
+            onPointerDown={event => {
+                if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined (disabled this event for cypress tests)
+                    props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
+                }
+            }}
+        >
+            <div
+                className="rg-fill-handle"
+                data-cy="rg-fill-handle"
+            />
+        </div>
+    )
+
+}

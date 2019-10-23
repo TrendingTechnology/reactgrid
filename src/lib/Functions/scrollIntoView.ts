@@ -10,7 +10,6 @@ export function scrollIntoView(state: State, location: any, direction: Direction
         state.hiddenScrollableElement.scrollTop = top;
         state.hiddenScrollableElement.scrollLeft = left;
     } else {
-        console.log(top)
         state.viewportElement.scrollTop = top;
         state.viewportElement.scrollLeft = left;
     }
@@ -26,19 +25,13 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
 
     const visibleContentHeight = Math.min(clientHeight, state.cellMatrix.height);
     const visibleScrollAreaHeight = visibleContentHeight - frozenTopRange.height - frozenBottomRange.height;
-    console.log(location.cellY)
-    console.log(row.top + location.cellY)
-    console.log(visibleScrollAreaHeight + scrollTop - 3)
     const isBottomRowFrozen = frozenBottomRange.rows.some(r => row.idx === r.idx);
     const shouldScrollToBottom = () => ((location.cellY ? row.top + location.cellY : row.bottom) > visibleScrollAreaHeight + scrollTop - 4) || state.cellMatrix.last.row.idx === row.idx;
     const shouldScrollToTop = () => row.top + (location.cellY ? location.cellY : 0) < scrollTop + 1 && !isBottomRowFrozen;
     const isColumnBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
     const isColumnBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
 
-    console.log(frozenBottomRange.rows.length)
-    console.log(shouldScrollToBottom())
     if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom()) {
-        console.log('TAK')
         if (location.cellY) {
             return rows[row.idx + 1] ? rows[row.idx + 1].bottom - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
         } else {

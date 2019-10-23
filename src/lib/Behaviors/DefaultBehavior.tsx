@@ -30,13 +30,13 @@ export class DefaultBehavior extends Behavior {
             return new ResizeColumnBehavior();
         } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
             return new ColumnReorderBehavior();
-        } else if (location.row.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
+        } else if (location.row.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
             return new ColumnSelectionBehavior();
         } else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
             return new RowReorderBehavior();
-        } else if (location.col.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
+        } else if (location.col.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
             return new RowSelectionBehavior();
-        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
+        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'rg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();

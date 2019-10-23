@@ -1,6 +1,6 @@
 import React from 'react';
-import {ReactGrid} from './lib/Components/ReactGrid'
-import {ColumnProps, RowProps, DataChange, Id} from './lib/Common/PublicModel'
+import { ReactGrid } from './lib/Components/ReactGrid'
+import { ColumnProps, RowProps, DataChange, Id } from './lib/Common/PublicModel'
 
 const columns_count = 10;
 const columns_width = 100;
@@ -13,7 +13,7 @@ interface Column {
 }
 
 interface Data {
-    [key: string]:  string
+    [key: string]: string
 }
 
 interface Row {
@@ -35,28 +35,28 @@ interface DevGridProps {
 }
 
 export default class DevGrid extends React.Component<DevGridProps, DevGridState> {
-    constructor(props: DevGridProps){
+    constructor(props: DevGridProps) {
         super(props)
-        const columns = new Array(props.columns).fill(props.columnsWidth || 100).map((width, idx) => ({id: this.getRandomId(), width, idx}));
+        const columns = new Array(props.columns).fill(props.columnsWidth || 100).map((width, idx) => ({ id: this.getRandomId(), width, idx }));
         this.state = {
             columns,
-            rows: new Array(props.rows).fill(props.rowsHeight || 25).map((height, idx) => columns.reduce((row: Row, column: Column) => {row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row}, { id: this.getRandomId(), height, data: {} })),
+            rows: new Array(props.rows).fill(props.rowsHeight || 25).map((height, idx) => columns.reduce((row: Row, column: Column) => { row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row }, { id: this.getRandomId(), height, data: {} })),
         }
     }
 
     private getRandomId(): string {
         return Math.random().toString(36).substr(2, 9);
     }
-    
-    private getMatrix(){
+
+    private getMatrix() {
         const columns: ColumnProps[] = [...this.state.columns].map((c, cIdx) => ({
             id: c.id,
             width: c.width,
             reorderable: true,
             resizable: true,
-            onDrop: idxs => this.setState({columns: this.getReorderedColumns(idxs as string[], cIdx)}),
+            onDrop: idxs => this.setState({ columns: this.getReorderedColumns(idxs as string[], cIdx) }),
             onResize: width => {
-                const state = {...this.state};
+                const state = { ...this.state };
                 state.columns[cIdx].width = width;
                 this.setState(state);
             }
@@ -65,11 +65,11 @@ export default class DevGrid extends React.Component<DevGridProps, DevGridState>
             id: r.id,
             height: r.height,
             reorderable: true,
-            cells: [...this.state.columns].map(c =>( {data: r.data[c.id], type: 'text'})),
-            onDrop: idxs => this.setState({rows: this.getReorderedRows(idxs as string[], rIdx)}),
+            cells: [...this.state.columns].map(c => ({ data: r.data[c.id], type: 'text' })),
+            onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
 
         }))
-        return {rows, columns}
+        return { rows, columns }
     }
 
     private prepareDataChanges(dataChanges: DataChange[]) {
@@ -81,7 +81,7 @@ export default class DevGrid extends React.Component<DevGridProps, DevGridState>
     }
 
     private getReorderedColumns(colIds: Id[], to: number) {
-        const movedColumns: Column[] = [...this.state.columns].filter(c  => colIds.includes(c.id));
+        const movedColumns: Column[] = [...this.state.columns].filter(c => colIds.includes(c.id));
         const clearedColumns: Column[] = [...this.state.columns].filter(c => !colIds.includes(c.id));
         if (to > [...this.state.columns].findIndex(c => c.id == colIds[0]))
             to -= colIds.length - 1
@@ -98,11 +98,11 @@ export default class DevGrid extends React.Component<DevGridProps, DevGridState>
         return clearedRows
     }
 
-    render(){
+    render() {
         return <ReactGrid
-        cellMatrixProps={this.getMatrix()}
-        onDataChanged={(changes: DataChange[]) => this.setState(this.prepareDataChanges(changes))}
-        license={'non-commercial'}
+            cellMatrixProps={this.getMatrix()}
+            onDataChanged={(changes: DataChange[]) => this.setState(this.prepareDataChanges(changes))}
+            license={'non-commercial'}
         />
     }
 

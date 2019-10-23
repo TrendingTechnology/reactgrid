@@ -13,7 +13,6 @@ interface ContextMenuProps {
 
 
 export class ContextMenu extends React.Component<ContextMenuProps> {
-    state = { isHovered: false }
     render() {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
@@ -34,25 +33,16 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
         return (
             (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
                 <div
-                    className="dg-context-menu"
+                    className="rg-context-menu"
                     style={{
                         top: contextMenuPosition[0] + 'px',
                         left: contextMenuPosition[1] + 'px',
-                        position: 'fixed',
-                        background: 'white',
-                        fontSize: '1em',
-                        boxShadow: '0 4px 5px 3px rgba(0, 0, 0, .2)',
-                        zIndex: 1000
                     }}
                 >
-                    {contextMenuOptions.map((el, idx) => 
+                    {contextMenuOptions.map((el, idx) => {
                         <div
                             key={idx}
-                            className="dg-context-menu-option"
-                            style={{
-                                padding: '8px 20px 8px 15px',
-                                cursor: 'pointer',
-                            }}
+                            className="rg-context-menu-option"
                             onPointerDown={e => e.stopPropagation()}
                             onClick={() => {
                                 el.handler();
@@ -61,7 +51,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                         >
                             {el.title}
                         </div>
-                    )}
+                    })}
                 </div>
             )
         );
