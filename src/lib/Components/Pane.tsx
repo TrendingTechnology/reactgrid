@@ -57,7 +57,7 @@ function renderCustomFocuses(props: PaneProps) {
 
 export const Pane: React.FunctionComponent<PaneProps> = (props) => {
     return (
-        <div key={props.id} className={`dg-pane ${props.class}`} style={{ width: props.range.width, ...props.style }}>
+        <div key={props.id} className={`rg-pane ${props.class}`} style={{ width: props.range.width, ...props.style }}>
             <GridContent state={props.state} range={props.range} borders={props.borders} />
             {renderSelectedRanges(props.state, props.range)}
             {props.state.currentBehavior.renderPanePart(props.state, props.range)}
@@ -72,5 +72,5 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) => {
 
 
 function renderSelectedRanges(state: State, pane: Range) {
-    return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} class="dg-partial-area-selected-range" style={{}} />);
+    return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} class="rg-partial-area-selected-range" style={{}} />);
 }

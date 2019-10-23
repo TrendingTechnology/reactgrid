@@ -57,7 +57,7 @@ class Utils {
     }
 
     fillCells(toX, toY) {
-        cy.get('[data-cy=dg-fill-handle]').trigger('pointerdown', { force: true });
+        cy.get('[data-cy=rg-fill-handle]').trigger('pointerdown', { force: true });
         cy.get('[data-cy=dyna-grid]').trigger('pointermove', { clientX: toX, clientY: toY, force: true });
         cy.wait(200);
         cy.get('[data-cy=dyna-grid]').trigger('pointerup', { clientX: toX, clientY: toY, force: true });
@@ -125,7 +125,7 @@ class Utils {
         if (optionValue != undefined) {
             cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY, force: true });
             cy.wait(300);
-            cy.get('.dg-context-menu-option')
+            cy.get('.rg-context-menu-option')
                 .contains(optionValue)
                 .click();
         } else {

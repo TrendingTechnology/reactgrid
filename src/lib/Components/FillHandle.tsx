@@ -21,13 +21,13 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) => {
     }, []);
     return (
         <div
-            className="dg-touch-fill-handle"
+            className="rg-touch-fill-handle"
             ref={targetRef}
             style={{
                 top: props.location.row.bottom - (dimensions.width / 2),
                 left: props.location.col.right - (dimensions.height / 2),
             }}
-            data-cy="dg-touch-fill-handle"
+            data-cy="rg-touch-fill-handle"
             onPointerDown={event => {
                 if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined (disabled this event for cypress tests)
                     props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
@@ -35,10 +35,10 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) => {
             }}
         >
             <div
-                className="dg-fill-handle"
-                data-cy="dg-fill-handle"
+                className="rg-fill-handle"
+                data-cy="rg-fill-handle"
             />
         </div>
     )
-    
+
 }

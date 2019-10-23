@@ -37,7 +37,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         const hiddenScrollableElement = state.hiddenScrollableElement;
         return (
             <div
-                className="dyna-grid-legacy-browser"
+                className="react-grid-legacy-browser"
                 onCopy={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e)}
                 onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
                 onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.updateState((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
@@ -49,7 +49,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 <div
                     ref={(hiddenScrollableElement: HTMLDivElement) => hiddenScrollableElement && this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement)}
                     // TODO this div is not hidden. 
-                    className="dg-hidden-scrollable-element"
+                    className="rg-hidden-scrollable-element"
                     style={{
                         // TODO only 'auto' should be fine
                         overflowX: this.isHorizontalScrollbarVisible() ? 'scroll' : 'auto',
@@ -63,7 +63,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 {
                     cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
                     <div
-                        className="dg-frozen dg-frozen-top"
+                        className="rg-frozen rg-frozen-top"
                         style={{
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
                             height: cellMatrix.frozenTopRange.height,
@@ -110,7 +110,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                     </div>
                 }
                 {
-                    cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && 
+                    cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
                     <div
                         className="rg-middle-wrapper"
                         style={{
@@ -121,7 +121,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                     >
                         {cellMatrix.frozenLeftRange.width > 0 &&
                             <div
-                                className="rg-middle dg-frozen-left"
+                                className="rg-middle rg-frozen-left"
                                 ref={(frozenLeftScrollableElement: HTMLDivElement) => frozenLeftScrollableElement && this.frozenLeftScrollableElementRefHandler(state, frozenLeftScrollableElement)}
                                 style={{
                                     width: cellMatrix.frozenLeftRange.width,
@@ -140,10 +140,10 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         }
                         {cellMatrix.frozenRightRange.width > 0 &&
                             <div
-                                className="rg-middle dg-frozen-right"
+                                className="rg-middle rg-frozen-right"
                                 ref={(frozenRightScrollableElement: HTMLDivElement) => frozenRightScrollableElement && this.frozenRightScrollableElementRefHandler(state, frozenRightScrollableElement)}
                                 style={{
-                                    width: cellMatrix.frozenRightRange.width, 
+                                    width: cellMatrix.frozenRightRange.width,
                                 }}
                             >
                                 <Pane
@@ -163,7 +163,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 {
                     cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 &&
                     <div
-                        className="dg-frozen dg-frozen-bottom"
+                        className="rg-frozen rg-frozen-bottom"
                         style={{
                             bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : (!this.isVerticalScrollbarVisible() ? `calc(100% - ${cellMatrix.frozenTopRange.height + state.visibleRange.height + cellMatrix.frozenBottomRange.height}px)` : 0),
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
@@ -212,16 +212,16 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                     </div>
                 }
                 <div
-                    className="dg-viewport"
+                    className="rg-viewport"
                     ref={props.viewportElementRefHandler}
                     style={{
-                        right: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0), 
+                        right: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                         bottom: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                     }}
                 >
                     <div
-                        data-cy="dyna-grid"
-                        className="dg-content"
+                        data-cy="react-grid"
+                        className="rg-content"
                         style={{ width: cellMatrix.width, height: cellMatrix.height }}
                     >
                         {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.col && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange &&

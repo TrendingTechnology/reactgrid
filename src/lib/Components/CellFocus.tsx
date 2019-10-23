@@ -9,7 +9,7 @@ interface CellFocusProps {
 export const CellFocus: React.FunctionComponent<CellFocusProps> = (props) =>
     <div
         key={props.color}
-        className="dg-cell-focus"
+        className="rg-cell-focus"
         style={{
             top: props.location.row.top - (props.location.row.top === 0 ? 0 : 1),
             left: props.location.col.left - (props.location.col.left === 0 ? 0 : 1),

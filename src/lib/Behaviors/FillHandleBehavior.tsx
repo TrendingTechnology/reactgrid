@@ -181,7 +181,7 @@ export class FillHandleBehavior extends Behavior {
 
     renderPanePart(state: State, pane: Range): React.ReactNode {
         return this.fillDirection && this.fillRange && pane.intersectsWith(this.fillRange) &&
-            <PartialArea range={state.cellMatrix.validateRange(this.fillRange)} class="dg-partial-area-part" pane={pane} style={{
+            <PartialArea range={state.cellMatrix.validateRange(this.fillRange)} class="rg-partial-area-part" pane={pane} style={{
                 backgroundColor: '',
                 borderTop: this.fillDirection === 'down' ? '0px solid transparent' : '',
                 borderBottom: this.fillDirection === 'up' ? '0px solid transparent' : '',

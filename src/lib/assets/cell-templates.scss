@@ -45,6 +45,7 @@
         font-size: 1em;
         outline: none;
     }
+
     &-wrapper {
         display: flex;
         align-items: center;
@@ -54,6 +55,7 @@
             align-items: center;
         }
     }
+    
     &-chevron-wrapper {
         z-index: 1;
         pointer-events: auto;

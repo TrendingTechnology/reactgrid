@@ -26,18 +26,19 @@ interface DefaultGridRendererProps {
 
 export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererProps> = props =>
     <div
-        className="dyna-grid"
+        className="react-grid"
         onKeyDown={props.onKeyDown}
         onKeyUp={props.onKeyUp}
+        style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150 }}
     >
         <div
-            className="dg-viewport"
+            className="rg-viewport"
             ref={props.viewportElementRefHandler}
             onScroll={props.onScroll}
         >
             <div
-                data-cy="dyna-grid"
-                className="dg-content"
+                data-cy="react-grid"
+                className="rg-content"
                 style={{
                     width: props.state.cellMatrix.width, height: props.state.cellMatrix.height
                 }}
@@ -76,7 +77,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                         borders={{ top: true }}
                         zIndex={3}
                     />}
-                <input className="dg-hidden-element" readOnly={true} ref={props.hiddenElementRefHandler} />
+                <input className="rg-hidden-element" readOnly={true} ref={props.hiddenElementRefHandler} />
                 <Line
                     linePosition={props.state.linePosition}
                     orientation={props.state.lineOrientation}
