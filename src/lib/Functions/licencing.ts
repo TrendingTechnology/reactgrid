@@ -3,14 +3,14 @@
 export function checkLicense(license: string) {
     if (license === 'non-commercial') {
         console.log("You are using non-commerial license of ReactGrid. Happy coding!")
-    } else {  
+    } else {
         const separator: string = '//';
         const licenseHash = getHashFromLicense(license, separator);
-        
+
         if (!licenseHash) {
             console.warn("Your ReactGrid license is invalid! Please contact your manager.");
             return;
-        } 
+        }
 
         const licenseWithoutHash = getLicenseWithoutHash(license, separator);
         if (!licenseWithoutHash) {
@@ -38,7 +38,7 @@ export function checkLicense(license: string) {
     }
 }
 
-function isLicenseExpired (expirationDate: Date): boolean{
+function isLicenseExpired(expirationDate: Date): boolean {
     const today = new Date();
     return expirationDate <= today;
 }
@@ -51,7 +51,7 @@ function getHashFromLicense(license: string, separator: string): string | null {
     const licenseHashStart = getLicenseHashStart(license, separator);
     if (licenseHashStart === -1)
         return null;
-    const hash = license.slice(licenseHashStart + separator.length , license.length).trim()// 2 chars offset for separator and space char
+    const hash = license.slice(licenseHashStart + separator.length, license.length).trim()// 2 chars offset for separator and space char
     if (hash.length === 0)
         return null
     return hash
@@ -65,7 +65,7 @@ function getLicenceExpirationDate(license: string): Date | null {
     return new Date(strDate[0]);
 }
 
-function getLicenseWithoutHash(license: string, separator: string) : string | null {
+function getLicenseWithoutHash(license: string, separator: string): string | null {
     let result;
     const licenseHashStart = getLicenseHashStart(license, separator);
     if (licenseHashStart === -1)
@@ -82,8 +82,8 @@ function hashCode(str: string): number {
     var hash = 0, i, chr;
     if (str.length === 0) return hash;
     for (i = 0; i < str.length; i++) {
-        chr   = str.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
+        chr = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
         hash |= 0;
     }
     return Math.abs(hash);

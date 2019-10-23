@@ -1,5 +1,6 @@
 // <reference types="Cypress" />
-const Utils = require('./common/utils');
+// TODO doesn't work
+const Utils = require('../../common/utils');
 
 context('Context menu', () => {
   beforeEach(() => {

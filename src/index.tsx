@@ -6,6 +6,6 @@ import Grid from "./test-grid"
 // this index.tsx is required by react-scripts-ts
 
 ReactDOM.render(
-  <Grid columns={10} rows={25}/>,
+  <Grid columns={10} rows={150} />,
   document.getElementById('root') as HTMLElement
 );

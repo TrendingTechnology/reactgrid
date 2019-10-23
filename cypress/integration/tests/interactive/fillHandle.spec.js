@@ -1,5 +1,5 @@
 // <reference types="Cypress" />
-const Utils = require('./common/utils');
+const Utils = require('../../common/utils');
 
 context('Filling', () => {
     beforeEach(() => {
