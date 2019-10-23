@@ -1,4 +1,4 @@
-const Utils = require('./common/utils');
+const Utils = require('../../common/utils');
 context('Reorder', () => {
     beforeEach(() => {
         Utils.visit();

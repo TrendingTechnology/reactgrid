@@ -1,4 +1,5 @@
-const Utils = require('./common/utils');
+const Utils = require('../../common/utils');
+// TODO to fix in lib
 context('Resize', () => {
     beforeEach(() => {
         Utils.visit();
