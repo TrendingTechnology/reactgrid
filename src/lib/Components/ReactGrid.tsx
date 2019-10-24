@@ -8,7 +8,6 @@ import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
 import { defaultCellTemplates } from "../Common/DefaultCellTemplates";
 import { checkLicense } from "../Functions/licencing";
-import '../assets/core.scss';
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
 
@@ -69,7 +68,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         const range = getActiveSelectedRange(this.state);
         const rowIds = range ? range.rows.map(r => r.id) : []
         const colIds = range ? range.cols.map(c => c.id) : []
-        
+
         return React.createElement(grid as any, {
             state: this.state,
             onKeyDown: this.keyDownHandler,

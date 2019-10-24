@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid",
-  "version": "2.0.5",
+  "version": "2.0.6-rc.0",
   "main": "dist/reactgrid.js",
   "typings": "dist/reactgrid.d.ts",
   "devDependencies": {
@@ -13,8 +13,9 @@
     "cross-env": "^6.0.2",
     "cypress": "^3.3.1",
     "cypress-image-snapshot": "^3.1.1",
-    "npm-version-suffix": "^0.2.0",
     "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5",
+    "npm-version-suffix": "^0.2.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
@@ -26,7 +27,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "pre-deploy": "rm -rf ./dist && tsc -p tsconfig.prod.json && echo 'Finished building NPM package'",
+    "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
+    "copy:assets": "cp -r src/lib/assets dist/lib/assets",
+    "build:assets": "node-sass src/lib/assets/core.scss --output dist/lib/assets",
+    "pre-deploy": "npm-run-all build:tsc copy:assets build:assets",
     "deploy": "npm publish && echo 'Finished publishing NPM package'",
     "eject": "react-scripts eject",
     "test:cypress": "node_modules\\.bin\\cypress open",
