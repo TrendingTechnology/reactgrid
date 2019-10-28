@@ -7,7 +7,7 @@ export default class DataChangingSample extends React.Component<{}, {}> {
         rows: [
             {
                 rowId: 'header',
-                cells: [{ type: 'header', data: 'Player' }, { type: 'header', data: 'Age' }, { type: 'header', data: 'Rate' }, { type: 'header', data: 'Club' }]
+                cells: [{ type: 'header', text: 'Player' }, { type: 'header', text: 'Age' }, { type: 'header', text: 'Rate' }, { type: 'header', data: 'Club' }]
             },
             { rowId: '1', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
             { rowId: '2', cells: [{ type: 'text', text: 'Lionel Messi' }, { type: 'number', value: 32 }, { type: 'number', value: 9 }, { type: 'text', text: 'Barcelona' }] },
@@ -44,7 +44,7 @@ export default class DataChangingSample extends React.Component<{}, {}> {
             state.rows.forEach(row => {
                 if (row.rowId == change.rowId) {
                     const fieldIdx = this.state.columns.findIndex(column => column.columnId == change.columnId);
-                    if (fieldIdx !== undefined) row.cells[fieldIdx] = change.newCell;
+                    if (fieldIdx !== undefined) row.cells[fieldIdx] = change.newCell as any;
                 }
             });
         });

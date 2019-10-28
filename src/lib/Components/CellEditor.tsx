@@ -31,11 +31,10 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 zIndex: 5
             }}
         >
-            {cellTemplate.render(cell, true, (cellData, commit) => {
-                const newCell = { data: cellData, type: cell.type };
-                props.state.currentlyEditedCell = commit ? undefined : newCell;
-                if (commit) props.state.update(state => tryAppendChange(state, location, newCell));
-                else setCell(newCell);
+            {cellTemplate.render(cell, true, (cell, commit) => {
+                props.state.currentlyEditedCell = commit ? undefined : cell;
+                if (commit) props.state.update(state => tryAppendChange(state, location, cell));
+                else setCell(cell);
             })}
         </div>
     );
