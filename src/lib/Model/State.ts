@@ -1,6 +1,7 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, CellChange } from '.';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 import { CellTemplates, Id, Focus, Cell } from './PublicModel';
+import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export type StateModifier = (state: State) => State;
 export type StateUpdater = (modifier: StateModifier) => void;
@@ -8,7 +9,8 @@ export type StateUpdater = (modifier: StateModifier) => void;
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
 export class State {
-    update!: StateUpdater;
+    constructor(public update: StateUpdater) { }
+    readonly legacyBrowserMode = isBrowserIE() || isBrowserEdge();
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
 
@@ -20,7 +22,7 @@ export class State {
     // TODO try to eliminate
     hiddenScrollableElement!: HTMLDivElement;
 
-    readonly queuedChanges: CellChange[] = [];
+    readonly queuedCellChanges: CellChange[] = [];
     currentlyEditedCell?: Cell;
     readonly customFocuses: Focus[] = [];
     readonly disableFillHandle?: boolean;

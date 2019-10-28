@@ -5,11 +5,13 @@ import { recalcVisibleRange } from '.';
 import { defaultCellTemplates } from './defaultCellTemplates';
 
 export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
-    const dataHasChanged = !state.cellMatrix || props.rows !== state.cellMatrix.rows;
+    const dataHasChanged = !state.cellMatrix ||
+        props !== state.cellMatrix.props;
     if (dataHasChanged) {
+        console.log('data has changed');
+        console.log(props.rows);
         state = { ...state, cellMatrix: new CellMatrix(props) };
     }
-
     if (state.selectionMode === 'row' && state.selectedIds.length > 0) {
         state = updateSelectedRows(state);
     } else if (state.selectionMode === 'column' && state.selectedIds.length > 0) {

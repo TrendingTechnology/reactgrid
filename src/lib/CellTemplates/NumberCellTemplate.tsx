@@ -14,7 +14,6 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         return { ...cell, text: cell.value.toString() }
     }
 
-
     handleKeyDown(cell: NumberCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (!ctrl && !alt && !shift && isNumberInput(keyCode))
             return { cell: { ...cell, data: NaN }, enableEditMode: true }

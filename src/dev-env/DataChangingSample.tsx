@@ -38,12 +38,13 @@ export default class DataChangingSample extends React.Component<{}, {}> {
     };
 
     private prepareDataChanges = (dataChanges: CellChange[]): {} => {
+        console.log(dataChanges);
         const state = { ...this.state };
         dataChanges.forEach(change => {
             state.rows.forEach(row => {
                 if (row.rowId == change.rowId) {
-                    const field = this.state.columns.findIndex(column => column.columnId == change.columnId);
-                    //if (field !== undefined) row.cells[field] = change.newCell;
+                    const fieldIdx = this.state.columns.findIndex(column => column.columnId == change.columnId);
+                    if (fieldIdx !== undefined) row.cells[fieldIdx] = change.newCell;
                 }
             });
         });

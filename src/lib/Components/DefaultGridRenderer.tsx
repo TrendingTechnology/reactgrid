@@ -6,7 +6,6 @@ import { GridRendererProps } from '../Model';
 import { CellEditor } from './CellEditor';
 
 export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = props => {
-    console.log(props)
     return (
         <div className="reactgrid"
             onKeyDown={props.eventHandlers.keyDownHandler}

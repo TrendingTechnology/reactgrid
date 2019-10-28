@@ -11,7 +11,6 @@ export class PointerEventsController {
     private pointerDownLocation?: Location;
 
     // TODO Handle PointerCancel
-
     public handlePointerDown = (event: PointerEvent, state: State): State => {
         // TODO open context menu (long hold tap)
         if (event.button !== 0 && event.button !== undefined) {

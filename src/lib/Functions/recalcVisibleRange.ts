@@ -1,7 +1,6 @@
 import { GridColumn, GridRow, Range, State } from '../Model';
 
 export function recalcVisibleRange(state: State): State {
-    console.log('recalc')
     const matrix = state.cellMatrix;
     const { scrollTop, scrollLeft, clientWidth, clientHeight } = state.hiddenScrollableElement ? state.hiddenScrollableElement : state.viewportElement;
     const scrollAreaWidth = clientWidth - matrix.frozenLeftRange.width - matrix.frozenRightRange.width;

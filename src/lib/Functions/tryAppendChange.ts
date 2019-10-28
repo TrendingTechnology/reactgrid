@@ -8,7 +8,7 @@ export function tryAppendChange(state: State, location: Location, cell: Cell): S
 
     const newCell = cellTemplate.reduce(location.cell, cell);
 
-    state.queuedChanges.push({
+    state.queuedCellChanges.push({
         initialCell: location.cell,
         newCell,
         rowId: location.row.rowId,

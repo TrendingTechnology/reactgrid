@@ -23,6 +23,7 @@ export interface ReactGridProps {
     readonly enableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
+
     readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => boolean | void;
     readonly onCellFocused?: (cellId: CellId) => boolean;
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
