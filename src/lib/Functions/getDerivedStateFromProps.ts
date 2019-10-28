@@ -8,8 +8,6 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
     const dataHasChanged = !state.cellMatrix ||
         props !== state.cellMatrix.props;
     if (dataHasChanged) {
-        console.log('data has changed');
-        console.log(props.rows);
         state = { ...state, cellMatrix: new CellMatrix(props) };
     }
     if (state.selectionMode === 'row' && state.selectedIds.length > 0) {

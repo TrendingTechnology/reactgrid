@@ -65,7 +65,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         );
 
     } catch (e) {
-        console.log(location.cell);
         throw `${e} (columnId: ${location.column.columnId}, rowId: ${location.row.rowId}) `
     }
 };

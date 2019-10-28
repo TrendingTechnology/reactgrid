@@ -38,7 +38,6 @@ export default class DataChangingSample extends React.Component<{}, {}> {
     };
 
     private prepareDataChanges = (dataChanges: CellChange[]): {} => {
-        console.log(dataChanges);
         const state = { ...this.state };
         dataChanges.forEach(change => {
             state.rows.forEach(row => {

@@ -28,7 +28,6 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
 
     private handleStateUpdate(state: State) {
-        console.log('handle state update');
         const changes = [...state.queuedCellChanges];
         if (changes.length > 0) {
             if (this.props.onCellsChanged) {
