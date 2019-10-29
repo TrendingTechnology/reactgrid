@@ -1,0 +1,27 @@
+export declare const keyCodes: {
+    POINTER: number;
+    BACKSPACE: number;
+    TAB: number;
+    ENTER: number;
+    SPACE: number;
+    END: number;
+    ESC: number;
+    HOME: number;
+    LEFT_ARROW: number;
+    UP_ARROW: number;
+    RIGHT_ARROW: number;
+    DOWN_ARROW: number;
+    DELETE: number;
+    DIVIDE: number;
+    A: number;
+    Z: number;
+    ZERO: number;
+    NINE: number;
+    NUM_PAD_0: number;
+    NUM_PAD_9: number;
+    PAGE_UP: number;
+    PAGE_DOWN: number;
+    SEMI_COLON: number;
+    SINGLE_QUOTE: number;
+    CTRL: number;
+};
