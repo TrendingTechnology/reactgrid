@@ -11,7 +11,7 @@ export class HeaderCellTemplate implements CellTemplate<string, any> {
 
     cellDataToText = (cellData: string) => cellData;
 
-    getCustomStyle = (cellData: string) => ({ background: '#f3f3f3' })
+    getCustomStyle = (cellData: string) => ({ background: 'rgba(0, 0, 0, 0.07)' })
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => props.cellData
+    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => <div className="rg-header-cell">{props.cellData}</div>
 }
