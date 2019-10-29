@@ -1,15 +1,17 @@
 /* CHECKBOX CELL TEMPLATE */
-.rg-checkbox-cell-input {
-  width: 20px;
-  height: 20px;
+.rg-checkbox-container {
   margin-left: auto;
   margin-right: auto;
   padding: 0;
   border: 0;
+  z-index: 1;
   background: transparent;
-  pointer-events: auto;
-  z-index: 1; }
+  pointer-events: auto; }
+  .rg-checkbox-container .rg-checkbox-cell-input {
+    width: 20px;
+    height: 20px; }
 
+/* HEADER TEMPLATE */
 /* DATE TEMPLATE */
 .rg-date-cell-template {
   width: 100%;
