@@ -6,12 +6,13 @@ import { RowRenderer } from './RowRenderer';
 import { PartialArea } from './PartialArea';
 
 export interface PaneProps {
-    id: string;
-    state: State;
-    style: React.CSSProperties;
-    range: Range;
-    borders: Borders;
-    className?: string;
+    id: string
+    class?: string,
+    state: State,
+    style: React.CSSProperties,
+    range: Range,
+    borders: Borders,
+    className?: string
 }
 
 interface RowsProps {
@@ -36,15 +37,9 @@ class GridContent extends React.Component<RowsProps> {
     render() {
         return (
             <>
-                {this.props.range.rows.map(row => (
-                    <RowRenderer key={row.idx} state={this.props.state} row={row} columns={this.props.range.cols} forceUpdate={true} borders={{ ...this.props.borders, top: this.props.borders.top && row.top === 0, bottom: this.props.borders.bottom && row.idx === this.props.range.last.row.idx }} />
-                ))}
-                {this.props.range.rows.map(row => (
-                    <div key={row.idx} style={{ position: 'absolute', boxSizing: 'border-box', top: row.top, height: row.height, width: '100%', borderBottom: '1px #e5e5e5 solid', pointerEvents: 'none' }} />
-                ))}
-                {this.props.range.cols.map(col => (
-                    <div key={col.idx} style={{ position: 'absolute', boxSizing: 'border-box', top: 0, left: col.left, width: col.width, height: '100%', borderRight: '1px #e5e5e5 solid', pointerEvents: 'none' }} />
-                ))}
+                {this.props.range.rows.map((row) => <RowRenderer key={row.idx} state={this.props.state} row={row} columns={this.props.range.cols} forceUpdate={true} borders={{ ...this.props.borders, top: this.props.borders.top && row.top === 0, bottom: this.props.borders.bottom && row.idx === this.props.range.last.row.idx }} />)}
+                {this.props.range.rows.map((row) => <div key={row.idx} className="rg-separator-line rg-separator-line-row" style={{ top: row.top, height: row.height, }} />)}
+                {this.props.range.cols.map((col) => <div key={col.idx} className="rg-separator-line rg-separator-line-col" style={{ left: col.left, width: col.width }} />)}
             </>
         );
     }
@@ -60,7 +55,7 @@ function renderCustomFocuses(props: PaneProps) {
 
 export const Pane: React.FunctionComponent<PaneProps> = props => {
     return (
-        <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
+        <div key={props.id} className={`rg-pane ${props.class}`} style={{ width: props.range.width, ...props.style }}>
             <GridContent state={props.state} range={props.range} borders={props.borders} />
             {renderSelectedRanges(props.state, props.range)}
             {props.state.currentBehavior.renderPanePart(props.state, props.range)}
@@ -72,19 +67,5 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 function renderSelectedRanges(state: State, pane: Range) {
-    return state.selectedRanges.map(
-        (range, i) =>
-            !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) &&
-            pane.intersectsWith(range) && (
-                <PartialArea
-                    key={i}
-                    pane={pane}
-                    range={range}
-                    style={{
-                        border: '1px solid rgb(53, 121, 248)',
-                        backgroundColor: 'rgba(53, 121, 248, 0.15)'
-                    }}
-                />
-            )
-    );
+    return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} class="rg-partial-area-selected-range" style={{}} />);
 }

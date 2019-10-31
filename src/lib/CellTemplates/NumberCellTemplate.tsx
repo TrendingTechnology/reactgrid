@@ -3,7 +3,7 @@ import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, CompatibleCell } from '../Model';
 import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
 
-interface NumberCell extends Cell {
+export interface NumberCell extends Cell {
     type: 'number',
     value: number
 }
@@ -26,15 +26,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         }
 
         return <input
-            style={{
-                width: '100%',
-                height: '100%',
-                padding: 0,
-                border: 0,
-                background: 'transparent',
-                fontSize: 14,
-                outline: 'none',
-            }}
+            className="rg-number-cell-template"
             ref={input => {
                 if (input) {
                     input.focus();

@@ -36,21 +36,24 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         const cellMatrix = state.cellMatrix;
         const hiddenScrollableElement = state.hiddenScrollableElement;
         return (
-            <div className="dyna-grid-legacy-browser" onCopy={(e: ClipboardEvent) => (isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e))} onCut={(e: ClipboardEvent) => (isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e))} onPaste={(e: ClipboardEvent) => (isBrowserIE() ? state.update((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e))} onKeyDown={props.onKeyDown} onKeyUp={props.onKeyUp} onPointerDown={props.onPointerDown} onContextMenu={props.onContextMenu} style={{ width: '100%', height: '100%', MozUserSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none', userSelect: 'none' }}>
+            <div
+                className="reactgrid-legacy-browser"
+                onCopy={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e)}
+                onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
+                onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.update((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
+                onKeyDown={props.onKeyDown}
+                onKeyUp={props.onKeyUp}
+                onPointerDown={props.onPointerDown}
+                onContextMenu={props.onContextMenu}
+            >
                 <div
                     ref={(hiddenScrollableElement: HTMLDivElement) => hiddenScrollableElement && this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement)}
-                    // TODO this div is not hidden.
-                    className="dg-hidden-scrollable-element"
+                    // TODO this div is not hidden. 
+                    className="rg-hidden-scrollable-element"
                     style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
                         // TODO only 'auto' should be fine
                         overflowX: this.isHorizontalScrollbarVisible() ? 'scroll' : 'auto',
                         overflowY: this.isVerticalScrollbarVisible() ? 'scroll' : 'auto',
-                        zIndex: 1
                     }}
                     onPointerDown={(e: PointerEvent) => {
                         if (this.isClickedOutOfGrid(e)) e.stopPropagation();
@@ -61,38 +64,35 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 </div>
                 {cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && (
                     <div
-                        className="dg-frozen-top"
+                        className="rg-frozen rg-frozen-top"
                         style={{
-                            position: 'absolute',
-                            top: 0,
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
                             height: cellMatrix.frozenTopRange.height,
-                            background: '#fff',
-                            zIndex: 3,
-                            pointerEvents: 'none',
-                            boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)'
                         }}
                     >
-                        {cellMatrix.frozenLeftRange.width > 0 && <Pane id="TL" state={state} style={{ position: 'absolute', top: 0, left: 0, boxShadow: '3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1 }} range={cellMatrix.frozenLeftRange.slice(cellMatrix.frozenTopRange, 'rows')} borders={{}} />}
+                        {cellMatrix.frozenLeftRange.width > 0 &&
+                            <Pane
+                                id="TL"
+                                class="rg-pane-tl"
+                                state={state}
+                                style={{}}
+                                range={cellMatrix.frozenLeftRange.slice(cellMatrix.frozenTopRange, 'rows')}
+                                borders={{}}
+                            />
+                        }
                         <div
+                            className="rg-pane-wrapper"
                             ref={(frozenTopScrollableElement: HTMLDivElement) => frozenTopScrollableElement && this.frozenTopScrollableElementRefHandler(state, frozenTopScrollableElement)}
                             style={{
-                                position: 'absolute',
-                                top: 0,
                                 left: cellMatrix.frozenLeftRange.width,
-                                width: `calc(100% - ${cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width}px + 2px)`,
-                                height: 'calc(100% + 2px)',
-                                overflow: 'hidden'
-                            }}
-                        >
+                                width: `calc(100% - ${cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width}px + 2px)`, height: 'calc(100% + 2px)',
+                            }}>
                             <Pane
                                 id="TC"
+                                class="rg-pane-tc"
                                 state={state}
                                 style={{
                                     width: cellMatrix.width - cellMatrix.frozenLeftRange.width - cellMatrix.frozenRightRange.width + 2,
-                                    paddingBottom: 100,
-                                    overflowX: 'scroll',
-                                    overflowY: 'hidden'
                                 }}
                                 range={cellMatrix.frozenTopRange.slice(state.visibleRange, 'columns')}
                                 borders={{}}
@@ -101,14 +101,9 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         {cellMatrix.frozenRightRange.width > 0 && (
                             <Pane
                                 id="TR"
+                                class="rg-pane-tr"
                                 state={state}
-                                style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    right: 0,
-                                    boxShadow: '-3px 0px 3px -3px rgba(0, 0, 0, .2)',
-                                    zIndex: 1
-                                }}
+                                style={{}}
                                 range={cellMatrix.frozenRightRange.slice(cellMatrix.frozenTopRange, 'rows')}
                                 borders={{}}
                             />
@@ -117,38 +112,26 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 )}
                 {cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && (
                     <div
+                        className="rg-middle-wrapper"
                         style={{
-                            position: 'absolute',
                             top: cellMatrix.frozenTopRange.height,
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
                             height: this.isVerticalScrollbarVisible() ? hiddenScrollableElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height : state.visibleRange.height,
-                            zIndex: 2,
-                            pointerEvents: 'none',
-                            borderLeft: '.1px transparent solid' // delete black line on IE
                         }}
                     >
                         {cellMatrix.frozenLeftRange.width > 0 && (
                             <div
-                                className="dg-frozen-left"
+                                className="rg-middle rg-frozen-left"
                                 ref={(frozenLeftScrollableElement: HTMLDivElement) => frozenLeftScrollableElement && this.frozenLeftScrollableElementRefHandler(state, frozenLeftScrollableElement)}
                                 style={{
-                                    position: 'absolute',
                                     width: cellMatrix.frozenLeftRange.width,
-                                    height: '100%',
-                                    overflow: 'hidden',
-                                    boxShadow: '3px 0px 3px -3px rgba(0, 0, 0, .2)',
-                                    zIndex: 1
-                                }}
-                            >
+                                }}>
                                 <Pane
                                     id="ML"
+                                    class="rg-pane-ml"
                                     state={state}
                                     style={{
                                         height: cellMatrix.height,
-                                        background: '#fff',
-                                        overflowX: 'hidden',
-                                        overflowY: 'scroll',
-                                        paddingRight: 100
                                     }}
                                     range={cellMatrix.frozenLeftRange.slice(cellMatrix.scrollableRange.slice(state.visibleRange, 'rows'), 'rows')}
                                     borders={{}}
@@ -157,27 +140,18 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         )}
                         {cellMatrix.frozenRightRange.width > 0 && (
                             <div
-                                className="dg-frozen-right"
+                                className="rg-middle rg-frozen-right"
                                 ref={(frozenRightScrollableElement: HTMLDivElement) => frozenRightScrollableElement && this.frozenRightScrollableElementRefHandler(state, frozenRightScrollableElement)}
                                 style={{
-                                    position: 'absolute',
-                                    right: 0,
                                     width: cellMatrix.frozenRightRange.width,
-                                    height: '100%',
-                                    overflow: 'hidden',
-                                    boxShadow: '-3px 0px 3px -3px rgba(0, 0, 0, .2)',
-                                    zIndex: 1
                                 }}
                             >
                                 <Pane
                                     id="MR"
+                                    class="rg-pane-mr"
                                     state={state}
                                     style={{
                                         height: cellMatrix.height,
-                                        background: '#fff',
-                                        paddingRight: 100,
-                                        overflowX: 'hidden',
-                                        overflowY: 'scroll'
                                     }}
                                     range={cellMatrix.frozenRightRange.slice(cellMatrix.scrollableRange.slice(state.visibleRange, 'rows'), 'rows')}
                                     borders={{}}
@@ -188,84 +162,83 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 )}
                 {cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 && (
                     <div
-                        className="dg-frozen-bottom"
+                        className="rg-frozen rg-frozen-bottom"
                         style={{
-                            position: 'absolute',
-                            bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : !this.isVerticalScrollbarVisible() ? `calc(100% - ${cellMatrix.frozenTopRange.height + state.visibleRange.height + cellMatrix.frozenBottomRange.height}px)` : 0,
+                            bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : (!this.isVerticalScrollbarVisible() ? `calc(100% - ${cellMatrix.frozenTopRange.height + state.visibleRange.height + cellMatrix.frozenBottomRange.height}px)` : 0),
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
                             height: cellMatrix.frozenBottomRange.height,
-                            background: '#fff',
-                            zIndex: 3,
-                            pointerEvents: 'none',
-                            boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)'
-                        }}
-                    >
-                        {cellMatrix.frozenLeftRange.width > 0 && <Pane id="BL" state={state} style={{ position: 'absolute', bottom: 0, left: 0, boxShadow: '3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1 }} range={cellMatrix.frozenLeftRange.slice(cellMatrix.frozenBottomRange, 'rows')} borders={{}} />}
-                        {state.visibleRange && state.visibleRange.width > 0 && (
+                        }}>
+                        {cellMatrix.frozenLeftRange.width > 0 &&
+                            <Pane
+                                id="BL"
+                                class="rg-pane-bl"
+                                state={state}
+                                style={{}}
+                                range={cellMatrix.frozenLeftRange.slice(cellMatrix.frozenBottomRange, 'rows')}
+                                borders={{}}
+                            />
+                        }
+                        {state.visibleRange && state.visibleRange.width > 0 &&
                             <div
+                                className="rg-pane-bl-wrapper"
                                 ref={(frozenBottomScrollableElement: HTMLDivElement) => frozenBottomScrollableElement && this.frozenBottomScrollableElementRefHandler(state, frozenBottomScrollableElement)}
                                 style={{
-                                    position: 'absolute',
-                                    bottom: 0,
                                     left: cellMatrix.frozenLeftRange.width,
-                                    width: `calc(100% - ${cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width}px)`,
-                                    height: cellMatrix.frozenBottomRange.height,
-                                    overflow: 'hidden'
-                                }}
-                            >
+                                    width: `calc(100% - ${cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width}px)`, height: cellMatrix.frozenBottomRange.height,
+                                }}>
                                 <Pane
                                     id="BC"
+                                    class="rg-pane-bc"
                                     state={state}
                                     style={{
                                         width: cellMatrix.scrollableRange.width + 2,
-                                        paddingBottom: 100,
-                                        overflowX: 'scroll',
-                                        overflowY: 'hidden'
                                     }}
                                     range={cellMatrix.frozenBottomRange.slice(state.visibleRange, 'columns')}
                                     borders={{}}
                                 />
                             </div>
-                        )}
-                        {cellMatrix.frozenRightRange.width > 0 && <Pane id="BR" state={state} style={{ position: 'absolute', bottom: 0, right: 0, boxShadow: '-3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1 }} range={cellMatrix.frozenRightRange.slice(cellMatrix.frozenBottomRange, 'rows')} borders={{}} />}
+                        }
+                        {cellMatrix.frozenRightRange.width > 0 &&
+                            <Pane
+                                id="BR"
+                                class="rg-pane-br"
+                                state={state}
+                                style={{}}
+                                range={cellMatrix.frozenRightRange.slice(cellMatrix.frozenBottomRange, 'rows')}
+                                borders={{}}
+                            />
+                        }
                     </div>
                 )}
                 <div
-                    className="dg-viewport"
+                    className="rg-viewport"
                     ref={props.viewportElementRefHandler}
                     style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0,
-                        bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0,
-                        overflow: 'hidden'
+                        right: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
+                        bottom: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                     }}
                 >
-                    <div data-cy="dyna-grid" className="dg-content" style={{ width: cellMatrix.width, height: cellMatrix.height }}>
-                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.column && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange && (
+                    <div
+                        data-cy="reac-grid"
+                        className="rg-content"
+                        style={{ width: cellMatrix.width, height: cellMatrix.height }}
+                    >
+                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.column && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange &&
                             <Pane
                                 id="MC"
+                                class="rg-pane-mc"
                                 state={state}
                                 style={{
-                                    position: 'absolute',
-                                    top: cellMatrix.frozenTopRange.height,
-                                    left: cellMatrix.frozenLeftRange.width,
+                                    top: cellMatrix.frozenTopRange.height, left: cellMatrix.frozenLeftRange.width,
                                     width: this.isHorizontalScrollbarVisible() ? cellMatrix.width : state.visibleRange.width,
                                     height: this.isVerticalScrollbarVisible() ? cellMatrix.height : state.visibleRange.height
                                 }}
                                 range={cellMatrix.scrollableRange.slice(state.visibleRange, 'rows').slice(state.visibleRange, 'columns')}
                                 borders={{ right: false, bottom: false }}
                             />
-                        )}
+                        }
                         <input
-                            style={{
-                                position: 'fixed',
-                                width: 1,
-                                height: 1,
-                                opacity: 0,
-                                background: 'white'
-                            }}
+                            className="rg-input-xy"
                             ref={(input: HTMLInputElement) => {
                                 if (input) {
                                     props.hiddenElementRefHandler(input);

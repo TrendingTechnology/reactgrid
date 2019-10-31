@@ -33,16 +33,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             return cell.text;
 
         return <input
-            style={{
-                position: 'inherit',
-                width: '100%',
-                height: '100%',
-                padding: 0,
-                border: 0,
-                background: 'transparent',
-                fontSize: 14,
-                outline: 'none',
-            }}
+            className="rg-text-cell-template"
             ref={input => {
                 if (input) {
                     input.focus();

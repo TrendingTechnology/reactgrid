@@ -16,19 +16,13 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     //const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
     return (
         <div
+            className="rg-celleditor"
             style={{
-                //...customStyle,
-                boxSizing: 'border-box',
-                position: 'absolute',
                 top: position.top - 1,
                 left: position.left - 1,
                 height: location.row.height + 1,
                 width: location.column.width + 1,
-                paddingTop: 1,
-                border: '2px #3579f8 solid',
-                background: 'white',
-                boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
-                zIndex: 5
+                //...customStyle,
             }}
         >
             {cellTemplate.render(cell, true, (cell, commit) => {

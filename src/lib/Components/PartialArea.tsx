@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Range } from '../Model';
 
 export interface PartialRangeProps {
-    range: Range;
-    pane: Range;
-    style: React.CSSProperties;
+    range: Range,
+    pane: Range,
+    style: React.CSSProperties
+    class?: string
 }
 
 export const PartialArea: React.FunctionComponent<PartialRangeProps> = props => {
@@ -19,17 +20,12 @@ export const PartialArea: React.FunctionComponent<PartialRangeProps> = props => 
     const hasLeftBorder = range.first.column.idx >= pane.first.column.idx;
     return (
         <div
-            className="dg-partial-area"
+            className={`rg-partial-area ${props.class}`}
             key={range.first.column.idx + pane.last.column.idx}
             style={{
                 ...style,
-                boxSizing: 'border-box',
-                position: 'absolute',
-                pointerEvents: 'none',
-                top: top - (top === 0 ? 0 : 1),
-                left: left - (left === 0 ? 0 : 1),
-                width: width + (left === 0 ? 0 : 1),
-                height: height + (top === 0 ? 0 : 1),
+                top: top - (top === 0 ? 0 : 1), left: left - (left === 0 ? 0 : 1),
+                width: width + (left === 0 ? 0 : 1), height: height + (top === 0 ? 0 : 1),
                 borderTop: hasTopBorder ? (style.borderTop ? style.borderTop : style.border) : '',
                 borderBottom: hasBottomBorder ? (style.borderBottom ? style.borderBottom : style.border) : '',
                 borderRight: hasRightBorder ? (style.borderRight ? style.borderRight : style.border) : '',

@@ -22,35 +22,12 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         if (!cell)
             throw 'Cell validation failed'
 
-
         // TODO custom style
         const style: React.CSSProperties = {
-            //...((cellTemplate.getStyle? && cellTemplate.getCustomStyle(cell, false)) || {}),
-            boxSizing: 'border-box',
-            whiteSpace: 'nowrap',
-            position: 'absolute',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            overflow: 'hidden',
             left: location.column.left,
             top: location.row.top,
             width: location.column.width,
             height: location.row.height,
-            padding: '0 1px',
-            fontSize: 14,
-            // paddingLeft: 2,
-            // paddingRight: 2,
-            //borderTop: borders.top ? 'solid 1px #ccc' : '',
-            //borderLeft: borders.left ? 'solid 1px #ccc' : '',
-            // borderBottom: borders.bottom
-            //     ? 'solid 1px #ccc'
-            //     : 'solid 1px #e5e5e5',
-            // borderRight: borders.right
-            //     ? 'solid 1px #ccc'
-            //     : 'solid 1px #e5e5e5',
-
-            // TODO hardcoded type "header" - can we do better?
             touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.rowId, props.location.column.columnId).type === 'header' ? 'none' : 'auto' // prevent scrolling
         };
 

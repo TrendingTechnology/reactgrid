@@ -5,6 +5,7 @@ export class ColumnReorderBehavior extends Behavior {
     private lastPossibleDropLocation?: PointerLocation;
     private pointerOffset!: number;
     private selectedIdxs!: number[];
+    //private selectedIds!: Id[];
     autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -16,6 +17,7 @@ export class ColumnReorderBehavior extends Behavior {
         const leftColumns = leftIndexes.map(i => state.cellMatrix.cols[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width!, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
+        //this.selectedIds = columns.map(c => c.id)
         return {
             ...state,
             lineOrientation: 'vertical',

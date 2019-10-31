@@ -3,12 +3,13 @@ import { Pane } from './Pane';
 import { State, Borders, Range } from '../Model';
 
 export interface PaneRowProps {
-    id: string;
-    state: State;
-    style: React.CSSProperties;
-    range: Range;
-    borders: Borders;
-    zIndex: number;
+    id: string,
+    class?: string,
+    state: State,
+    style: React.CSSProperties,
+    range: Range,
+    borders: Borders,
+    zIndex: number,
 }
 
 export const PaneRow: React.FunctionComponent<PaneRowProps> = props => {
@@ -16,28 +17,26 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = props => {
     const state = props.state;
     return (
         <div
-            className="dg-pane-row"
+            className={`rg-pane-row ${props.class ? props.class : ''}`}
             style={{
-                width: '100%',
                 height: props.range.height,
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'row',
+                zIndex: props.zIndex,
                 ...props.style,
-                zIndex: props.zIndex
             }}
         >
             {matrix.frozenLeftRange.width > 0 &&
                 <Pane
                     id={props.id + 'L'}
+                    class="rg-pane-l"
                     state={props.state}
-                    style={{ background: 'white', left: 0, position: 'sticky', zIndex: props.zIndex + 1, boxShadow: '3px 0px 3px -3px rgba(0,0,0,0.2)' }}
+                    style={{ left: 0, position: 'sticky', zIndex: props.zIndex + 1 }}
                     range={matrix.frozenLeftRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, right: true }}
                 />}
             {state.visibleRange && state.visibleRange.width > 0 &&
                 <Pane
                     id={props.id + 'C'}
+                    class="rg-pane-c"
                     state={props.state}
                     style={{ width: matrix.scrollableRange.width }}
                     range={props.range.slice(state.visibleRange, 'columns')}
@@ -46,11 +45,13 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = props => {
             {matrix.frozenRightRange.width > 0 &&
                 <Pane
                     id={props.id + 'R'}
+                    class="rg-pane-r"
                     state={props.state}
-                    style={{ background: 'white', right: 0, position: 'sticky', zIndex: props.zIndex + 1, boxShadow: '-3px 0px 3px -3px rgba(0,0,0,0.2)' }}
+                    style={{ right: 0, position: 'sticky', zIndex: props.zIndex + 1 }}
                     range={matrix.frozenRightRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, left: true }}
-                />}
+                />
+            }
         </div>
     );
 };

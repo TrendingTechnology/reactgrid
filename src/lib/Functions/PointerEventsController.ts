@@ -70,7 +70,7 @@ export class PointerEventsController {
             if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state);
             }
-            if (event.pointerType !== 'mouse' && currentTimestamp - this.eventTimestamps[this.currentIndex] >= 500) {
+            if (event.pointerType !== 'mouse' && currentTimestamp - this.eventTimestamps[this.currentIndex] >= 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
                 // TODO is this correct?
                 state = state.currentBehavior.handleContextMenu(event, state);
             }

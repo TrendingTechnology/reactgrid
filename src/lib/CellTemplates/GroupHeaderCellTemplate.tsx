@@ -85,11 +85,6 @@ import * as React from 'react';
 //     }
 // }
 
-// interface IChevronProps {
-//     cellData: GroupHeaderCellData;
-//     cellProps: any;
-// }
-
 // class Chevron extends React.Component<IChevronProps> {
 //     render() {
 //         const { cellData, cellProps } = this.props;
@@ -100,22 +95,11 @@ import * as React from 'react';
 //                     cellData.isExpanded = !cellData.isExpanded;
 //                     cellProps.onCellDataChanged(cellData, true);
 //                 }}
-//                 style={{
-//                     zIndex: 1,
-//                     pointerEvents: 'auto',
-//                     display: 'flex',
-//                     justifyContent: 'center',
-//                     height: '1.4em',
-//                     width: '1.4em',
-//                     fontWeight: 'bold',
-//                     cursor: 'pointer',
-//                 }}
+//                 className="rg-group-header-cell-template-chevron-wrapper"
 //             >
-//                 <div
-//                     style={{
-//                         transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
-//                         transition: '200ms all',
-//                     }}>❯</div>
+//                 <div style={{ transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all',}}>
+//                     ❯
+//                 </div>
 //             </div>
 //         )
 //     }

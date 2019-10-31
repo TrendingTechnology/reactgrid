@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CellTemplate, Cell, CompatibleCell } from '../Model';
 
-interface HeaderCell extends Cell {
+export interface HeaderCell extends Cell {
     type: 'header',
     text: string,
 }

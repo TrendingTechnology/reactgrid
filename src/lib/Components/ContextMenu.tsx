@@ -13,7 +13,6 @@ interface ContextMenuProps {
 }
 
 export class ContextMenu extends React.Component<ContextMenuProps> {
-    state = { isHovered: false };
     render() {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
@@ -36,35 +35,24 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
             contextMenuPosition[1] !== -1 &&
             contextMenuOptions.length > 0 && (
                 <div
-                    className="dg-context-menu"
+                    className="rg-context-menu"
                     style={{
                         top: contextMenuPosition[0] + 'px',
                         left: contextMenuPosition[1] + 'px',
-                        position: 'fixed',
-                        background: 'white',
-                        fontSize: '1em',
-                        boxShadow: '0 4px 5px 3px rgba(0, 0, 0, .2)',
-                        zIndex: 1000
                     }}
                 >
                     {contextMenuOptions.map((el, idx) => {
-                        return (
-                            <div
-                                key={idx}
-                                className="dg-context-menu-option"
-                                style={{
-                                    padding: '8px 20px 8px 15px',
-                                    cursor: 'pointer'
-                                }}
-                                onPointerDown={e => e.stopPropagation()}
-                                onClick={() => {
-                                    el.handler();
-                                    state.update((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }));
-                                }}
-                            >
-                                {el.label}
-                            </div>
-                        );
+                        <div
+                            key={idx}
+                            className="rg-context-menu-option"
+                            onPointerDown={e => e.stopPropagation()}
+                            onClick={() => {
+                                el.handler();
+                                state.update((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }))
+                            }}
+                        >
+                            {el.label}
+                        </div>
                     })}
                 </div>
             )
