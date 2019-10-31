@@ -72,7 +72,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) => {
                 !state.disableFillHandle &&
                 !state.currentlyEditedCell &&
                 focusedLocation &&
-                (!cellTemplates[focusedLocation.cell.type].isFillHandleVisible || !cellTemplates[activeSelectedRange.last.cell.type].isFillHandleVisible) &&
+                (!cellTemplates[focusedLocation.cell.type].isFillHandleHidden || !cellTemplates[activeSelectedRange.last.cell.type].isFillHandleHidden) &&
                 <FillHandle state={state} location={activeSelectedRange.last} />
             }
         </div>

@@ -90,7 +90,7 @@ export interface CellMatrixProps {
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCellData, TCellProps> {
     // FillHandle is hidden if is set true
-    isFillHandleVisible?: any;
+    isFillHandleHidden?: any;
     // Returns true if the data in the cell is not replacable
     // Default: _ => false
     isReadonly?(data: TCellData, props?: TCellProps): boolean;

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CellTemplate, isTextInput, keyCodes, CellRenderProps, isNavigationKey } from '../Common';
 
 export class FilterCellTemplate implements CellTemplate<string, any> {
-    isFillHandleVisible = true;
+    isFillHandleHidden = true;
     isValid(data: string): boolean { return (typeof (data) === 'string') }
 
     isReplacable = () => false;
