@@ -22,7 +22,8 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         height: location.row.height,
         ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false, props) || {}),
         // TODO hardcoded type "header" - can we do better?
-        touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto' // prevent scrolling
+        touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto', // prevent scrolling
+        backgroundColor: cell.props && cell.props.backgroundColor ? cell.props.backgroundColor : 'none'
     }
     return (
         <div className="cell" style={style}>

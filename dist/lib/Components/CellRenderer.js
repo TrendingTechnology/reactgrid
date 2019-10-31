@@ -18,7 +18,7 @@ export var CellRenderer = function (props) {
     var cell = location.cell;
     var isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     var cellTemplate = state.cellTemplates[cell.type];
-    var style = __assign({ left: location.col.left, top: location.row.top, width: location.col.width, height: location.row.height }, (cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false, props) || {}), { touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto' });
+    var style = __assign({ left: location.col.left, top: location.row.top, width: location.col.width, height: location.row.height }, (cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false, props) || {}), { touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto', backgroundColor: cell.props && cell.props.backgroundColor ? cell.props.backgroundColor : 'none' });
     return (React.createElement("div", { className: "cell", style: style },
         cellTemplate.renderContent({
             cellData: props.state.cellTemplates[cell.type].isValid(cell.data) ? cell.data : '',
