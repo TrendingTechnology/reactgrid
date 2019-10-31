@@ -13,6 +13,8 @@ export function trySetDataAndAppendChange(state: State, location: Location, cell
     if (cell.type && cell.type === location.cell.type)
         // TODO Issue #65
         newData = cell.data;
+    else if (targetCellTemplate.isReplacable && !targetCellTemplate.isReplacable(initialCellData))
+        return state;
     else if (cell.type && state.cellTemplates[cell.type] && targetCellTemplate.textToCellData)
         newData = targetCellTemplate.textToCellData(state.cellTemplates[cell.type].cellDataToText(cell.data))
 

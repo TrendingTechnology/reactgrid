@@ -92,6 +92,8 @@ export interface CellTemplate<TCellData, TCellProps> {
     // Returns true if the data in the cell is not replacable
     // Default: _ => false
     isReadonly?(data: TCellData, props?: TCellProps): boolean;
+    // Returns true if the data is editable, but not replacable
+    isReplacable?(data: TCellData): boolean;
     // Returns true if the data is valid
     isValid(data: TCellData, props?: TCellProps): boolean;
     // Returns true if accepts focus
@@ -119,6 +121,7 @@ export interface CellRenderProps<TCellData, TCellProps> {
     cellData: TCellData;
     props?: TCellProps,
     onCellDataChanged(cellData: TCellData, commit: boolean): void;
+    onChange(value: any): void;
     readonly isInEditMode: boolean;
 }
 
@@ -140,6 +143,7 @@ export interface Cell {
     data: any;
     type: string;
     props?: any;
+    onChange?: (value: any) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

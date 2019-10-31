@@ -28,6 +28,12 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
             {cellTemplate.renderContent({
                 cellData: cell.data,
                 isInEditMode: true,
+                onChange: (value: any) => {
+                    if (cell.onChange) {
+                        cell.onChange(value);
+                        props.state.currentlyEditedCell = { data: value, type: cell.type, onChange: cell.onChange };
+                    }
+                },
                 onCellDataChanged: (cellData, commit) => {
                     const newCell = { data: cellData, type: cell.type };
                     props.state.currentlyEditedCell = commit ? undefined : newCell;

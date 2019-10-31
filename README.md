@@ -8,7 +8,7 @@ Before run you need to have installed:
 - "react-dom": "^16.8.6"
 
 ## Getting Started
-```
+```tsx
 import React from 'react';
 import { ReactGrid, ColumnProps, RowProps, DataChange, Id } from '@silevis/reactgrid'
 import '@silevis/reactgrid/dist/lib/assets/core.css';
@@ -107,7 +107,7 @@ export default class App extends React.Component<AppProps, AppState> {
 You must remember to import styles to display grid correctly. You can import core.css like in example above or core.scss which require installed node-sass.
 ### Internet Explorer
 Additional you have to install https://www.npmjs.com/package/core-js and place it like below:
-```
+```ts
 import React from 'react';
 import "core-js/stable";
 import { ReactGrid } from '@silevis/reactgrid'

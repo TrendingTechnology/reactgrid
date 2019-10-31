@@ -36,13 +36,27 @@ interface DevGridProps {
 }
 
 export default class DevGrid extends React.Component<DevGridProps, DevGridState> {
+    private rowsDatabase: any;
+    private filtersArray: any;
+
     constructor(props: DevGridProps) {
         super(props)
         const columns = new Array(props.columns).fill(props.columnsWidth || 100).map((width, idx) => ({ id: this.getRandomId(), width, idx }));
         this.state = {
             columns,
-            rows: new Array(props.rows).fill(props.rowsHeight || 25).map((height, idx) => columns.reduce((row: Row, column: Column) => { row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row }, { id: this.getRandomId(), height, data: {} })),
+            rows: new Array(props.rows)
+                .fill(props.rowsHeight || 25)
+                .map((height, idx) =>
+                    columns.reduce((row: Row, column: Column) => {
+                        row.data[column.id] = idx === 0 ? '' : (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row
+                    }, { id: idx === 0 ? 'filter' : this.getRandomId(), height, data: {} })
+                ),
         }
+        this.filtersArray = this.state.columns.reduce((result: any, current) => {
+            result[current.id] = "";
+            return result;
+        }, {});
+        this.rowsDatabase = this.state.rows;
     }
 
     private getRandomId(): string {
@@ -61,16 +75,32 @@ export default class DevGrid extends React.Component<DevGridProps, DevGridState>
                 state.columns[cIdx].width = width;
                 this.setState(state);
             }
-        }))
+        }));
         const rows: RowProps[] = [...this.state.rows].map((r, rIdx) => ({
             id: r.id,
             height: r.height,
             reorderable: true,
-            cells: [...this.state.columns].map(c => ({ data: r.data[c.id], type: 'text' })),
+            cells: [...this.state.columns].map(c => {
+                if (rIdx === 0) {
+                    return { data: r.data[c.id], type: "filter", onChange: (value: any) => this.filter(value, c.id) }
+                }
+                return { data: r.data[c.id], type: 'text' }
+            }),
             onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
+        }));
+        return {
+            rows, columns
+        }
+    }
 
-        }))
-        return { rows, columns }
+    private filter(value: any, columnId: any) {
+        const state = { ...this.state }
+        let rows = this.rowsDatabase;
+        this.filtersArray[columnId] = value.toString().toLowerCase();
+        state.columns.forEach(col => {
+            rows = rows.filter((el: any) => el.id === 'filter' || el.data[col.id].toString().toLowerCase().includes(this.filtersArray[col.id]));
+        });
+        this.setState({ rows })
     }
 
     private prepareDataChanges(dataChanges: DataChange[]) {
@@ -78,7 +108,7 @@ export default class DevGrid extends React.Component<DevGridProps, DevGridState>
         dataChanges.forEach(change => {
             state.rows.map(r => r.id == change.rowId ? r.data[change.columnId] = change.newData : r)
         })
-        return state
+        return state;
     }
 
     private getReorderedColumns(colIds: Id[], to: number) {

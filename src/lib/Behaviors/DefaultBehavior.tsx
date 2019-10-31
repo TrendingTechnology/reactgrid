@@ -77,8 +77,9 @@ export class DefaultBehavior extends Behavior {
             if (cellTemplate.handleKeyDown) {
                 const { cellData, enableEditMode } = cellTemplate.handleKeyDown(state.focusedLocation.cell.data, 1, event.ctrlKey, event.shiftKey, event.altKey);
                 if (enableEditMode) {
-
-                    return { ...state, currentlyEditedCell: { data: cellData, type: location.cell.type } };
+                    let cell = { data: cellData, type: location.cell.type };
+                    cell = location.cell.onChange ? Object.assign(cell, { onChange: location.cell.onChange }) : cell;
+                    return { ...state, currentlyEditedCell: cell };
                 }
             }
         }
