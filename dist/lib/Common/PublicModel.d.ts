@@ -51,7 +51,7 @@ export interface CellTemplate<TCellData, TCellProps> {
     isFocusable?(data: TCellData, props?: TCellProps): boolean;
     textToCellData?(text: string): TCellData | null;
     cellDataToText(cellData: TCellData, props?: TCellProps): string;
-    handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, event?: any): {
         cellData: TCellData;
         enableEditMode: boolean;
         props?: any;

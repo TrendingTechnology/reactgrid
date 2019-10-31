@@ -24,7 +24,7 @@ function handleKeyDownInternal(state, event) {
         return state;
     var cellTemplate = state.cellTemplates[location.cell.type];
     if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) {
-        var _a = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey), cellData = _a.cellData, enableEditMode = _a.enableEditMode;
+        var _a = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey, event), cellData = _a.cellData, enableEditMode = _a.enableEditMode;
         if (JSON.stringify(location.cell.data) !== JSON.stringify(cellData) || enableEditMode) {
             var newCell = { type: location.cell.type, data: cellData };
             if (enableEditMode) {

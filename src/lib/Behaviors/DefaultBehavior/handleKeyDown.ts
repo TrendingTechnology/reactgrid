@@ -14,7 +14,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
 
     const cellTemplate = state.cellTemplates[location.cell.type];
     if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
-        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
+        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey, event);
         if (JSON.stringify(location.cell.data) !== JSON.stringify(cellData) || enableEditMode) {
             const newCell = { type: location.cell.type, data: cellData };
             if (enableEditMode) {
@@ -115,7 +115,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
                 return isSingleCellSelected ?
-                    {...moveFocusDown(state), currentlyEditedCell: undefined} :
+                    { ...moveFocusDown(state), currentlyEditedCell: undefined } :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
             case keyCodes.ESC:
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
@@ -147,8 +147,8 @@ function moveFocusUp(state: State): State {
 }
 
 function moveFocusDown(state: State): State {
-    if(state.focusedLocation){
-        if(state.focusedLocation.row.idx == state.cellMatrix.last.row.idx)
+    if (state.focusedLocation) {
+        if (state.focusedLocation.row.idx == state.cellMatrix.last.row.idx)
             return focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx, state)
         return focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx + 1, state)
     }
@@ -197,12 +197,11 @@ function moveFocusPageDown(state: State): State {
 function wipeSelectedRanges(state: State): State {
     state.selectedRanges.forEach(range =>
         range.rows.forEach(row =>
-            range.cols.forEach(col =>
-                {   
-                    const location = new Location(row, col);
-                    if(location.cell.data)
-                        state = trySetDataAndAppendChange(state, location, { type: 'text', data: '' })
-                }
+            range.cols.forEach(col => {
+                const location = new Location(row, col);
+                if (location.cell.data)
+                    state = trySetDataAndAppendChange(state, location, { type: 'text', data: '' })
+            }
             )
         )
     )

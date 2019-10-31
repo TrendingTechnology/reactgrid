@@ -106,7 +106,7 @@ export interface CellTemplate<TCellData, TCellProps> {
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
     // Default: _ => { cellData: null, enableEditMode: false }  
-    handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cellData: TCellData, enableEditMode: boolean, props?: any };
+    handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, event?: any): { cellData: TCellData, enableEditMode: boolean, props?: any };
     // Custom styles based on cell data applied to the cells div element
     // Default: _ => {}
     getCustomStyle?(cellData: TCellData, isInEditMode: boolean, props?: any): React.CSSProperties;
