@@ -2,15 +2,20 @@ import * as React from 'react';
 import { CellTemplate, isTextInput, keyCodes, CellRenderProps, isNavigationKey } from '../Common';
 
 export class FilterCellTemplate implements CellTemplate<string, any> {
+    isFillHandleVisible = true;
     isValid(data: string): boolean { return (typeof (data) === 'string') }
 
     isReplacable = () => false;
 
     cellDataToText = (cellData: any) => cellData;
 
-    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, event: any) {
         if (!ctrl && !alt && isTextInput(keyCode))
             return { cellData: '', enableEditMode: true }
+        if (keyCode === keyCodes.ENTER) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
         return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 

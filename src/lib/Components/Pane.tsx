@@ -56,16 +56,25 @@ function renderCustomFocuses(props: PaneProps) {
 }
 
 export const Pane: React.FunctionComponent<PaneProps> = (props) => {
+    const state = props.state;
+    const focusedLocation = state.focusedLocation;
+    const cellTemplates = state.cellTemplates;
+    const activeSelectedRange = state.selectedRanges[props.state.activeSelectedRangeIdx];
     return (
         <div key={props.id} className={`rg-pane ${props.class}`} style={{ width: props.range.width, ...props.style }}>
-            <GridContent state={props.state} range={props.range} borders={props.borders} />
-            {renderSelectedRanges(props.state, props.range)}
-            {props.state.currentBehavior.renderPanePart(props.state, props.range)}
-            {props.state.customFocuses && renderCustomFocuses(props)}
-            {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
-                <CellFocus location={props.state.focusedLocation} />}
-            {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
-                !props.state.disableFillHandle && !props.state.currentlyEditedCell && <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
+            <GridContent state={state} range={props.range} borders={props.borders} />
+            {renderSelectedRanges(state, props.range)}
+            {state.currentBehavior.renderPanePart(state, props.range)}
+            {state.customFocuses && renderCustomFocuses(props)}
+            {focusedLocation && props.range.contains(focusedLocation) && <CellFocus location={focusedLocation} />}
+            {activeSelectedRange &&
+                props.range.contains(activeSelectedRange.last) &&
+                !state.disableFillHandle &&
+                !state.currentlyEditedCell &&
+                focusedLocation &&
+                (!cellTemplates[focusedLocation.cell.type].isFillHandleVisible || !cellTemplates[activeSelectedRange.last.cell.type].isFillHandleVisible) &&
+                <FillHandle state={state} location={activeSelectedRange.last} />
+            }
         </div>
     )
 }
