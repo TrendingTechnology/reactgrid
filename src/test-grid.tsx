@@ -3,11 +3,6 @@ import { ReactGrid } from './lib/Components/ReactGrid'
 import { ColumnProps, RowProps, DataChange, Id } from './lib/Common/PublicModel'
 import './lib/assets/core.scss';
 
-const columns_count = 10;
-const columns_width = 100;
-const rows_height = 25;
-const rows_count = 16;
-
 interface Column {
     id: string;
     width: number;
@@ -66,7 +61,7 @@ export default class DevGrid extends React.Component<DevGridProps, DevGridState>
             id: r.id,
             height: r.height,
             reorderable: true,
-            cells: [...this.state.columns].map(c => ({ data: r.data[c.id], type: 'checkbox' })),
+            cells: [...this.state.columns].map(c => ({ data: r.data[c.id], type: 'text' })),
             onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
 
         }))
