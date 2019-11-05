@@ -66,7 +66,7 @@ export default class DevGrid extends React.Component<DevGridProps, DevGridState>
             id: r.id,
             height: r.height,
             reorderable: true,
-            cells: [...this.state.columns].map(c => ({ data: r.data[c.id], type: 'text' })),
+            cells: [...this.state.columns].map(c => ({ data: r.data[c.id], type: 'checkbox' })),
             onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
 
         }))

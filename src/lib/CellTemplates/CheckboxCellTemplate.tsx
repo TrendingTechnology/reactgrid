@@ -23,11 +23,16 @@ export class CheckboxCellTemplate implements CellTemplate<boolean, any> {
     }
 
     renderContent: (props: CellRenderProps<boolean, any>) => React.ReactNode = (props) => {
-        return <input
-            type="checkbox"
-            className="rg-checkbox-cell-template"
-            checked={props.cellData}
-            onChange={() => props.onCellDataChanged(!props.cellData, true)}
-        />
+        return (
+            <label className="rg-checkbox-container">
+                <input
+                    type="checkbox"
+                    className="rg-checkbox-cell-input"
+                    checked={props.cellData}
+                    onChange={() => props.onCellDataChanged(!props.cellData, true)}
+                />
+                <span className="rg-checkbox-checkmark"></span>
+            </label>
+        )   
     }
 }
