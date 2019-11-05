@@ -3,11 +3,6 @@ import { ReactGrid } from './lib/Components/ReactGrid'
 import { ColumnProps, RowProps, DataChange, Id } from './lib/Common/PublicModel'
 import './lib/assets/core.scss';
 
-const columns_count = 10;
-const columns_width = 100;
-const rows_height = 25;
-const rows_count = 16;
-
 interface Column {
     id: string;
     width: number;
