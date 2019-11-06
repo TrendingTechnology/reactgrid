@@ -12,9 +12,9 @@ export class ColumnReorderBehavior extends Behavior {
         this.initialColumnIdx = location.column.idx;
         this.lastPossibleDropLocation = location;
         this.selectedIdxs = state.selectedIndexes.sort();
-        const columns = this.selectedIdxs.map(i => state.cellMatrix.cols[i]);
+        const columns = this.selectedIdxs.map(i => state.cellMatrix.columns[i]);
         const leftIndexes = this.selectedIdxs.filter(i => i < location.column.idx);
-        const leftColumns = leftIndexes.map(i => state.cellMatrix.cols[i]);
+        const leftColumns = leftIndexes.map(i => state.cellMatrix.columns[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width!, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
         //this.selectedIds = columns.map(c => c.id)

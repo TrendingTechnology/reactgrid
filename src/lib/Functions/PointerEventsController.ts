@@ -1,6 +1,7 @@
 import { Location, State, StateUpdater, PointerEvent } from '../Model';
 import { getLocationFromClient, scrollIntoView, isBrowserIE } from '.';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
+import { areLocationsEqual } from './areLocationsEqual';
 
 export class PointerEventsController {
     constructor(private readonly updateState: StateUpdater) { }
@@ -24,7 +25,7 @@ export class PointerEventsController {
         this.currentIndex = 1 - this.currentIndex;
         this.eventTimestamps[this.currentIndex] = new Date().valueOf();
         this.eventLocations[this.currentIndex] = currentLocation;
-        if (event.pointerType === 'mouse' || (currentLocation.row.idx === 0 || currentLocation.column.idx === 0) || currentLocation.equals(previousLocation) || event.pointerType === undefined) {
+        if (event.pointerType === 'mouse' || (currentLocation.row.idx === 0 || currentLocation.column.idx === 0) || areLocationsEqual(currentLocation, previousLocation) || event.pointerType === undefined) {
             // === undefined only for cypress tests
             state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
         }
@@ -39,7 +40,7 @@ export class PointerEventsController {
             state = state.currentBehavior.handlePointerMove(event, currentLocation, state);
             const previousLocation = this.eventLocations[this.currentIndex];
             this.eventLocations[this.currentIndex] = currentLocation;
-            if (!currentLocation.equals(previousLocation)) {
+            if (!areLocationsEqual(currentLocation, previousLocation)) {
                 state = state.currentBehavior.handlePointerEnter(event, currentLocation, state);
             }
             return state;
@@ -59,7 +60,7 @@ export class PointerEventsController {
             // TODO explain this case
             if (
                 event.pointerType !== 'mouse' &&
-                currentLocation.equals(this.pointerDownLocation) &&
+                areLocationsEqual(currentLocation, this.pointerDownLocation) &&
                 event.pointerType !== undefined && // !== undefined only for cypress tests
                 currentTimestamp - this.eventTimestamps[this.currentIndex] < 500 &&
                 (currentLocation.row.idx > 0 && currentLocation.column.idx > 0)
@@ -67,10 +68,15 @@ export class PointerEventsController {
                 state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }
             state = { ...state, currentBehavior: new DefaultBehavior() };
-            if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
+            if (currentTimestamp - secondLastTimestamp < 500 &&
+                areLocationsEqual(currentLocation, this.eventLocations[0]) &&
+                areLocationsEqual(currentLocation, this.eventLocations[1])) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state);
             }
-            if (event.pointerType !== 'mouse' && currentTimestamp - this.eventTimestamps[this.currentIndex] >= 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
+            if (event.pointerType !== 'mouse' &&
+                currentTimestamp - this.eventTimestamps[this.currentIndex] >= 500 &&
+                areLocationsEqual(currentLocation, this.eventLocations[0]) &&
+                areLocationsEqual(currentLocation, this.eventLocations[1])) {
                 // TODO is this correct?
                 state = state.currentBehavior.handleContextMenu(event, state);
             }

@@ -55,7 +55,7 @@ export interface CellChange<TCell extends Cell = Cell> {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-// This interface is used for the communication between DynaGrid and a cell
+// This interface is used for the communication between ReactGrid and a cell
 export interface CellTemplate<TCell extends Cell = Cell> {
     // Validate and convert to exchangable cell type
     validate(cell: TCell): CompatibleCell<TCell>
@@ -64,10 +64,11 @@ export interface CellTemplate<TCell extends Cell = Cell> {
     isFocusable?(cell: TCell): boolean;
     // Reduces current cell and new cell to one cell
     // If not implemented, cell will be read-only
-    reduce?(cell: TCell, newCell: TCell | CompatibleCell): TCell;
+    update?(cell: TCell, newCell: TCell | CompatibleCell): TCell;
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
     // Default: cell => { cell, enableEditMode: false }
+    // TODO pass whole event
     handleKeyDown?(cell: TCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: TCell; enableEditMode: boolean };
     // Custom styles based on cell data applied to the cells div element
     // Default: _ => cell.style | {}

@@ -18,7 +18,7 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
         state = { ...state, selectedRanges: [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range)) };
     }
 
-    if (state.cellMatrix.cols.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
+    if (state.cellMatrix.columns.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
         state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) };
         // TODO check it
         setTimeout(() => {

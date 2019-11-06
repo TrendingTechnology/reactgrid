@@ -366,7 +366,7 @@ export function copySelectedRangeToClipboardInIE(state: State, removeValues = fa
     //             }
     //         }
     //         if (removeValues) {
-    //             state = tryAppendChange(state, new Location(row, col), emptyCell);
+    //             state = tryAppendChange(state, newLocation(row, col), emptyCell);
     //         }
     //     });
     //     const areAllEmptyCells = activeSelectedRange.cols.every(el => {

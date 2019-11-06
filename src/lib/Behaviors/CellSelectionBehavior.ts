@@ -1,6 +1,7 @@
 import { focusLocation, PointerEvent } from '../Functions';
 import { State, Location, Behavior } from '../Model';
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
+import { newLocation } from '../Functions/newLocation';
 
 export class CellSelectionBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
@@ -32,7 +33,7 @@ export class CellSelectionBehavior extends Behavior {
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         const range = state.cellMatrix.getRange(state.focusedLocation!, location);
         if (state.disableRangeSelection) {
-            return focusLocation(state, new Location(state.focusedLocation!.row, state.focusedLocation!.column));
+            return focusLocation(state, newLocation(state.focusedLocation!.row, state.focusedLocation!.column));
         } else if (state.selectionMode === 'range') {
             return updateActiveSelectedRange(state, range);
         } else {

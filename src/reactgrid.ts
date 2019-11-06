@@ -1,3 +1,3 @@
-import DevGrid from "./test-grid"
+import DevGrid from './test-grid'
 export default DevGrid;
-export * from "./lib";
+export * from './lib';

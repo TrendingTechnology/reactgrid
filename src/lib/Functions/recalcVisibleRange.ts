@@ -6,15 +6,15 @@ export function recalcVisibleRange(state: State): State {
     const scrollAreaWidth = clientWidth - matrix.frozenLeftRange.width - matrix.frozenRightRange.width;
     const scrollAreaHeight = clientHeight - matrix.frozenTopRange.height - matrix.frozenBottomRange.height;
     // TODO improve calculation of visibleCols & visibleRows - this filter is very inefficient for big tables
-    const visibleCols = matrix.scrollableRange.cols.filter((col: GridColumn) => col.right >= scrollLeft && col.left <= scrollLeft + scrollAreaWidth);
+    const visibleColumns = matrix.scrollableRange.columns.filter((col: GridColumn) => col.right >= scrollLeft && col.left <= scrollLeft + scrollAreaWidth);
     const visibleRows = matrix.scrollableRange.rows.filter((row: GridRow) => row.bottom >= scrollTop && row.top <= scrollTop + scrollAreaHeight);
-    const visibleRange = new Range(visibleCols, visibleRows);
+    const visibleRange = new Range(visibleRows, visibleColumns);
     return {
         ...state,
         minScrollLeft: visibleRange.first.column == undefined ? 0 : visibleRange.first.column.left,
         maxScrollLeft: visibleRange.last.column == undefined ? 0 : visibleRange.last.column.right - scrollAreaWidth,
         minScrollTop: visibleRows.length > 0 ? visibleRange.first.row.top : 0,
-        maxScrollTop: visibleCols.length > 0 ? (visibleRange.last.row == undefined ? 0 : visibleRange.last.row.bottom - scrollAreaHeight) : 0,
+        maxScrollTop: visibleColumns.length > 0 ? (visibleRange.last.row == undefined ? 0 : visibleRange.last.row.bottom - scrollAreaHeight) : 0,
         visibleRange: visibleRange
     };
 }

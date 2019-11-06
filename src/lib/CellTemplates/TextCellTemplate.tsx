@@ -16,7 +16,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
         return cell;
     }
 
-    reduce(cell: TextCell, newCell: TextCell | CompatibleCell): TextCell {
+    update(cell: TextCell, newCell: TextCell | CompatibleCell): TextCell {
         // A CompatibleCell will provide the properties a TextCell needs
         return newCell as TextCell;
     }

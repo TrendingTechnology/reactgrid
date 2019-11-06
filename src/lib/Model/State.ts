@@ -31,6 +31,7 @@ export class State {
     readonly disableRowSelection?: boolean;
 
     // CONTEXT MENU
+    // TODO { top, left }
     readonly contextMenuPosition: number[] = [-1, -1]; // [top, left]
 
     // LINE AND SHADOW

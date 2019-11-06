@@ -1,6 +1,7 @@
 import { State, Location } from '../Model';
 import { scrollIntoView } from './scrollIntoView';
 import { tryAppendChange } from './tryAppendChange';
+import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function focusLocation(state: State, location: Location, resetSelection = true): State {
     // TODO scroll into view after changing state !?
@@ -12,8 +13,11 @@ export function focusLocation(state: State, location: Location, resetSelection =
         state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
 
-    const cellTemplate = state.cellTemplates[location.cell.type];
-    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(location.cell);
+    const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
+    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(cell);
+
+    if (!isFocusable)
+        return state;
 
     if (resetSelection)
         state = {
@@ -27,8 +31,8 @@ export function focusLocation(state: State, location: Location, resetSelection =
 
     return {
         ...state,
-        contextMenuPosition: [-1, -1],
-        focusedLocation: location, // TODO enable: isFocusable ? location : undefined,
-        currentlyEditedCell: undefined
+        contextMenuPosition: [-1, -1], // TODO disable in derived state from props
+        focusedLocation: location,
+        currentlyEditedCell: undefined // TODO disable in derived state from props
     };
 }

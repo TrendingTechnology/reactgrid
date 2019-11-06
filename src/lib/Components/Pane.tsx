@@ -37,9 +37,9 @@ class GridContent extends React.Component<RowsProps> {
     render() {
         return (
             <>
-                {this.props.range.rows.map((row) => <RowRenderer key={row.idx} state={this.props.state} row={row} columns={this.props.range.cols} forceUpdate={true} borders={{ ...this.props.borders, top: this.props.borders.top && row.top === 0, bottom: this.props.borders.bottom && row.idx === this.props.range.last.row.idx }} />)}
-                {this.props.range.rows.map((row) => <div key={row.idx} className="rg-separator-line rg-separator-line-row" style={{ top: row.top, height: row.height, }} />)}
-                {this.props.range.cols.map((col) => <div key={col.idx} className="rg-separator-line rg-separator-line-col" style={{ left: col.left, width: col.width }} />)}
+                {this.props.range.rows.map((row) => <RowRenderer key={row.rowId} state={this.props.state} row={row} columns={this.props.range.columns} forceUpdate={true} borders={{ ...this.props.borders, top: this.props.borders.top && row.top === 0, bottom: this.props.borders.bottom && row.idx === this.props.range.last.row.idx }} />)}
+                {this.props.range.rows.map((row) => <div key={row.rowId} className="rg-separator-line rg-separator-line-row" style={{ top: row.top, height: row.height, }} />)}
+                {this.props.range.columns.map((col) => <div key={col.columnId} className="rg-separator-line rg-separator-line-col" style={{ left: col.left, width: col.width }} />)}
             </>
         );
     }
@@ -67,5 +67,5 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 function renderSelectedRanges(state: State, pane: Range) {
-    return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} class="rg-partial-area-selected-range" style={{}} />);
+    return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.columns.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} class="rg-partial-area-selected-range" style={{}} />);
 }

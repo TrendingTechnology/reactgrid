@@ -19,9 +19,9 @@ export class ResizeColumnBehavior extends Behavior {
             linePosition = location.viewportX;
         } else {
             let offset = 0;
-            if (state.cellMatrix.scrollableRange.cols.map(c => c.idx).includes(this.resizedColumn.idx)) {
+            if (state.cellMatrix.scrollableRange.columns.map(c => c.idx).includes(this.resizedColumn.idx)) {
                 offset = state.cellMatrix.frozenLeftRange.width;
-            } else if (state.cellMatrix.frozenRightRange.cols.map(c => c.idx).includes(this.resizedColumn.idx)) {
+            } else if (state.cellMatrix.frozenRightRange.columns.map(c => c.idx).includes(this.resizedColumn.idx)) {
                 offset = Math.min(state.viewportElement.clientWidth, state.cellMatrix.width) - state.cellMatrix.frozenRightRange.width
             }
             linePosition = this.resizedColumn.left + this.minColumnWidth + offset + state.viewportElement.scrollLeft;

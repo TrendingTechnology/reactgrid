@@ -1,18 +1,20 @@
 import { Location, State, Cell } from '../Model';
+import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function tryAppendChange(state: State, location: Location, cell: Cell): State {
 
-    const cellTemplate = state.cellTemplates[location.cell.type];
-    if (location.cell === cell || JSON.stringify(location.cell) === JSON.stringify(cell) || cellTemplate.reduce === undefined)
+    const { cell: initialCell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
+    if (initialCell === cell || JSON.stringify(initialCell) === JSON.stringify(cell) || cellTemplate.update === undefined)
         return state;
 
-    const newCell = cellTemplate.reduce(location.cell, cell);
+    const newCell = cellTemplate.update(initialCell, cell);
+    if (newCell === cell || JSON.stringify(newCell) === JSON.stringify(cell))
 
-    state.queuedCellChanges.push({
-        initialCell: location.cell,
-        newCell,
-        rowId: location.row.rowId,
-        columnId: location.column.columnId
-    });
+        state.queuedCellChanges.push({
+            initialCell,
+            newCell,
+            rowId: location.row.rowId,
+            columnId: location.column.columnId
+        });
     return { ...state };
 }

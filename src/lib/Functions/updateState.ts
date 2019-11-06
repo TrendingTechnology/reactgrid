@@ -1,4 +1,5 @@
 import { State, Location, GridRow, GridColumn } from '../Model';
+import { newLocation } from './newLocation';
 
 // TODO cleanup
 // export function updateFocusedLocation(state: State): State {
@@ -35,7 +36,7 @@ export function updateSelectedRows(state: State): State {
     // TODO this filter is very inefficient for big tables
     const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.rowId)).sort((a, b) => a.idx - b.idx);
     const rows = groupedRows(updatedRows);
-    const ranges = rows.map(row => state.cellMatrix.getRange(new Location(row[0], firstCol), new Location(row[row.length - 1], lastCol)));
+    const ranges = rows.map(row => state.cellMatrix.getRange(newLocation(row[0], firstCol), newLocation(row[row.length - 1], lastCol)));
     let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
     if (state.focusedLocation) {
@@ -62,14 +63,14 @@ export function updateSelectedColumns(state: State): State {
     const firstRow = state.cellMatrix.first.row;
     const lastRow = state.cellMatrix.last.row;
     // TODO this filter is very inefficient for big tables
-    const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.columnId)).sort((a, b) => a.idx - b.idx);
+    const updatedColumns = state.cellMatrix.columns.filter(r => state.selectedIds.includes(r.columnId)).sort((a, b) => a.idx - b.idx);
     const columns = groupedColumns(updatedColumns);
-    const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
+    const ranges = columns.map(arr => state.cellMatrix.getRange(newLocation(firstRow, arr[0]), newLocation(lastRow, arr[arr.length - 1])));
     let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
     if (state.focusedLocation) {
         ranges.forEach((range, idx) => {
-            range.cols.forEach(col => {
+            range.columns.forEach(col => {
                 if (state.focusedLocation!.column.columnId === col.columnId) {
                     activeSelectedRangeIdx = idx;
                 }
@@ -100,7 +101,7 @@ export function updateSelectedColumns(state: State): State {
 
 //         columns.forEach(c => {
 //             rows.forEach(r => {
-//                 newSelectedRanges.push(state.cellMatrix.getRange(new Location(r[0], c[0]), new Location(r[r.length - 1], c[c.length - 1])))
+//                 newSelectedRanges.push(state.cellMatrix.getRange(newLocation(r[0], c[0]), newLocation(r[r.length - 1], c[c.length - 1])))
 //             })
 //         })
 //     })
@@ -108,10 +109,10 @@ export function updateSelectedColumns(state: State): State {
 //     let activeSelectedRangeIdx = 0;
 
 //     if (state.focusedLocation && newSelectedRanges.length == 0) {
-//         const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
+//         const location = newLocation(state.focusedLocation.row, state.focusedLocation.col)
 //         newSelectedRanges.push(state.cellMatrix.getRange(location, location))
 //     } else if (state.focusedLocation) {
-//         const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
+//         const location = newLocation(state.focusedLocation.row, state.focusedLocation.col)
 //         const index = newSelectedRanges.findIndex(r => r.contains(location))
 //         if (index !== -1) {
 //             activeSelectedRangeIdx = index

@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Range } from '../Model';
 
-export interface PartialRangeProps {
+export interface PartialAreaProps {
     range: Range,
     pane: Range,
     style: React.CSSProperties
     class?: string
 }
 
-export const PartialArea: React.FunctionComponent<PartialRangeProps> = props => {
+export const PartialArea: React.FunctionComponent<PartialAreaProps> = props => {
     const { range, pane, style } = props;
     const top = range.first.row.idx <= pane.first.row.idx ? pane.first.row.top : range.first.row.top;
     const left = range.first.column.idx <= pane.first.column.idx ? pane.first.column.left : range.first.column.left;

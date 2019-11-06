@@ -1,6 +1,6 @@
-import { Id } from './PublicModel';
+import { Id, CompatibleCell } from './PublicModel';
 import { Range } from './Range';
-import { Column, Row, Location, Cell, GridRow, GridColumn } from '.';
+import { Column, Row, Location, Cell, GridRow, GridColumn, State } from '.';
 
 const DEFAULT_ROW_HEIGHT = 25;
 const DEFAULT_COLUMN_WIDTH = 150;
@@ -29,13 +29,14 @@ export class CellMatrix {
     readonly width: number = 0;
     readonly height: number = 0;
 
-    readonly cols: GridColumn[];
+    readonly columns: GridColumn[];
     readonly rows: GridRow[];
     readonly first: Location;
     readonly last: Location;
 
-    private readonly rowIndexLookup: IndexLookup = {};
-    private readonly columnIndexLookup: IndexLookup = {};
+    // TODO Lookup seems to be unused
+    //private readonly rowIndexLookup: IndexLookup = {};
+    //private readonly columnIndexLookup: IndexLookup = {};
 
     constructor(public readonly props: CellMatrixProps) {
         const frozenBottomFirstIdx = props.rows.length - (props.frozenBottomRows || 0);
@@ -54,7 +55,7 @@ export class CellMatrix {
             },
             [] as GridRow[]
         );
-        this.cols = props.columns.reduce(
+        this.columns = props.columns.reduce(
             (cols, column, idx) => {
                 const left = idx === 0 || idx === props.frozenLeftColumns || idx === frozenRightFirstIdx ? 0 : cols[idx - 1].left + cols[idx - 1].width;
                 const width = column.width || DEFAULT_COLUMN_WIDTH;
@@ -67,29 +68,29 @@ export class CellMatrix {
         );
         this.height = totalHeight;
         this.width = totalWidth;
-        this.frozenLeftRange = new Range(this.cols.slice(0, props.frozenLeftColumns || 0), this.rows);
-        this.frozenRightRange = new Range(this.cols.slice(frozenRightFirstIdx, this.cols.length), this.rows);
-        this.frozenTopRange = new Range(this.cols, this.rows.slice(0, props.frozenTopRows || 0));
-        this.frozenBottomRange = new Range(this.cols, this.rows.slice(frozenBottomFirstIdx, this.rows.length));
-        this.scrollableRange = new Range(this.cols.slice(props.frozenLeftColumns || 0, frozenRightFirstIdx), this.rows.slice(props.frozenTopRows || 0, frozenBottomFirstIdx));
+        this.frozenLeftRange = new Range(this.columns.slice(0, props.frozenLeftColumns || 0), this.rows);
+        this.frozenRightRange = new Range(this.columns.slice(frozenRightFirstIdx, this.columns.length), this.rows);
+        this.frozenTopRange = new Range(this.columns, this.rows.slice(0, props.frozenTopRows || 0));
+        this.frozenBottomRange = new Range(this.columns, this.rows.slice(frozenBottomFirstIdx, this.rows.length));
+        this.scrollableRange = new Range(this.columns.slice(props.frozenLeftColumns || 0, frozenRightFirstIdx), this.rows.slice(props.frozenTopRows || 0, frozenBottomFirstIdx));
         this.first = this.getLocation(0, 0);
-        this.last = this.getLocation(this.rows.length - 1, this.cols.length - 1);
+        this.last = this.getLocation(this.rows.length - 1, this.columns.length - 1);
     }
 
     getRange(start: Location, end: Location): Range {
-        const cols = this.cols.slice(start.column.idx < end.column.idx ? start.column.idx : end.column.idx, start.column.idx > end.column.idx ? start.column.idx + 1 : end.column.idx + 1);
+        const cols = this.columns.slice(start.column.idx < end.column.idx ? start.column.idx : end.column.idx, start.column.idx > end.column.idx ? start.column.idx + 1 : end.column.idx + 1);
         const rows = this.rows.slice(start.row.idx < end.row.idx ? start.row.idx : end.row.idx, start.row.idx > end.row.idx ? start.row.idx + 1 : end.row.idx + 1);
         return new Range(cols, rows);
     }
 
-    getLocation(rowIdx: number, colIdx: number): Location {
-        return new Location(this.rows[rowIdx], this.cols[colIdx]);
+    getLocation(rowIdx: number, columnIdx: number): Location {
+        return { row: this.rows[rowIdx], column: this.columns[columnIdx] };
     }
 
-    getLocationById(rowId: Id, colId: Id): Location {
+    getLocationById(rowId: Id, columnId: Id): Location {
         const row = this.rows[this.rowIndexLookup[rowId]];
-        const col = this.cols[this.columnIndexLookup[colId]];
-        return this.validateLocation(new Location(row, col));
+        const column = this.columns[this.columnIndexLookup[columnId]];
+        return this.validateLocation({ row, column });
     }
 
     validateLocation(location: Location): Location {
@@ -102,8 +103,8 @@ export class CellMatrix {
         return this.getRange(this.validateLocation(range.first), this.validateLocation(range.last));
     }
 
-    getCell(rowId: Id, colId: Id): Cell {
-        const row = this.rows[this.rowIndexLookup[rowId]];
-        return row.cells[this.columnIndexLookup[colId]];
+    getCell(location: Location): Cell {
+        return this.rows[location.row.idx].cells[location.column.idx]
+
     }
 }

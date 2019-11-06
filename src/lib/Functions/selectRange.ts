@@ -1,4 +1,5 @@
 import { State, Range, GridColumn, GridRow, Location } from '../Model';
+import { newLocation } from './newLocation';
 
 export function selectRange(state: State, range: Range, incremental: boolean): State {
     return {
@@ -46,13 +47,13 @@ export function unSelectOneColumn(state: State, col: GridColumn): State {
 export function selectMultipleColumns(state: State, firstCol: GridColumn, lastCol: GridColumn, incremental?: boolean): State {
     const firstRow = state.cellMatrix.first.row;
     const lastRow = state.cellMatrix.last.row;
-    const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol));
+    const range = state.cellMatrix.getRange(newLocation(firstRow, firstCol), newLocation(lastRow, lastCol));
 
     return {
         ...state,
         selectionMode: 'column',
-        selectedIndexes: incremental ? state.selectedIndexes.concat(range.cols.map(col => col.idx)) : range.cols.map(col => col.idx),
-        selectedIds: incremental ? state.selectedIds.concat(range.cols.map(col => col.columnId)) : range.cols.map(col => col.columnId)
+        selectedIndexes: incremental ? state.selectedIndexes.concat(range.columns.map(col => col.idx)) : range.columns.map(col => col.idx),
+        selectedIds: incremental ? state.selectedIds.concat(range.columns.map(col => col.columnId)) : range.columns.map(col => col.columnId)
     };
 }
 
@@ -80,7 +81,7 @@ export function unSelectOneRow(state: State, row: GridRow): State {
 export function selectMultipleRows(state: State, firstRow: GridRow, lastRow: GridRow, incremental?: boolean): State {
     const firstCol = state.cellMatrix.first.column;
     const lastCol = state.cellMatrix.last.column;
-    const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol));
+    const range = state.cellMatrix.getRange(newLocation(firstRow, firstCol), newLocation(lastRow, lastCol));
 
     return {
         ...state,

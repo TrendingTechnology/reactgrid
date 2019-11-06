@@ -21,7 +21,7 @@ export class EventHandlers {
     pasteCaptureHandler = (event: ClipboardEvent) => {
         const htmlData = event.clipboardData!.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html');
-        if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
+        if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-reactgrid') === 'reactgrid') {
             event.bubbles = false;
         }
     };
