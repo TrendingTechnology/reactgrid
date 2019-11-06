@@ -1,4 +1,4 @@
-import { Id, CompatibleCell } from './PublicModel';
+import { Id } from './PublicModel';
 import { Range } from './Range';
 import { Column, Row, Location, Cell, GridRow, GridColumn, State } from '.';
 
@@ -34,9 +34,8 @@ export class CellMatrix {
     readonly first: Location;
     readonly last: Location;
 
-    // TODO Lookup seems to be unused
-    //private readonly rowIndexLookup: IndexLookup = {};
-    //private readonly columnIndexLookup: IndexLookup = {};
+    private readonly rowIndexLookup: IndexLookup = {};
+    private readonly columnIndexLookup: IndexLookup = {};
 
     constructor(public readonly props: CellMatrixProps) {
         const frozenBottomFirstIdx = props.rows.length - (props.frozenBottomRows || 0);
@@ -50,7 +49,7 @@ export class CellMatrix {
                 const height = row.height || DEFAULT_ROW_HEIGHT;
                 rows.push({ ...row, top, height, idx, bottom: top + height });
                 totalHeight += height;
-                this.rowIndexLookup[row.rowId] = idx;
+                //this.rowIndexLookup[row.rowId] = idx;
                 return rows;
             },
             [] as GridRow[]
@@ -61,18 +60,18 @@ export class CellMatrix {
                 const width = column.width || DEFAULT_COLUMN_WIDTH;
                 cols.push({ ...column, idx, left, width, right: left + width });
                 totalWidth += width;
-                this.columnIndexLookup[column.columnId] = idx;
+                //this.columnIndexLookup[column.columnId] = idx;
                 return cols;
             },
             [] as GridColumn[]
         );
         this.height = totalHeight;
         this.width = totalWidth;
-        this.frozenLeftRange = new Range(this.columns.slice(0, props.frozenLeftColumns || 0), this.rows);
-        this.frozenRightRange = new Range(this.columns.slice(frozenRightFirstIdx, this.columns.length), this.rows);
-        this.frozenTopRange = new Range(this.columns, this.rows.slice(0, props.frozenTopRows || 0));
-        this.frozenBottomRange = new Range(this.columns, this.rows.slice(frozenBottomFirstIdx, this.rows.length));
-        this.scrollableRange = new Range(this.columns.slice(props.frozenLeftColumns || 0, frozenRightFirstIdx), this.rows.slice(props.frozenTopRows || 0, frozenBottomFirstIdx));
+        this.frozenLeftRange = new Range(this.rows, this.columns.slice(0, props.frozenLeftColumns || 0));
+        this.frozenRightRange = new Range(this.rows, this.columns.slice(frozenRightFirstIdx, this.columns.length));
+        this.frozenTopRange = new Range(this.rows.slice(0, props.frozenTopRows || 0), this.columns);
+        this.frozenBottomRange = new Range(this.rows.slice(frozenBottomFirstIdx, this.rows.length), this.columns);
+        this.scrollableRange = new Range(this.rows.slice(props.frozenTopRows || 0, frozenBottomFirstIdx), this.columns.slice(props.frozenLeftColumns || 0, frozenRightFirstIdx));
         this.first = this.getLocation(0, 0);
         this.last = this.getLocation(this.rows.length - 1, this.columns.length - 1);
     }
@@ -80,7 +79,7 @@ export class CellMatrix {
     getRange(start: Location, end: Location): Range {
         const cols = this.columns.slice(start.column.idx < end.column.idx ? start.column.idx : end.column.idx, start.column.idx > end.column.idx ? start.column.idx + 1 : end.column.idx + 1);
         const rows = this.rows.slice(start.row.idx < end.row.idx ? start.row.idx : end.row.idx, start.row.idx > end.row.idx ? start.row.idx + 1 : end.row.idx + 1);
-        return new Range(cols, rows);
+        return new Range(rows, cols);
     }
 
     getLocation(rowIdx: number, columnIdx: number): Location {

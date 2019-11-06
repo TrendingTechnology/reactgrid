@@ -1,33 +1,46 @@
 import React from 'react';
-// import { ReactGrid } from './lib/Components/ReactGrid'
-// import { Column, Row, CellChange, Id } from './lib/Model/PublicModel'
-// import './lib/assets/core.scss';
 
-// const columns_count = 10;
-// const columns_width = 100;
-// const rows_height = 25;
-// const rows_count = 16;
+import { ReactGrid, Column, Row, CellChange } from './reactgrid'
+import './lib/assets/core.scss';
 
-// interface Data {
-//     [key: string]: string
-// }
+const columnCount = 50;
+const rowCount = 200;
 
-// interface DevGridState {
-//     columns: Column[]
-//     rows: Row[]
-// }
+interface Data {
+    [key: string]: string
+}
 
-// interface DevGridProps {
-//     columns: number;
-//     rows: number;
-//     rowsHeight?: number;
-//     columnsWidth?: number;
-// }
+interface TestGridState {
+    columns: Column[]
+    rows: Row[]
+}
 
-// export default class DevGrid extends React.Component<DevGridProps, DevGridState> {
-//     constructor(props: DevGridProps) {
+interface TestGridProps {
+}
+
+
+export const TestGrid: React.FunctionComponent = () => {
+
+    const [state, setState] = React.useState<TestGridState>(() => {
+        const columns = new Array(columnCount).fill(0).map((_, ci) => ({ columnId: ci } as Column));
+        const rows = new Array(rowCount).fill(0).map((_, ri) => ({ rowId: ri, cells: columns.map((_, ci) => ({ type: 'text', text: `${ri} - ${ci}` })) }));
+        return { rows, columns }
+    })
+
+    const handleChanges = (changes: CellChange[]) => { }
+
+    return <ReactGrid
+        rows={state.rows}
+        columns={state.columns}
+        license={'non-commercial'}
+        onCellsChanged={changes => handleChanges(changes)}
+    />
+}
+
+// export default class TestGrid extends React.Component<TestGridProps, TestGridState> {
+//     constructor(props: TestGridProps) {
 //         super(props)
-//         const columns = new Array(props.columns).fill(props.columnsWidth || 100).map((width, idx) => ({ id: this.getRandomId(), width, idx }));
+//         const columns = new Array(props.columns).fill(props.columnsWidth || 100).map((, idx) => ({ id: this.getRandomId(), , idx }));
 //         this.state = {
 //             columns,
 //             rows: new Array(props.rows).fill(props.rowsHeight || 25).map((height, idx) => columns.reduce((row, column) => { row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row }, { id: this.getRandomId(), height, data: {} })),
@@ -96,4 +109,4 @@ import React from 'react';
 //         />
 //     }
 
-// }
+//}
