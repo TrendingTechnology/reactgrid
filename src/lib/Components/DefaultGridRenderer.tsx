@@ -12,6 +12,10 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
         onKeyDown={props.eventHandlers.keyDownHandler}
         onKeyUp={props.eventHandlers.keyUpHandler}
         onPointerDown={props.eventHandlers.pointerDownHandler}
+        onPasteCapture={props.eventHandlers.pasteCaptureHandler}
+        onPaste={props.eventHandlers.pasteHandler}
+        onCopy={props.eventHandlers.copyHandler}
+        onCut={props.eventHandlers.cutHandler}
         style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150 }}
     >
         <div

@@ -105,7 +105,7 @@ export class DefaultBehavior extends Behavior {
         if (!activeSelectedRange) {
             return state;
         }
-        let pasteContent: CompatibleCell[][] = [];
+        let pastedRows: CompatibleCell[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const document = new DOMParser().parseFromString(htmlData, 'text/html')
         // TODO Do we need selection mode here ?
@@ -118,15 +118,16 @@ export class DefaultBehavior extends Behavior {
                 for (let ci = 0; ci < tableRows[ri].children.length; ci++) {
                     const rawData = tableRows[ri].children[ci].getAttribute('data-reactgrid');
                     const data = rawData && JSON.parse(rawData);
+                    console.log(data)
                     row.push(data ? data : { type: 'text', text: tableRows[ri].children[ci].innerHTML })
                 }
-                pasteContent.push(row)
+                pastedRows.push(row)
             }
         } else {
-            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ type: 'text', text: t })))
+            pastedRows = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ type: 'text', text: t })))
         }
         event.preventDefault()
-        return { ...pasteData(state, pasteContent) } //`, selectionMode: selectionMode || 'range' };
+        return { ...pasteData(state, pastedRows) } //`, selectionMode: selectionMode || 'range' };
     }
 
     handleCut(event: ClipboardEvent, state: State): State {
@@ -143,24 +144,24 @@ export class DefaultBehavior extends Behavior {
 //     return { data: clipboardData.text, type: 'text' }
 // }
 
-export function pasteData(state: State, pasteContent: CompatibleCell[][]): State {
+export function pasteData(state: State, rows: CompatibleCell[][]): State {
     const activeSelectedRange = getActiveSelectedRange(state)
-    if (pasteContent.length === 1 && pasteContent[0].length === 1) {
+    if (rows.length === 1 && rows[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>
             activeSelectedRange.columns.forEach(column => {
-                state = tryAppendChange(state, { row, column }, pasteContent[0][0])
+                state = tryAppendChange(state, { row, column }, rows[0][0])
             })
         )
     } else {
         let lastLocation: Location
         const cellMatrix = state.cellMatrix
-        pasteContent.forEach((row, ri) =>
-            row.forEach((pasteValue, ci) => {
-                const rowIdx = activeSelectedRange.first.column.idx + ri
+        rows.forEach((row, ri) =>
+            row.forEach((cell, ci) => {
+                const rowIdx = activeSelectedRange.first.row.idx + ri
                 const columnIdx = activeSelectedRange.first.column.idx + ci
                 if (rowIdx <= cellMatrix.last.row.idx && columnIdx <= cellMatrix.last.column.idx) {
                     lastLocation = cellMatrix.getLocation(rowIdx, columnIdx)
-                    state = tryAppendChange(state, lastLocation, pasteValue)
+                    state = tryAppendChange(state, lastLocation, cell)
                 }
             })
         )
