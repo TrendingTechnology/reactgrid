@@ -279,7 +279,7 @@ function resizeSelectionRight(state: State, asr: Range, location: Location): Sta
 }
 
 function resizeSelection(state: State, firstColIdx: number, lastColIdx: number, firstRowIdx: number, lastRowIdx: number): State {
-    if (state.disableRangeSelection)
+    if (state.enableRangeSelection)
         return state;
 
     const start = state.cellMatrix.getLocation(firstRowIdx, firstColIdx);

@@ -40,6 +40,9 @@ export const TestGrid: React.FunctionComponent = () => {
         columns={state.columns}
         license={'non-commercial'}
         onCellsChanged={changes => handleChanges(changes)}
+        enableRowSelection
+        enableColumnSelection
+
     />
 }
 

@@ -25,15 +25,15 @@ export class DefaultBehavior extends Behavior {
         // changing behavior will disable all keyboard event handlers
         if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.column.width - 7 && location.column.onResize) {
             return new ResizeColumnBehavior();
-        } else if (location.row.idx == 0 && state.selectedIds.includes(location.column.columnId) && !event.ctrlKey && state.selectionMode == 'column' && location.column.reorderable) {
+        } else if (state.enableColumnSelection && location.row.idx == 0 && state.selectedIds.includes(location.column.columnId) && !event.ctrlKey && state.selectionMode == 'column' && location.column.reorderable) {
             return new ColumnReorderBehavior();
-        } else if (location.row.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
+        } else if (state.enableColumnSelection && location.row.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
             return new ColumnSelectionBehavior();
-        } else if (location.column.idx == 0 && state.selectedIds.includes(location.row.rowId) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
+        } else if (state.enableRowSelection && location.column.idx == 0 && state.selectedIds.includes(location.row.rowId) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
             return new RowReorderBehavior();
-        } else if (location.column.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
+        } else if (state.enableRowSelection && location.column.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
             return new RowSelectionBehavior();
-        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'rg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
+        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'rg-fill-handle' && !state.enableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();
@@ -118,7 +118,6 @@ export class DefaultBehavior extends Behavior {
                 for (let ci = 0; ci < tableRows[ri].children.length; ci++) {
                     const rawData = tableRows[ri].children[ci].getAttribute('data-reactgrid');
                     const data = rawData && JSON.parse(rawData);
-                    console.log(data)
                     row.push(data ? data : { type: 'text', text: tableRows[ri].children[ci].innerHTML })
                 }
                 pastedRows.push(row)

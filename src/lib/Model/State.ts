@@ -25,10 +25,10 @@ export class State {
     readonly queuedCellChanges: CellChange[] = [];
     currentlyEditedCell?: Cell;
     readonly customFocuses: Focus[] = [];
-    readonly disableFillHandle?: boolean;
-    readonly disableRangeSelection?: boolean;
-    readonly disableColumnSelection?: boolean;
-    readonly disableRowSelection?: boolean;
+    readonly enableFillHandle: boolean = false;
+    readonly enableRangeSelection: boolean = false;
+    readonly enableColumnSelection: boolean = false;
+    readonly enableRowSelection: boolean = false;
 
     // CONTEXT MENU
     // TODO { top, left }

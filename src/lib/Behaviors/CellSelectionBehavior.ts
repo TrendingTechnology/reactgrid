@@ -32,7 +32,7 @@ export class CellSelectionBehavior extends Behavior {
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         const range = state.cellMatrix.getRange(state.focusedLocation!, location);
-        if (state.disableRangeSelection) {
+        if (state.enableRangeSelection) {
             return focusLocation(state, newLocation(state.focusedLocation!.row, state.focusedLocation!.column));
         } else if (state.selectionMode === 'range') {
             return updateActiveSelectedRange(state, range);
