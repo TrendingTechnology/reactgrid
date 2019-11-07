@@ -35,8 +35,8 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
         ...state,
         cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates },
         //customFocuses: props.additionalFocuses,
-        enableFillHandle: props.enableFillHandle || false,
-        enableRangeSelection: props.enableRangeSelection || false,
+        disableFillHandle: props.disableFillHandle || false,
+        disableRangeSelection: props.disableRangeSelection || false,
         enableColumnSelection: props.enableColumnSelection || false,
         enableRowSelection: props.enableRowSelection || false
     };

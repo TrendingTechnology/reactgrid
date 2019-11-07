@@ -19,8 +19,8 @@ export interface ReactGridProps {
     readonly frozenBottomRows?: number;
     readonly frozenLeftColumns?: number;
     readonly frozenRightColumns?: number;
-    readonly enableFillHandle?: boolean;
-    readonly enableRangeSelection?: boolean;
+    readonly disableFillHandle?: boolean;
+    readonly disableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
 

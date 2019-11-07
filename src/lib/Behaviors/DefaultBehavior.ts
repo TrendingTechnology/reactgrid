@@ -33,7 +33,7 @@ export class DefaultBehavior extends Behavior {
             return new RowReorderBehavior();
         } else if (state.enableRowSelection && location.column.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
             return new RowSelectionBehavior();
-        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'rg-fill-handle' && !state.enableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
+        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'rg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();

@@ -5,14 +5,14 @@ import { newLocation } from '../Functions/newLocation';
 
 export class CellSelectionBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
-        if (event.shiftKey && state.focusedLocation) {
+        if (!state.disableRangeSelection && event.shiftKey && state.focusedLocation) {
             const range = state.cellMatrix.getRange(state.focusedLocation, location);
             if (event.ctrlKey && state.selectionMode === 'range') {
                 return updateActiveSelectedRange(state, range);
             } else {
                 return selectRange(state, range, false);
             }
-        } else if (event.ctrlKey) {
+        } else if (!state.disableRangeSelection && event.ctrlKey) {
             const pointedRangeIdx = state.selectedRanges.findIndex(range => range.contains(location));
             const pointedRange = state.selectedRanges[pointedRangeIdx];
 
@@ -32,16 +32,12 @@ export class CellSelectionBehavior extends Behavior {
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         const range = state.cellMatrix.getRange(state.focusedLocation!, location);
-        if (state.enableRangeSelection) {
-            return focusLocation(state, newLocation(state.focusedLocation!.row, state.focusedLocation!.column));
+        if (state.disableRangeSelection) {
+            return state;
         } else if (state.selectionMode === 'range') {
             return updateActiveSelectedRange(state, range);
         } else {
             return selectRange(state, range, false);
         }
-    }
-
-    handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
-        return state;
     }
 }
