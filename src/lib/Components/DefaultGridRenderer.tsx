@@ -11,6 +11,7 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
         className="reactgrid"
         onKeyDown={props.eventHandlers.keyDownHandler}
         onKeyUp={props.eventHandlers.keyUpHandler}
+        onPointerDown={props.eventHandlers.pointerDownHandler}
         style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150 }}
     >
         <div
@@ -24,7 +25,6 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
                 style={{
                     width: props.state.cellMatrix.width, height: props.state.cellMatrix.height
                 }}
-                onScroll={props.eventHandlers.scrollHandler}
             >
                 {props.state.cellMatrix.frozenTopRange.height > 0 &&
                     <PaneRow id='T'
