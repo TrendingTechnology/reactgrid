@@ -23,7 +23,7 @@ export class DefaultBehavior extends Behavior {
     // TODO why any?
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
-        if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.column.width - 7 && location.column.onResize) {
+        if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.column.width - 7 && location.column.rezisable) {
             return new ResizeColumnBehavior();
         } else if (state.enableColumnSelection && location.row.idx == 0 && state.selectedIds.includes(location.column.columnId) && !event.ctrlKey && state.selectionMode == 'column' && location.column.reorderable) {
             return new ColumnReorderBehavior();

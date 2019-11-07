@@ -5,7 +5,6 @@ export class ColumnReorderBehavior extends Behavior {
     private lastPossibleDropLocation?: PointerLocation;
     private pointerOffset!: number;
     private selectedIdxs!: number[];
-    //private selectedIds!: Id[];
     autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -17,7 +16,6 @@ export class ColumnReorderBehavior extends Behavior {
         const leftColumns = leftIndexes.map(i => state.cellMatrix.columns[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width!, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        //this.selectedIds = columns.map(c => c.id)
         return {
             ...state,
             lineOrientation: 'vertical',
@@ -51,6 +49,7 @@ export class ColumnReorderBehavior extends Behavior {
         const linePosition = Math.min(dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.column.width : 0) + state.viewportElement.scrollLeft,
             state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft
         )
+        this.lastPossibleDropLocation = dropLocation;
         return {
             ...state,
             linePosition
@@ -59,16 +58,16 @@ export class ColumnReorderBehavior extends Behavior {
 
     getLastPossibleDropLocation(currentLocation: PointerLocation, state: State): PointerLocation | undefined {
         const position = currentLocation.column.idx <= this.initialColumnIdx ? 'before' : 'after';
-        if (!currentLocation.column.canDrop || currentLocation.column.canDrop(this.selectedIdxs, position)) {
-            return this.lastPossibleDropLocation = currentLocation;
+        if (!state.props.canReorderColumns || state.props.canReorderColumns(currentLocation.column.columnId, this.selectedIdxs, position)) {
+            return currentLocation;
         }
         return this.lastPossibleDropLocation;
     }
 
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
-        if (this.initialColumnIdx !== location.column.idx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.column.onDrop) {
+        if (this.initialColumnIdx !== location.column.idx && this.lastPossibleDropLocation && state.props.onColumnsReordered) {
             const isBefore = this.lastPossibleDropLocation.column.idx <= this.initialColumnIdx;
-            this.lastPossibleDropLocation.column.onDrop(this.selectedIdxs, isBefore ? 'before' : 'after');
+            state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, this.selectedIdxs, isBefore ? 'before' : 'after');
         }
         return {
             ...state,

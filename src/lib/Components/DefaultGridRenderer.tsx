@@ -79,6 +79,6 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
                     contextMenuPosition={props.state.contextMenuPosition}
                 /> */}
             </div>
-            {props.state.currentlyEditedCell && <CellEditor state={props.state} />}
         </div>
+        {props.state.currentlyEditedCell && <CellEditor state={props.state} />}
     </div>

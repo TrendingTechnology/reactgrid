@@ -1,6 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, CellChange } from '.';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
-import { CellTemplates, Id, Focus, Cell } from './PublicModel';
+import { CellTemplates, Id, Focus, Cell, ReactGridProps } from './PublicModel';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export type StateModifier = (state: State) => State;
@@ -10,6 +10,7 @@ export type StateUpdater = (modifier: StateModifier) => void;
 // INTERNAL
 export class State {
     constructor(public update: StateUpdater) { }
+    readonly props!: ReactGridProps;
     readonly legacyBrowserMode = isBrowserIE() || isBrowserEdge();
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();

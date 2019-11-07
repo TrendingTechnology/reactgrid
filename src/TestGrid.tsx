@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ReactGrid, Column, Row, CellChange } from './reactgrid'
+import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
 
 const columnCount = 50;
@@ -21,11 +21,18 @@ interface TestGridProps {
 
 export const TestGrid: React.FunctionComponent = () => {
 
+
     const [state, setState] = React.useState<TestGridState>(() => {
-        const columns = new Array(columnCount).fill(0).map((_, ci) => ({ columnId: ci } as Column));
+        const columns = new Array(columnCount).fill(0).map((_, ci) => ({ columnId: ci, rezisable: true } as Column));
         const rows = new Array(rowCount).fill(0).map((_, ri) => ({ rowId: ri, cells: columns.map((_, ci) => ({ type: 'text', text: `${ri} - ${ci}` })) }));
         return { rows, columns }
     })
+
+    const handleColumnResize = (ci: Id, width: number) => {
+        let newState = { ...state };
+        newState.columns[ci].width = width;
+        setState(newState);
+    }
 
     const handleChanges = (changes: CellChange[]) => {
         let newState = { ...state };
@@ -33,13 +40,15 @@ export const TestGrid: React.FunctionComponent = () => {
             newState.rows[change.rowId].cells[change.columnId] = change.newCell;
         })
         setState(newState);
+        return true;
     }
 
     return <ReactGrid
         rows={state.rows}
         columns={state.columns}
         license={'non-commercial'}
-        onCellsChanged={changes => handleChanges(changes)}
+        onCellsChanged={handleChanges}
+        onColumnResized={handleColumnResize}
         enableRowSelection
         enableColumnSelection
 

@@ -13,8 +13,8 @@ export interface ReactGridProps {
     readonly rows: Row[];
     readonly license: 'non-commercial' | string;
     readonly customCellTemplates?: CellTemplates;
-    readonly pimaryFocus?: CellId;
-    readonly additionalFocuses?: CellId[];
+    readonly focusLocation?: CellLocation;
+    readonly highlightLocations?: CellLocation[];
     readonly frozenTopRows?: number;
     readonly frozenBottomRows?: number;
     readonly frozenLeftColumns?: number;
@@ -24,8 +24,13 @@ export interface ReactGridProps {
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
 
-    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => boolean | void;
-    readonly onCellFocused?: (cellId: CellId) => boolean;
+    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => boolean;
+    readonly onFocusLocationChanged?: (location: CellLocation) => boolean;
+    readonly onColumnResized?: (columnId: Id, width: number) => void;
+    readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
+    readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
+    readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
+    readonly onColumnsReordered?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => void;
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
 }
 
@@ -35,7 +40,7 @@ export interface CellTemplates {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CellId {
+export interface CellLocation {
     readonly rowId: Id;
     readonly columnId: Id;
 }
@@ -88,10 +93,12 @@ export interface Column {
     readonly width?: number;
     // default: false
     readonly reorderable?: boolean;
-    readonly canDrop?: (columnIds: Id[], position: DropPosition) => boolean;
-    readonly onDrop?: (columnIds: Id[], position: DropPosition) => void;
+    // default: false
+    readonly rezisable?: boolean;
+    //readonly canDrop?: (columnIds: Id[], position: DropPosition) => boolean;
+    //readonly onDrop?: (columnIds: Id[], position: DropPosition) => void;
     // if onResize === undefined => not resizable
-    readonly onResize?: (newWidth: number) => void;
+    //readonly onResize?: (newWidth: number) => void;
 }
 
 export interface CellStyle {
@@ -126,8 +133,8 @@ export interface Row {
     readonly height?: number;
     // default: false
     readonly reorderable?: boolean;
-    readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;
-    readonly onDrop?: (rowIds: Id[], position: DropPosition) => void;
+    //readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;
+    //readonly onDrop?: (rowIds: Id[], position: DropPosition) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!

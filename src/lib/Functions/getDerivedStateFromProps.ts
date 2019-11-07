@@ -5,6 +5,10 @@ import { recalcVisibleRange } from '.';
 import { defaultCellTemplates } from './defaultCellTemplates';
 
 export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
+    if (state.props !== props) {
+        state = { ...state, props }
+    }
+
     const dataHasChanged = !state.cellMatrix ||
         props !== state.cellMatrix.props;
     if (dataHasChanged) {
@@ -35,9 +39,9 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
         ...state,
         cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates },
         //customFocuses: props.additionalFocuses,
-        disableFillHandle: props.disableFillHandle || false,
-        disableRangeSelection: props.disableRangeSelection || false,
-        enableColumnSelection: props.enableColumnSelection || false,
-        enableRowSelection: props.enableRowSelection || false
+        // disableFillHandle: props.disableFillHandle || false,
+        // disableRangeSelection: props.disableRangeSelection || false,
+        // enableColumnSelection: props.enableColumnSelection || false,
+        // enableRowSelection: props.enableRowSelection || false
     };
 }

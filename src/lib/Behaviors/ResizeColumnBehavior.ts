@@ -1,6 +1,7 @@
 import { GridColumn, Behavior, PointerLocation, State, PointerEvent, Direction } from '../Model';
 
 export class ResizeColumnBehavior extends Behavior {
+    // TODO min / max column with on column object
     private minColumnWidth: number = 40;
     private resizedColumn!: GridColumn;
     private initialLocation!: PointerLocation;
@@ -31,10 +32,11 @@ export class ResizeColumnBehavior extends Behavior {
 
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
         const newWidth = this.resizedColumn.width + location.viewportX - this.initialLocation.viewportX
-        if (this.resizedColumn.onResize && newWidth >= this.minColumnWidth) {
-            this.resizedColumn.onResize(newWidth);
-        } else if (this.resizedColumn.onResize) {
-            this.resizedColumn.onResize(this.minColumnWidth + state.viewportElement.scrollLeft);
+        if (state.props.onColumnResized && newWidth >= this.minColumnWidth) {
+            state.props.onColumnResized(this.initialLocation.column.columnId, newWidth)
+        } else if (state.props.onColumnResized) {
+            // TODO describe this
+            state.props.onColumnResized(this.resizedColumn.columnId, this.minColumnWidth + state.viewportElement.scrollLeft);
         }
         return { ...state, linePosition: -1 };
     }
