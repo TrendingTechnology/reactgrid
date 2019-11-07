@@ -27,7 +27,13 @@ export const TestGrid: React.FunctionComponent = () => {
         return { rows, columns }
     })
 
-    const handleChanges = (changes: CellChange[]) => { }
+    const handleChanges = (changes: CellChange[]) => {
+        let newState = { ...state };
+        changes.forEach(change => {
+            newState.rows[change.rowId].cells[change.columnId] = change.newCell;
+        })
+        setState(newState);
+    }
 
     return <ReactGrid
         rows={state.rows}
