@@ -22,7 +22,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { Behavior } from '../Common';
+import { Behavior } from '../Model';
 var ResizeColumnBehavior = (function (_super) {
     __extends(ResizeColumnBehavior, _super);
     function ResizeColumnBehavior() {
@@ -33,12 +33,12 @@ var ResizeColumnBehavior = (function (_super) {
     }
     ResizeColumnBehavior.prototype.handlePointerDown = function (event, location, state) {
         this.initialLocation = location;
-        this.resizedColumn = location.col;
+        this.resizedColumn = location.column;
         return state;
     };
     ResizeColumnBehavior.prototype.handlePointerMove = function (event, location, state) {
         var linePosition;
-        if (location.col.idx == this.resizedColumn.idx && location.cellX > this.minColumnWidth || location.col.idx > this.resizedColumn.idx) {
+        if (location.column.idx == this.resizedColumn.idx && location.cellX > this.minColumnWidth || location.column.idx > this.resizedColumn.idx) {
             linePosition = location.viewportX + state.viewportElement.scrollLeft;
         }
         else if (location.viewportX > state.cellMatrix.width - state.viewportElement.scrollLeft) {
@@ -46,10 +46,10 @@ var ResizeColumnBehavior = (function (_super) {
         }
         else {
             var offset = 0;
-            if (state.cellMatrix.scrollableRange.cols.map(function (c) { return c.idx; }).includes(this.resizedColumn.idx)) {
+            if (state.cellMatrix.scrollableRange.columns.map(function (c) { return c.idx; }).includes(this.resizedColumn.idx)) {
                 offset = state.cellMatrix.frozenLeftRange.width;
             }
-            else if (state.cellMatrix.frozenRightRange.cols.map(function (c) { return c.idx; }).includes(this.resizedColumn.idx)) {
+            else if (state.cellMatrix.frozenRightRange.columns.map(function (c) { return c.idx; }).includes(this.resizedColumn.idx)) {
                 offset = Math.min(state.viewportElement.clientWidth, state.cellMatrix.width) - state.cellMatrix.frozenRightRange.width;
             }
             linePosition = this.resizedColumn.left + this.minColumnWidth + offset + state.viewportElement.scrollLeft;
@@ -58,11 +58,11 @@ var ResizeColumnBehavior = (function (_super) {
     };
     ResizeColumnBehavior.prototype.handlePointerUp = function (event, location, state) {
         var newWidth = this.resizedColumn.width + location.viewportX - this.initialLocation.viewportX;
-        if (this.resizedColumn.onResize && newWidth >= this.minColumnWidth) {
-            this.resizedColumn.onResize(newWidth);
+        if (state.props.onColumnResized && newWidth >= this.minColumnWidth) {
+            state.props.onColumnResized(this.initialLocation.column.columnId, newWidth);
         }
-        else if (this.resizedColumn.onResize) {
-            this.resizedColumn.onResize(this.minColumnWidth + state.viewportElement.scrollLeft);
+        else if (state.props.onColumnResized) {
+            state.props.onColumnResized(this.resizedColumn.columnId, this.minColumnWidth + state.viewportElement.scrollLeft);
         }
         return __assign({}, state, { linePosition: -1 });
     };

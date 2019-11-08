@@ -22,7 +22,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { Behavior } from '../Common';
+import { Behavior } from '../Model';
 var RowReorderBehavior = (function (_super) {
     __extends(RowReorderBehavior, _super);
     function RowReorderBehavior() {
@@ -39,7 +39,7 @@ var RowReorderBehavior = (function (_super) {
         var upperRows = upperIndexes.map(function (i) { return state.cellMatrix.rows[i]; });
         var upperRowsHeight = upperRows.reduce(function (sum, row) { return sum + row.height; }, 0);
         this.pointerOffset = upperRowsHeight + location.cellY;
-        this.selectedIds = rows.map(function (r) { return r.id; });
+        this.selectedIds = rows.map(function (r) { return r.rowId; });
         return __assign({}, state, { lineOrientation: 'horizontal', shadowSize: rows.reduce(function (sum, col) { return sum + col.height; }, 0), shadowPosition: this.getShadowPosition(location, state) });
     };
     RowReorderBehavior.prototype.handlePointerMove = function (event, location, state) {
@@ -47,15 +47,15 @@ var RowReorderBehavior = (function (_super) {
         var shadowCursor = '-webkit-grabbing';
         var linePosition = state.linePosition;
         var pointerLocation = location.viewportY + state.viewportElement.scrollTop;
-        this.lastPossibleDropLocation = this.getLastPossibleDropLocation(location);
+        this.lastPossibleDropLocation = this.getLastPossibleDropLocation(state, location);
         if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.idx !== this.initialRowIdx) {
             var drawDown = this.lastPossibleDropLocation.row.idx > this.initialRowIdx;
             linePosition = Math.min(this.lastPossibleDropLocation.viewportY - this.lastPossibleDropLocation.cellY + (drawDown ? this.lastPossibleDropLocation.row.height : 0) + state.viewportElement.scrollTop, state.visibleRange.height + state.cellMatrix.frozenTopRange.height + state.cellMatrix.frozenBottomRange.height + state.viewportElement.scrollTop);
-            if (!location.row.canDrop) {
+            if (!state.props.canReorderRows) {
                 this.position = drawDown ? 'after' : 'before';
             }
             else {
-                if (location.row.canDrop && location.row.canDrop(this.selectedIds, this.position)) {
+                if (state.props.canReorderRows && state.props.canReorderRows(this.lastPossibleDropLocation.row.rowId, this.selectedIds, this.position)) {
                     if (drawDown) {
                         if (pointerLocation > location.row.top && pointerLocation < location.row.top + location.row.height / 2) {
                             this.position = 'on';
@@ -97,15 +97,16 @@ var RowReorderBehavior = (function (_super) {
         }
         return y;
     };
-    RowReorderBehavior.prototype.getLastPossibleDropLocation = function (currentLocation) {
-        if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIds, this.position)) {
-            return this.lastPossibleDropLocation = currentLocation;
+    RowReorderBehavior.prototype.getLastPossibleDropLocation = function (state, currentLocation) {
+        if (!state.props.canReorderRows || state.props.canReorderRows(currentLocation.row.rowId, this.selectedIds, this.position)) {
+            return (currentLocation);
         }
         return this.lastPossibleDropLocation;
     };
     RowReorderBehavior.prototype.handlePointerUp = function (event, location, state) {
-        if (location.row.idx !== this.initialRowIdx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.onDrop && (!this.lastPossibleDropLocation.row.canDrop || this.lastPossibleDropLocation.row.canDrop(this.selectedIds, this.position))) {
-            this.lastPossibleDropLocation.row.onDrop(this.selectedIds, this.position);
+        if (location.row.idx !== this.initialRowIdx && this.lastPossibleDropLocation &&
+            state.props.onRowsReordered) {
+            state.props.onRowsReordered(this.lastPossibleDropLocation.row.rowId, this.selectedIds, this.position);
         }
         return __assign({}, state, { linePosition: -1, shadowPosition: -1, shadowCursor: 'default' });
     };

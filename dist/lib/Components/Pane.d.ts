@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Range, Borders, State } from "../Common";
+import * as React from 'react';
+import { Range, Borders, State } from '../Model';
 export interface PaneProps {
     id: string;
     class?: string;

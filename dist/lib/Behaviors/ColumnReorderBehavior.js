@@ -22,7 +22,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { Behavior } from '../Common';
+import { Behavior } from '../Model';
 var ColumnReorderBehavior = (function (_super) {
     __extends(ColumnReorderBehavior, _super);
     function ColumnReorderBehavior() {
@@ -31,15 +31,14 @@ var ColumnReorderBehavior = (function (_super) {
         return _this;
     }
     ColumnReorderBehavior.prototype.handlePointerDown = function (event, location, state) {
-        this.initialColumnIdx = location.col.idx;
+        this.initialColumnIdx = location.column.idx;
         this.lastPossibleDropLocation = location;
         this.selectedIdxs = state.selectedIndexes.sort();
-        var columns = this.selectedIdxs.map(function (i) { return state.cellMatrix.cols[i]; });
-        var leftIndexes = this.selectedIdxs.filter(function (i) { return i < location.col.idx; });
-        var leftColumns = leftIndexes.map(function (i) { return state.cellMatrix.cols[i]; });
+        var columns = this.selectedIdxs.map(function (i) { return state.cellMatrix.columns[i]; });
+        var leftIndexes = this.selectedIdxs.filter(function (i) { return i < location.column.idx; });
+        var leftColumns = leftIndexes.map(function (i) { return state.cellMatrix.columns[i]; });
         var leftColumnsWidth = leftColumns.reduce(function (sum, col) { return sum + col.width; }, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        this.selectedIds = columns.map(function (c) { return c.id; });
         return __assign({}, state, { lineOrientation: 'vertical', shadowSize: columns.reduce(function (sum, col) { return sum + col.width; }, 0), shadowPosition: this.getShadowPosition(location, state) });
     };
     ColumnReorderBehavior.prototype.handlePointerMove = function (event, location, state) {
@@ -60,21 +59,22 @@ var ColumnReorderBehavior = (function (_super) {
         var dropLocation = this.getLastPossibleDropLocation(location, state);
         if (!dropLocation)
             return state;
-        var drawRight = dropLocation.col.idx > this.initialColumnIdx;
-        var linePosition = Math.min(dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.col.width : 0) + state.viewportElement.scrollLeft, state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft);
+        var drawRight = dropLocation.column.idx > this.initialColumnIdx;
+        var linePosition = Math.min(dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.column.width : 0) + state.viewportElement.scrollLeft, state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft);
+        this.lastPossibleDropLocation = dropLocation;
         return __assign({}, state, { linePosition: linePosition });
     };
     ColumnReorderBehavior.prototype.getLastPossibleDropLocation = function (currentLocation, state) {
-        var position = currentLocation.col.idx <= this.initialColumnIdx ? 'before' : 'after';
-        if (!currentLocation.col.canDrop || currentLocation.col.canDrop(this.selectedIdxs, position)) {
-            return this.lastPossibleDropLocation = currentLocation;
+        var position = currentLocation.column.idx <= this.initialColumnIdx ? 'before' : 'after';
+        if (!state.props.canReorderColumns || state.props.canReorderColumns(currentLocation.column.columnId, this.selectedIdxs, position)) {
+            return currentLocation;
         }
         return this.lastPossibleDropLocation;
     };
     ColumnReorderBehavior.prototype.handlePointerUp = function (event, location, state) {
-        if (this.initialColumnIdx !== location.col.idx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.col.onDrop) {
-            var isBefore = this.lastPossibleDropLocation.col.idx <= this.initialColumnIdx;
-            this.lastPossibleDropLocation.col.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
+        if (this.initialColumnIdx !== location.column.idx && this.lastPossibleDropLocation && state.props.onColumnsReordered) {
+            var isBefore = this.lastPossibleDropLocation.column.idx <= this.initialColumnIdx;
+            state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, this.selectedIdxs, isBefore ? 'before' : 'after');
         }
         return __assign({}, state, { linePosition: -1, shadowPosition: -1 });
     };

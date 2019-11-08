@@ -23,7 +23,6 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { Location } from "../Common";
 import { CellRenderer } from './CellRenderer';
 var RowRenderer = (function (_super) {
     __extends(RowRenderer, _super);
@@ -36,7 +35,7 @@ var RowRenderer = (function (_super) {
     RowRenderer.prototype.render = function () {
         var _this = this;
         var lastColIdx = this.props.columns[this.props.columns.length - 1].idx;
-        return this.props.columns.map(function (col) { return React.createElement(CellRenderer, { key: _this.props.row.idx + '-' + col.idx, borders: __assign({}, _this.props.borders, { left: _this.props.borders.left && col.left === 0, right: _this.props.borders.right && col.idx === lastColIdx }), state: _this.props.state, location: new Location(_this.props.row, col) }); });
+        return this.props.columns.map(function (column) { return React.createElement(CellRenderer, { key: _this.props.row.idx + '-' + column.idx, borders: __assign({}, _this.props.borders, { left: _this.props.borders.left && column.left === 0, right: _this.props.borders.right && column.idx === lastColIdx }), state: _this.props.state, location: { row: _this.props.row, column: column } }); });
     };
     return RowRenderer;
 }(React.Component));

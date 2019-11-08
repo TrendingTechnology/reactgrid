@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import * as React from "react";
+import * as React from 'react';
 var Shadow = (function (_super) {
     __extends(Shadow, _super);
     function Shadow() {

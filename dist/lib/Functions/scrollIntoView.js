@@ -1,4 +1,4 @@
-import { isBrowserIE, isBrowserEdge } from "../Functions";
+import { isBrowserIE, isBrowserEdge } from '../Functions';
 export function scrollIntoView(state, location, direction) {
     if (direction === void 0) { direction = 'both'; }
     var top = getScrollTop(state, location, direction === 'horizontal');
@@ -52,19 +52,19 @@ function getScrollTop(state, location, dontChange) {
     }
 }
 function getScrollLeft(state, location, dontChange) {
-    var column = location.col;
+    var column = location.column;
     var _a = state.viewportElement, scrollLeft = _a.scrollLeft, clientWidth = _a.clientWidth;
-    var _b = state.cellMatrix, frozenLeftRange = _b.frozenLeftRange, frozenRightRange = _b.frozenRightRange, cols = _b.cols;
+    var _b = state.cellMatrix, frozenLeftRange = _b.frozenLeftRange, frozenRightRange = _b.frozenRightRange, cols = _b.columns;
     if (dontChange || !column)
         return scrollLeft;
     var visibleContentWidth = Math.min(clientWidth, state.cellMatrix.width);
     var visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
-    var isRightColFrozen = frozenRightRange.cols.some(function (col) { return column.idx === col.idx; });
-    var shouldScrollToRight = function () { return ((location.cellX ? column.left + location.cellX : column.right) > visibleScrollAreaWidth + scrollLeft - 1) || state.cellMatrix.last.col.idx === location.col.idx; };
+    var isRightColFrozen = frozenRightRange.columns.some(function (col) { return column.idx === col.idx; });
+    var shouldScrollToRight = function () { return (location.cellX ? column.left + location.cellX : column.right) > visibleScrollAreaWidth + scrollLeft - 1 || state.cellMatrix.last.column.idx === location.column.idx; };
     var shouldScrollToLeft = function () { return column.left + (location.cellX ? location.cellX : 0) < scrollLeft + 1 && !isRightColFrozen; };
     var isColumnBelowRightPane = function () { return column.right > visibleScrollAreaWidth + scrollLeft; };
     var isColumnBelowLeftPane = function () { return column.left < scrollLeft && !isRightColFrozen; };
-    if (frozenRightRange.cols.length === 0 && shouldScrollToRight()) {
+    if (frozenRightRange.columns.length === 0 && shouldScrollToRight()) {
         if (location.cellX) {
             return cols[column.idx + 1] ? cols[column.idx + 1].right - visibleScrollAreaWidth + 1 : cols[column.idx].right - visibleScrollAreaWidth + 1;
         }
@@ -72,10 +72,10 @@ function getScrollLeft(state, location, dontChange) {
             return column.right - visibleScrollAreaWidth + 1;
         }
     }
-    else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.cols.length > 0) && state.focusedLocation.col.idx < frozenRightRange.cols[0].idx) {
+    else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.columns.length > 0) && state.focusedLocation.column.idx < frozenRightRange.columns[0].idx) {
         return column.right - visibleScrollAreaWidth + 1;
     }
-    else if (frozenLeftRange.cols.length === 0 && shouldScrollToLeft()) {
+    else if (frozenLeftRange.columns.length === 0 && shouldScrollToLeft()) {
         if (location.cellX) {
             return cols[column.idx - 1] ? cols[column.idx + -1].left - 1 : cols[column.idx].left - 1;
         }
@@ -83,7 +83,7 @@ function getScrollLeft(state, location, dontChange) {
             return column.left - 1;
         }
     }
-    else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.col.idx > frozenLeftRange.cols.length) {
+    else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.column.idx > frozenLeftRange.columns.length) {
         return column.left - 1;
     }
     else {

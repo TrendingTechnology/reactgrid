@@ -9,8 +9,8 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import * as React from "react";
-import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
+import * as React from 'react';
+import { FillHandleBehavior } from '../Behaviors/FillHandleBehavior';
 export var FillHandle = function (props) {
     var targetRef = React.useRef();
     var _a = React.useState({ width: 0, height: 0 }), dimensions = _a[0], setDimensions = _a[1];
@@ -24,10 +24,10 @@ export var FillHandle = function (props) {
     }, []);
     return (React.createElement("div", { className: "rg-touch-fill-handle", ref: targetRef, style: {
             top: props.location.row.bottom - (dimensions.width / 2),
-            left: props.location.col.right - (dimensions.height / 2),
+            left: props.location.column.right - (dimensions.height / 2),
         }, "data-cy": "rg-touch-fill-handle", onPointerDown: function (event) {
             if (event.pointerType !== 'mouse' && event.pointerType !== undefined) {
-                props.state.updateState(function (state) { return (__assign({}, state, { currentBehavior: new FillHandleBehavior() })); });
+                props.state.update(function (state) { return (__assign({}, state, { currentBehavior: new FillHandleBehavior() })); });
             }
         } },
         React.createElement("div", { className: "rg-fill-handle", "data-cy": "rg-fill-handle" })));

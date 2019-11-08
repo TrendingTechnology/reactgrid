@@ -11,14 +11,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import * as React from "react";
-import { Line } from "./Line";
-import { Shadow } from "./Shadow";
-import { ContextMenu } from "./ContextMenu";
-import { CellEditor } from "./CellEditor";
-import { Pane } from "./Pane";
-import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from "../Functions";
-import { pasteData, copySelectedRangeToClipboardInIE } from "../Behaviors/DefaultBehavior";
+import * as React from 'react';
+import { Line } from './Line';
+import { Shadow } from './Shadow';
+import { ContextMenu } from './ContextMenu';
+import { CellEditor } from './CellEditor';
+import { Pane } from './Pane';
+import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from '../Functions';
+import { pasteData } from '../Behaviors/DefaultBehavior';
 var LegacyBrowserGridRenderer = (function (_super) {
     __extends(LegacyBrowserGridRenderer, _super);
     function LegacyBrowserGridRenderer() {
@@ -43,7 +43,7 @@ var LegacyBrowserGridRenderer = (function (_super) {
                 state.viewportElement.scrollLeft = scrollLeft;
             }
             if (scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop || scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft) {
-                state.updateState(function (state) { return recalcVisibleRange(state); });
+                state.update(function (state) { return recalcVisibleRange(state); });
             }
         };
         return _this;
@@ -54,77 +54,73 @@ var LegacyBrowserGridRenderer = (function (_super) {
         var state = props.state;
         var cellMatrix = state.cellMatrix;
         var hiddenScrollableElement = state.hiddenScrollableElement;
-        return (React.createElement("div", { className: "react-grid-legacy-browser", onCopy: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e); }, onCut: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e); }, onPaste: function (e) { return isBrowserIE() ? state.updateState(function (state) { return pasteData(state, getDataToPasteInIE()); }) : props.onPaste(e); }, onKeyDown: props.onKeyDown, onKeyUp: props.onKeyUp, onPointerDown: props.onPointerDown, onContextMenu: props.onContextMenu },
+        return (React.createElement("div", { className: "reactgrid-legacy-browser", onCopy: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e); }, onCut: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e); }, onPaste: function (e) { return isBrowserIE() ? state.update(function (state) { return pasteData(state, getDataToPasteInIE()); }) : props.onPaste(e); }, onKeyDown: props.onKeyDown, onKeyUp: props.onKeyUp, onPointerDown: props.onPointerDown, onContextMenu: props.onContextMenu },
             React.createElement("div", { ref: function (hiddenScrollableElement) { return hiddenScrollableElement && _this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement); }, className: "rg-hidden-scrollable-element", style: {
                     overflowX: this.isHorizontalScrollbarVisible() ? 'scroll' : 'auto',
                     overflowY: this.isVerticalScrollbarVisible() ? 'scroll' : 'auto',
-                }, onPointerDown: function (e) { if (_this.isClickedOutOfGrid(e))
-                    e.stopPropagation(); }, onScroll: this.scrollHandler },
+                }, onPointerDown: function (e) {
+                    if (_this.isClickedOutOfGrid(e))
+                        e.stopPropagation();
+                }, onScroll: this.scrollHandler },
                 React.createElement("div", { style: { width: cellMatrix.width, height: cellMatrix.height } })),
-            cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
-                React.createElement("div", { className: "rg-frozen rg-frozen-top", style: {
-                        width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
-                        height: cellMatrix.frozenTopRange.height,
+            cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && (React.createElement("div", { className: "rg-frozen rg-frozen-top", style: {
+                    width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
+                    height: cellMatrix.frozenTopRange.height,
+                } },
+                cellMatrix.frozenLeftRange.width > 0 &&
+                    React.createElement(Pane, { id: "TL", class: "rg-pane-tl", state: state, style: {}, range: cellMatrix.frozenLeftRange.slice(cellMatrix.frozenTopRange, 'rows'), borders: {} }),
+                React.createElement("div", { className: "rg-pane-wrapper", ref: function (frozenTopScrollableElement) { return frozenTopScrollableElement && _this.frozenTopScrollableElementRefHandler(state, frozenTopScrollableElement); }, style: {
+                        left: cellMatrix.frozenLeftRange.width,
+                        width: "calc(100% - " + (cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width) + "px + 2px)", height: 'calc(100% + 2px)',
                     } },
-                    cellMatrix.frozenLeftRange.width > 0 &&
-                        React.createElement(Pane, { id: "TL", class: "rg-pane-tl", state: state, style: {}, range: cellMatrix.frozenLeftRange.slice(cellMatrix.frozenTopRange, 'rows'), borders: {} }),
-                    React.createElement("div", { className: "rg-pane-wrapper", ref: function (frozenTopScrollableElement) { return frozenTopScrollableElement && _this.frozenTopScrollableElementRefHandler(state, frozenTopScrollableElement); }, style: {
+                    React.createElement(Pane, { id: "TC", class: "rg-pane-tc", state: state, style: {
+                            width: cellMatrix.width - cellMatrix.frozenLeftRange.width - cellMatrix.frozenRightRange.width + 2,
+                        }, range: cellMatrix.frozenTopRange.slice(state.visibleRange, 'columns'), borders: {} })),
+                cellMatrix.frozenRightRange.width > 0 && (React.createElement(Pane, { id: "TR", class: "rg-pane-tr", state: state, style: {}, range: cellMatrix.frozenRightRange.slice(cellMatrix.frozenTopRange, 'rows'), borders: {} })))),
+            cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && (React.createElement("div", { className: "rg-middle-wrapper", style: {
+                    top: cellMatrix.frozenTopRange.height,
+                    width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
+                    height: this.isVerticalScrollbarVisible() ? hiddenScrollableElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height : state.visibleRange.height,
+                } },
+                cellMatrix.frozenLeftRange.width > 0 && (React.createElement("div", { className: "rg-middle rg-frozen-left", ref: function (frozenLeftScrollableElement) { return frozenLeftScrollableElement && _this.frozenLeftScrollableElementRefHandler(state, frozenLeftScrollableElement); }, style: {
+                        width: cellMatrix.frozenLeftRange.width,
+                    } },
+                    React.createElement(Pane, { id: "ML", class: "rg-pane-ml", state: state, style: {
+                            height: cellMatrix.height,
+                        }, range: cellMatrix.frozenLeftRange.slice(cellMatrix.scrollableRange.slice(state.visibleRange, 'rows'), 'rows'), borders: {} }))),
+                cellMatrix.frozenRightRange.width > 0 && (React.createElement("div", { className: "rg-middle rg-frozen-right", ref: function (frozenRightScrollableElement) { return frozenRightScrollableElement && _this.frozenRightScrollableElementRefHandler(state, frozenRightScrollableElement); }, style: {
+                        width: cellMatrix.frozenRightRange.width,
+                    } },
+                    React.createElement(Pane, { id: "MR", class: "rg-pane-mr", state: state, style: {
+                            height: cellMatrix.height,
+                        }, range: cellMatrix.frozenRightRange.slice(cellMatrix.scrollableRange.slice(state.visibleRange, 'rows'), 'rows'), borders: {} }))))),
+            cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 && (React.createElement("div", { className: "rg-frozen rg-frozen-bottom", style: {
+                    bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : (!this.isVerticalScrollbarVisible() ? "calc(100% - " + (cellMatrix.frozenTopRange.height + state.visibleRange.height + cellMatrix.frozenBottomRange.height) + "px)" : 0),
+                    width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
+                    height: cellMatrix.frozenBottomRange.height,
+                } },
+                cellMatrix.frozenLeftRange.width > 0 &&
+                    React.createElement(Pane, { id: "BL", class: "rg-pane-bl", state: state, style: {}, range: cellMatrix.frozenLeftRange.slice(cellMatrix.frozenBottomRange, 'rows'), borders: {} }),
+                state.visibleRange && state.visibleRange.width > 0 &&
+                    React.createElement("div", { className: "rg-pane-bl-wrapper", ref: function (frozenBottomScrollableElement) { return frozenBottomScrollableElement && _this.frozenBottomScrollableElementRefHandler(state, frozenBottomScrollableElement); }, style: {
                             left: cellMatrix.frozenLeftRange.width,
-                            width: "calc(100% - " + (cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width) + "px + 2px)", height: 'calc(100% + 2px)',
+                            width: "calc(100% - " + (cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width) + "px)", height: cellMatrix.frozenBottomRange.height,
                         } },
-                        React.createElement(Pane, { id: "TC", class: "rg-pane-tc", state: state, style: {
-                                width: cellMatrix.width - cellMatrix.frozenLeftRange.width - cellMatrix.frozenRightRange.width + 2,
-                            }, range: cellMatrix.frozenTopRange.slice(state.visibleRange, 'columns'), borders: {} })),
-                    cellMatrix.frozenRightRange.width > 0 &&
-                        React.createElement(Pane, { id: "TR", class: "rg-pane-tr", state: state, style: {}, range: cellMatrix.frozenRightRange.slice(cellMatrix.frozenTopRange, 'rows'), borders: {} })),
-            cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
-                React.createElement("div", { className: "rg-middle-wrapper", style: {
-                        top: cellMatrix.frozenTopRange.height,
-                        width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
-                        height: this.isVerticalScrollbarVisible() ? hiddenScrollableElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height : state.visibleRange.height,
-                    } },
-                    cellMatrix.frozenLeftRange.width > 0 &&
-                        React.createElement("div", { className: "rg-middle rg-frozen-left", ref: function (frozenLeftScrollableElement) { return frozenLeftScrollableElement && _this.frozenLeftScrollableElementRefHandler(state, frozenLeftScrollableElement); }, style: {
-                                width: cellMatrix.frozenLeftRange.width,
-                            } },
-                            React.createElement(Pane, { id: "ML", class: "rg-pane-ml", state: state, style: {
-                                    height: cellMatrix.height,
-                                }, range: cellMatrix.frozenLeftRange.slice(cellMatrix.scrollableRange.slice(state.visibleRange, 'rows'), 'rows'), borders: {} })),
-                    cellMatrix.frozenRightRange.width > 0 &&
-                        React.createElement("div", { className: "rg-middle rg-frozen-right", ref: function (frozenRightScrollableElement) { return frozenRightScrollableElement && _this.frozenRightScrollableElementRefHandler(state, frozenRightScrollableElement); }, style: {
-                                width: cellMatrix.frozenRightRange.width,
-                            } },
-                            React.createElement(Pane, { id: "MR", class: "rg-pane-mr", state: state, style: {
-                                    height: cellMatrix.height,
-                                }, range: cellMatrix.frozenRightRange.slice(cellMatrix.scrollableRange.slice(state.visibleRange, 'rows'), 'rows'), borders: {} }))),
-            cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 &&
-                React.createElement("div", { className: "rg-frozen rg-frozen-bottom", style: {
-                        bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : (!this.isVerticalScrollbarVisible() ? "calc(100% - " + (cellMatrix.frozenTopRange.height + state.visibleRange.height + cellMatrix.frozenBottomRange.height) + "px)" : 0),
-                        width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
-                        height: cellMatrix.frozenBottomRange.height,
-                    } },
-                    cellMatrix.frozenLeftRange.width > 0 &&
-                        React.createElement(Pane, { id: "BL", class: "rg-pane-bl", state: state, style: {}, range: cellMatrix.frozenLeftRange.slice(cellMatrix.frozenBottomRange, 'rows'), borders: {} }),
-                    state.visibleRange && state.visibleRange.width > 0 &&
-                        React.createElement("div", { className: "rg-pane-bl-wrapper", ref: function (frozenBottomScrollableElement) { return frozenBottomScrollableElement && _this.frozenBottomScrollableElementRefHandler(state, frozenBottomScrollableElement); }, style: {
-                                left: cellMatrix.frozenLeftRange.width,
-                                width: "calc(100% - " + (cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width) + "px)", height: cellMatrix.frozenBottomRange.height,
-                            } },
-                            React.createElement(Pane, { id: "BC", class: "rg-pane-bc", state: state, style: {
-                                    width: cellMatrix.scrollableRange.width + 2,
-                                }, range: cellMatrix.frozenBottomRange.slice(state.visibleRange, 'columns'), borders: {} })),
-                    cellMatrix.frozenRightRange.width > 0 &&
-                        React.createElement(Pane, { id: "BR", class: "rg-pane-br", state: state, style: {}, range: cellMatrix.frozenRightRange.slice(cellMatrix.frozenBottomRange, 'rows'), borders: {} })),
+                        React.createElement(Pane, { id: "BC", class: "rg-pane-bc", state: state, style: {
+                                width: cellMatrix.scrollableRange.width + 2,
+                            }, range: cellMatrix.frozenBottomRange.slice(state.visibleRange, 'columns'), borders: {} })),
+                cellMatrix.frozenRightRange.width > 0 &&
+                    React.createElement(Pane, { id: "BR", class: "rg-pane-br", state: state, style: {}, range: cellMatrix.frozenRightRange.slice(cellMatrix.frozenBottomRange, 'rows'), borders: {} }))),
             React.createElement("div", { className: "rg-viewport", ref: props.viewportElementRefHandler, style: {
                     right: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                     bottom: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                 } },
-                React.createElement("div", { "data-cy": "react-grid", className: "rg-content", style: { width: cellMatrix.width, height: cellMatrix.height } },
-                    cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.col && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange &&
+                React.createElement("div", { "data-cy": "reac-grid", className: "rg-content", style: { width: cellMatrix.width, height: cellMatrix.height } },
+                    cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.column && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange &&
                         React.createElement(Pane, { id: "MC", class: "rg-pane-mc", state: state, style: {
                                 top: cellMatrix.frozenTopRange.height, left: cellMatrix.frozenLeftRange.width,
                                 width: this.isHorizontalScrollbarVisible() ? cellMatrix.width : state.visibleRange.width,
-                                height: this.isVerticalScrollbarVisible() ? cellMatrix.height : state.visibleRange.height,
+                                height: this.isVerticalScrollbarVisible() ? cellMatrix.height : state.visibleRange.height
                             }, range: cellMatrix.scrollableRange.slice(state.visibleRange, 'rows').slice(state.visibleRange, 'columns'), borders: { right: false, bottom: false } }),
                     React.createElement("input", { className: "rg-input-xy", ref: function (input) {
                             if (input) {
@@ -134,7 +130,7 @@ var LegacyBrowserGridRenderer = (function (_super) {
                         }, value: "\u00A0", onChange: function () { } }),
                     React.createElement(Line, { linePosition: state.linePosition, orientation: state.lineOrientation, cellMatrix: state.cellMatrix }),
                     React.createElement(Shadow, { shadowPosition: state.shadowPosition, orientation: state.lineOrientation, cellMatrix: state.cellMatrix, shadowSize: state.shadowSize, cursor: state.shadowCursor }),
-                    React.createElement(ContextMenu, { state: state, onRowContextMenu: function (menuOptions) { return props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []; }, onColumnContextMenu: function (menuOptions) { return props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []; }, onRangeContextMenu: function (menuOptions) { return props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []; }, contextMenuPosition: state.contextMenuPosition }))),
+                    React.createElement(ContextMenu, { state: state, onRowContextMenu: function (menuOptions) { return (props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []); }, onColumnContextMenu: function (menuOptions) { return (props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []); }, onRangeContextMenu: function (menuOptions) { return (props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []); }, contextMenuPosition: state.contextMenuPosition }))),
             state.currentlyEditedCell && React.createElement(CellEditor, { state: state })));
     };
     LegacyBrowserGridRenderer.prototype.hiddenScrollableElementRefHandler = function (state, hiddenScrollableElement) {
@@ -188,3 +184,6 @@ var LegacyBrowserGridRenderer = (function (_super) {
     return LegacyBrowserGridRenderer;
 }(React.Component));
 export { LegacyBrowserGridRenderer };
+export function copySelectedRangeToClipboardInIE(state, removeValues) {
+    if (removeValues === void 0) { removeValues = false; }
+}

@@ -1,9 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation, Cell } from "../Common";
-export interface ClipboardData {
-    type?: string | null;
-    data: any;
-    text: string;
-}
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation, CompatibleCell } from "../Model";
 export declare class DefaultBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
     private getNewBehavior;
@@ -15,7 +10,6 @@ export declare class DefaultBehavior extends Behavior {
     handlePaste(event: ClipboardEvent, state: State): State;
     handleCut(event: ClipboardEvent, state: State): State;
 }
-export declare function validateOuterData(state: State, clipboardData: ClipboardData): Cell;
-export declare function pasteData(state: State, pasteContent: ClipboardData[][]): State;
+export declare function pasteData(state: State, rows: CompatibleCell[][]): State;
 export declare function copySelectedRangeToClipboard(state: State, removeValues?: boolean): void;
 export declare function copySelectedRangeToClipboardInIE(state: State, removeValues?: boolean): void;

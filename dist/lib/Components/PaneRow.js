@@ -9,8 +9,8 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import * as React from "react";
-import { Pane } from "./Pane";
+import * as React from 'react';
+import { Pane } from './Pane';
 export var PaneRow = function (props) {
     var matrix = props.state.cellMatrix;
     var state = props.state;

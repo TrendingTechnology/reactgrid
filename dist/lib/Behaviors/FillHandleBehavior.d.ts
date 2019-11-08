@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, Range, PointerEvent, Behavior, Location } from "../Common";
+import { State, Range, PointerEvent, Behavior, Location } from '../Model';
 export declare class FillHandleBehavior extends Behavior {
     private fillDirection;
     private fillRange?;
@@ -7,7 +7,7 @@ export declare class FillHandleBehavior extends Behavior {
     private getFillDirection;
     private getFillRange;
     handlePointerUp(event: PointerEvent, location: Location, state: State): State;
-    private iterateFillRangeRows;
-    private iterateFillRangeCols;
+    private fillRows;
+    private fillColumns;
     renderPanePart(state: State, pane: Range): React.ReactNode;
 }

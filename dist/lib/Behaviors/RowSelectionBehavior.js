@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { focusLocation } from '../Functions';
-import { Behavior } from '../Common';
+import { Behavior } from '../Model';
 import { selectOneRow, selectMultipleRows, unSelectOneRow } from '../Functions/selectRange';
 var RowSelectionBehavior = (function (_super) {
     __extends(RowSelectionBehavior, _super);
@@ -22,24 +22,20 @@ var RowSelectionBehavior = (function (_super) {
         return _this;
     }
     RowSelectionBehavior.prototype.handlePointerDown = function (event, location, state) {
-        if (event.ctrlKey && state.selectionMode === 'row' && state.selectedIds.some(function (id) { return id === location.row.id; })) {
+        if (event.ctrlKey && state.selectionMode === 'row' && state.selectedIds.some(function (id) { return id === location.row.rowId; })) {
             state = unSelectOneRow(state, location.row);
         }
         else if (event.shiftKey && state.focusedLocation) {
             state = selectMultipleRows(state, state.focusedLocation.row, location.row, event.ctrlKey);
         }
         else {
-            state = focusLocation(state, location, state.disableRowSelection);
-            if (!state.disableRowSelection)
-                state = selectOneRow(state, location.row, event.ctrlKey);
+            state = focusLocation(state, location, false);
+            state = selectOneRow(state, location.row, event.ctrlKey);
         }
         return state;
     };
     RowSelectionBehavior.prototype.handlePointerEnter = function (event, location, state) {
-        if (state.disableRowSelection)
-            return focusLocation(state, location);
-        else
-            return selectMultipleRows(state, state.focusedLocation.row, location.row, event.ctrlKey);
+        return selectMultipleRows(state, state.focusedLocation.row, location.row, event.ctrlKey);
     };
     return RowSelectionBehavior;
 }(Behavior));

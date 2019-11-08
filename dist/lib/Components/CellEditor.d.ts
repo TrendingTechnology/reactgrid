@@ -1,5 +1,5 @@
-import * as React from "react";
-import { State } from "../Common";
+import * as React from 'react';
+import { State } from '../Model';
 interface CellEditorProps {
     state: State;
 }

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { State, Row, Column, Borders } from "../Common";
+import { State, GridRow, GridColumn, Borders } from '../Model';
 export interface RowRendererProps {
     state: State;
-    row: Row;
-    columns: Column[];
+    row: GridRow;
+    columns: GridColumn[];
     forceUpdate: boolean;
     borders: Borders;
 }

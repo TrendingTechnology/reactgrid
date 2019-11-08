@@ -22,18 +22,20 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { Behavior, Location, keyCodes } from "../Common";
-import { handleKeyDown } from "./DefaultBehavior/handleKeyDown";
+import { Behavior } from "../Model";
+import { handleKeyDown } from "../Functions/handleKeyDown";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { RowSelectionBehavior } from "./RowSelectionBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
-import { trySetDataAndAppendChange } from "../Functions";
+import { keyCodes, tryAppendChange, emptyCell } from "../Functions";
 import { FillHandleBehavior } from "./FillHandleBehavior";
 import { getLocationFromClient, focusLocation } from "../Functions";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
+import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
+import { areLocationsEqual } from '../Functions/areLocationsEqual';
 var DefaultBehavior = (function (_super) {
     __extends(DefaultBehavior, _super);
     function DefaultBehavior() {
@@ -44,19 +46,19 @@ var DefaultBehavior = (function (_super) {
         return state.currentBehavior.handlePointerDown(event, location, state);
     };
     DefaultBehavior.prototype.getNewBehavior = function (event, location, state) {
-        if (location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
+        if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.column.width - 7 && location.column.rezisable) {
             return new ResizeColumnBehavior();
         }
-        else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
+        else if (state.enableColumnSelection && location.row.idx == 0 && state.selectedIds.includes(location.column.columnId) && !event.ctrlKey && state.selectionMode == 'column' && location.column.reorderable) {
             return new ColumnReorderBehavior();
         }
-        else if (location.row.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
+        else if (state.enableColumnSelection && location.row.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
             return new ColumnSelectionBehavior();
         }
-        else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
+        else if (state.enableRowSelection && location.column.idx == 0 && state.selectedIds.includes(location.row.rowId) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
             return new RowReorderBehavior();
         }
-        else if (location.col.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
+        else if (state.enableRowSelection && location.column.idx == 0 && (event.target.className !== 'rg-fill-handle' && event.target.className !== 'rg-touch-fill-handle')) {
             return new RowSelectionBehavior();
         }
         else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'rg-fill-handle' && !state.disableFillHandle) {
@@ -94,12 +96,12 @@ var DefaultBehavior = (function (_super) {
         return __assign({}, state, { contextMenuPosition: contextMenuPosition });
     };
     DefaultBehavior.prototype.handleDoubleClick = function (event, location, state) {
-        if (state.focusedLocation && location.equals(state.focusedLocation)) {
-            var cellTemplate = state.cellTemplates[location.cell.type];
+        if (areLocationsEqual(location, state.focusedLocation)) {
+            var _a = getCompatibleCellAndTemplate(state, location), cell = _a.cell, cellTemplate = _a.cellTemplate;
             if (cellTemplate.handleKeyDown) {
-                var _a = cellTemplate.handleKeyDown(state.focusedLocation.cell.data, 1, event.ctrlKey, event.shiftKey, event.altKey), cellData = _a.cellData, enableEditMode = _a.enableEditMode;
+                var _b = cellTemplate.handleKeyDown(cell, 1, event.ctrlKey, event.shiftKey, event.altKey), newCell = _b.cell, enableEditMode = _b.enableEditMode;
                 if (enableEditMode) {
-                    return __assign({}, state, { currentlyEditedCell: { data: cellData, type: location.cell.type } });
+                    return __assign({}, state, { currentlyEditedCell: newCell });
                 }
             }
         }
@@ -125,29 +127,26 @@ var DefaultBehavior = (function (_super) {
         if (!activeSelectedRange) {
             return state;
         }
-        var pasteContent = [];
+        var pastedRows = [];
         var htmlData = event.clipboardData.getData('text/html');
-        var parsedData = new DOMParser().parseFromString(htmlData, 'text/html');
-        var selectionMode = parsedData.body.firstElementChild && parsedData.body.firstElementChild.getAttribute('data-selection');
-        if (htmlData && parsedData.body.firstElementChild.getAttribute('data-key') === 'dynagrid') {
-            var cells = parsedData.body.firstElementChild.firstElementChild.children;
-            for (var i = 0; i < cells.length; i++) {
+        var document = new DOMParser().parseFromString(htmlData, 'text/html');
+        if (htmlData && document.body.firstElementChild.getAttribute('data-reactgrid') === 'reactgrid') {
+            var tableRows = document.body.firstElementChild.firstElementChild.children;
+            for (var ri = 0; ri < tableRows.length; ri++) {
                 var row = [];
-                for (var j = 0; j < cells[i].children.length; j++) {
-                    var rawData = cells[i].children[j].getAttribute('data-data');
+                for (var ci = 0; ci < tableRows[ri].children.length; ci++) {
+                    var rawData = tableRows[ri].children[ci].getAttribute('data-reactgrid');
                     var data = rawData && JSON.parse(rawData);
-                    var type = cells[i].children[j].getAttribute('data-type');
-                    var textValue = data ? cells[i].children[j].innerHTML : '';
-                    row.push({ text: textValue, data: data, type: type });
+                    row.push(data ? data : { type: 'text', text: tableRows[ri].children[ci].innerHTML });
                 }
-                pasteContent.push(row);
+                pastedRows.push(row);
             }
         }
         else {
-            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ text: t, data: t, type: 'text' }); }); });
+            pastedRows = event.clipboardData.getData('text/plain').split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ type: 'text', text: t }); }); });
         }
         event.preventDefault();
-        return __assign({}, pasteData(state, pasteContent), { selectionMode: selectionMode || 'range' });
+        return __assign({}, pasteData(state, pastedRows));
     };
     DefaultBehavior.prototype.handleCut = function (event, state) {
         copySelectedRangeToClipboard(state, true);
@@ -157,31 +156,25 @@ var DefaultBehavior = (function (_super) {
     return DefaultBehavior;
 }(Behavior));
 export { DefaultBehavior };
-export function validateOuterData(state, clipboardData) {
-    var type = clipboardData.type;
-    if (type && state.cellTemplates[type] && state.cellTemplates[type].isValid(clipboardData.data))
-        return { data: clipboardData.data, type: type };
-    return { data: clipboardData.text, type: 'text' };
-}
-export function pasteData(state, pasteContent) {
+export function pasteData(state, rows) {
     var activeSelectedRange = getActiveSelectedRange(state);
-    if (pasteContent.length === 1 && pasteContent[0].length === 1) {
+    if (rows.length === 1 && rows[0].length === 1) {
         activeSelectedRange.rows.forEach(function (row) {
-            return activeSelectedRange.cols.forEach(function (col) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), validateOuterData(state, pasteContent[0][0]));
+            return activeSelectedRange.columns.forEach(function (column) {
+                state = tryAppendChange(state, { row: row, column: column }, rows[0][0]);
             });
         });
     }
     else {
         var lastLocation_1;
         var cellMatrix_1 = state.cellMatrix;
-        pasteContent.forEach(function (row, pasteRowIdx) {
-            return row.forEach(function (pasteValue, pasteColIdx) {
-                var rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx;
-                var colIdx = activeSelectedRange.cols[0].idx + pasteColIdx;
-                if (rowIdx <= cellMatrix_1.last.row.idx && colIdx <= cellMatrix_1.last.col.idx) {
-                    lastLocation_1 = cellMatrix_1.getLocation(rowIdx, colIdx);
-                    state = trySetDataAndAppendChange(state, lastLocation_1, validateOuterData(state, pasteValue));
+        rows.forEach(function (row, ri) {
+            return row.forEach(function (cell, ci) {
+                var rowIdx = activeSelectedRange.first.row.idx + ri;
+                var columnIdx = activeSelectedRange.first.column.idx + ci;
+                if (rowIdx <= cellMatrix_1.last.row.idx && columnIdx <= cellMatrix_1.last.column.idx) {
+                    lastLocation_1 = cellMatrix_1.getLocation(rowIdx, columnIdx);
+                    state = tryAppendChange(state, lastLocation_1, cell);
                 }
             });
         });
@@ -191,30 +184,24 @@ export function pasteData(state, pasteContent) {
 }
 export function copySelectedRangeToClipboard(state, removeValues) {
     if (removeValues === void 0) { removeValues = false; }
-    var div = document.createElement('div');
-    var table = document.createElement('table');
-    table.setAttribute('empty-cells', 'show');
-    table.setAttribute('data-key', 'dynagrid');
-    table.setAttribute('data-selection', state.selectionMode);
+    console.log(state);
     var activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange)
         return;
+    var div = document.createElement('div');
+    var table = document.createElement('table');
+    table.setAttribute('empty-cells', 'show');
+    table.setAttribute('data-reactgrid', 'reactgrid');
     activeSelectedRange.rows.forEach(function (row) {
         var tableRow = table.insertRow();
-        activeSelectedRange.cols.forEach(function (col) {
+        activeSelectedRange.columns.forEach(function (column) {
             var tableCell = tableRow.insertCell();
-            var cell = state.cellMatrix.getCell(row.id, col.id);
-            var data = cell.data;
-            data = cell.type === 'group' ? data.name : data;
-            tableCell.textContent = data;
-            if (!cell.data) {
-                tableCell.innerHTML = '<img>';
-            }
-            tableCell.setAttribute('data-data', JSON.stringify(data));
-            tableCell.setAttribute('data-type', cell.type);
+            var cell = getCompatibleCellAndTemplate(state, { row: row, column: column }).cell;
+            tableCell.textContent = cell.text;
+            tableCell.setAttribute('data-reactgrid', JSON.stringify(cell));
             tableCell.style.border = '1px solid #D3D3D3';
             if (removeValues) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
+                state = tryAppendChange(state, { row: row, column: column }, emptyCell);
             }
         });
     });
@@ -229,54 +216,4 @@ export function copySelectedRangeToClipboard(state, removeValues) {
 }
 export function copySelectedRangeToClipboardInIE(state, removeValues) {
     if (removeValues === void 0) { removeValues = false; }
-    var div = document.createElement('div');
-    var activeSelectedRange = getActiveSelectedRange(state);
-    if (!activeSelectedRange)
-        return;
-    var text = '';
-    activeSelectedRange.rows.forEach(function (row, rowIdx) {
-        activeSelectedRange.cols.forEach(function (col, colIdx) {
-            var prevCol = (colIdx - 1 >= 0) ? activeSelectedRange.cols[colIdx - 1] : undefined;
-            var nextCol = (colIdx + 1 < activeSelectedRange.cols.length) ? activeSelectedRange.cols[colIdx + 1] : undefined;
-            var cell = state.cellMatrix.getCell(row.id, col.id);
-            var prevCell = prevCol ? state.cellMatrix.getCell(row.id, prevCol.id) : undefined;
-            var nextCell = nextCol ? state.cellMatrix.getCell(row.id, nextCol.id) : undefined;
-            var cellData = cell.data ? cell.data.toString() : '';
-            var prevCellData = (prevCell && prevCell.data) ? prevCell.data.toString() : '';
-            var nextCellData = (nextCell && nextCell.data) ? nextCell.data.toString() : '';
-            text = text + cellData;
-            if (!cellData) {
-                text = text + '\t';
-                if (prevCellData.length > 0 && nextCellData.length > 0) {
-                    text = text + '\t';
-                }
-            }
-            else {
-                if (nextCellData.length > 0) {
-                    text = text + '\t';
-                }
-            }
-            if (removeValues) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
-            }
-        });
-        var areAllEmptyCells = activeSelectedRange.cols.every(function (el) {
-            var cellData = state.cellMatrix.getCell(row.id, el.id).data;
-            if (!cellData) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        });
-        if (areAllEmptyCells) {
-            text = text.substring(0, text.length - 1);
-        }
-        text = (activeSelectedRange.rows.length > 1 && rowIdx < activeSelectedRange.rows.length - 1) ? text + '\n' : text;
-    });
-    div.setAttribute('contenteditable', 'true');
-    document.body.appendChild(div);
-    div.focus();
-    window.clipboardData.setData('text', text);
-    document.body.removeChild(div);
 }

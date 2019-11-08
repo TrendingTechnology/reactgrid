@@ -1,5 +1,5 @@
-import * as React from "react";
-import { MenuOption, State, PointerEvent, KeyboardEvent, ClipboardEvent } from "../Common";
+import * as React from 'react';
+import { MenuOption, State, PointerEvent, KeyboardEvent, ClipboardEvent } from '../Model';
 interface LegacyBrowserGridRendererProps {
     state: State;
     viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
@@ -31,4 +31,5 @@ export declare class LegacyBrowserGridRenderer extends React.Component<LegacyBro
     private isHorizontalScrollbarVisible;
     private isVerticalScrollbarVisible;
 }
+export declare function copySelectedRangeToClipboardInIE(state: State, removeValues?: boolean): void;
 export {};

@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { focusLocation } from '../Functions';
-import { Behavior } from '../Common';
+import { Behavior } from '../Model';
 import { selectOneColumn, selectMultipleColumns, unSelectOneColumn } from '../Functions/selectRange';
 var ColumnSelectionBehavior = (function (_super) {
     __extends(ColumnSelectionBehavior, _super);
@@ -22,24 +22,20 @@ var ColumnSelectionBehavior = (function (_super) {
         return _this;
     }
     ColumnSelectionBehavior.prototype.handlePointerDown = function (event, location, state) {
-        if (event.ctrlKey && state.selectionMode === 'column' && state.selectedIds.some(function (id) { return id === location.col.id; })) {
-            state = unSelectOneColumn(state, location.col);
+        if (event.ctrlKey && state.selectionMode === 'column' && state.selectedIds.some(function (id) { return id === location.column.columnId; })) {
+            state = unSelectOneColumn(state, location.column);
         }
         else if (event.shiftKey && state.focusedLocation) {
-            state = selectMultipleColumns(state, state.focusedLocation.col, location.col, event.ctrlKey);
+            state = selectMultipleColumns(state, state.focusedLocation.column, location.column, event.ctrlKey);
         }
         else {
-            state = focusLocation(state, location, state.disableColumnSelection);
-            if (!state.disableColumnSelection)
-                state = selectOneColumn(state, location.col, event.ctrlKey);
+            state = focusLocation(state, location, false);
+            state = selectOneColumn(state, location.column, event.ctrlKey);
         }
         return state;
     };
     ColumnSelectionBehavior.prototype.handlePointerEnter = function (event, location, state) {
-        if (state.disableColumnSelection)
-            return focusLocation(state, location);
-        else
-            return selectMultipleColumns(state, state.focusedLocation.col, location.col, event.ctrlKey);
+        return selectMultipleColumns(state, state.focusedLocation.column, location.column, event.ctrlKey);
     };
     return ColumnSelectionBehavior;
 }(Behavior));

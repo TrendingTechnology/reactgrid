@@ -1,4 +1,4 @@
-import { keyCodes } from '../Common/Constants';
+import { keyCodes } from '../Functions/keyCodes';
 export var isTextInput = function (keyCode) {
     return (keyCode >= keyCodes.ZERO && keyCode <= keyCodes.Z) ||
         (keyCode >= keyCodes.NUM_PAD_0 && keyCode <= keyCodes.DIVIDE) ||

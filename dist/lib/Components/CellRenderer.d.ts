@@ -1,5 +1,5 @@
-import * as React from "react";
-import { State, Borders, Location } from "../Common";
+import * as React from 'react';
+import { State, Borders, Location } from '../Model';
 export interface CellRendererProps {
     state: State;
     location: Location;

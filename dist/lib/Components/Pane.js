@@ -22,11 +22,11 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import * as React from "react";
-import { CellFocus } from "./CellFocus";
-import { FillHandle } from "./FillHandle";
-import { RowRenderer } from "./RowRenderer";
-import { PartialArea } from "./PartialArea";
+import * as React from 'react';
+import { CellFocus } from './CellFocus';
+import { FillHandle } from './FillHandle';
+import { RowRenderer } from './RowRenderer';
+import { PartialArea } from './PartialArea';
 var GridContent = (function (_super) {
     __extends(GridContent, _super);
     function GridContent() {
@@ -34,7 +34,7 @@ var GridContent = (function (_super) {
     }
     GridContent.prototype.shouldComponentUpdate = function (nextProps) {
         if (this.props.state.focusedLocation && nextProps.state.focusedLocation) {
-            if ((this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id || this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id))
+            if (this.props.state.focusedLocation.column.columnId !== nextProps.state.focusedLocation.column.columnId || this.props.state.focusedLocation.row.rowId !== nextProps.state.focusedLocation.row.rowId)
                 return true;
         }
         else {
@@ -45,18 +45,18 @@ var GridContent = (function (_super) {
     GridContent.prototype.render = function () {
         var _this = this;
         return (React.createElement(React.Fragment, null,
-            this.props.range.rows.map(function (row) { return React.createElement(RowRenderer, { key: row.idx, state: _this.props.state, row: row, columns: _this.props.range.cols, forceUpdate: true, borders: __assign({}, _this.props.borders, { top: _this.props.borders.top && row.top === 0, bottom: _this.props.borders.bottom && row.idx === _this.props.range.last.row.idx }) }); }),
-            this.props.range.rows.map(function (row) { return React.createElement("div", { key: row.idx, className: "rg-separator-line rg-separator-line-row", style: { top: row.top, height: row.height, } }); }),
-            this.props.range.cols.map(function (col) { return React.createElement("div", { key: col.idx, className: "rg-separator-line rg-separator-line-col", style: { left: col.left, width: col.width } }); })));
+            this.props.range.rows.map(function (row) { return React.createElement(RowRenderer, { key: row.rowId, state: _this.props.state, row: row, columns: _this.props.range.columns, forceUpdate: true, borders: __assign({}, _this.props.borders, { top: _this.props.borders.top && row.top === 0, bottom: _this.props.borders.bottom && row.idx === _this.props.range.last.row.idx }) }); }),
+            this.props.range.rows.map(function (row) { return React.createElement("div", { key: row.rowId, className: "rg-separator-line rg-separator-line-row", style: { top: row.top, height: row.height, } }); }),
+            this.props.range.columns.map(function (col) { return React.createElement("div", { key: col.columnId, className: "rg-separator-line rg-separator-line-col", style: { left: col.left, width: col.width } }); })));
     };
     return GridContent;
 }(React.Component));
 function renderCustomFocuses(props) {
     var customFocuses = props.state.customFocuses.filter(function (value) { return Object.keys(value).length !== 0; });
-    return (customFocuses.map(function (focus, id) {
+    return customFocuses.map(function (focus, id) {
         var location = props.state.cellMatrix.getLocationById(focus.rowId, focus.colId);
         return location && props.range.contains(location) && React.createElement(CellFocus, { key: id, location: location, color: focus.color });
-    }));
+    });
 }
 export var Pane = function (props) {
     return (React.createElement("div", { key: props.id, className: "rg-pane " + props.class, style: __assign({ width: props.range.width }, props.style) },
@@ -64,11 +64,9 @@ export var Pane = function (props) {
         renderSelectedRanges(props.state, props.range),
         props.state.currentBehavior.renderPanePart(props.state, props.range),
         props.state.customFocuses && renderCustomFocuses(props),
-        props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
-            React.createElement(CellFocus, { location: props.state.focusedLocation }),
-        props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
-            !props.state.disableFillHandle && !props.state.currentlyEditedCell && React.createElement(FillHandle, { state: props.state, location: props.state.selectedRanges[props.state.activeSelectedRangeIdx].last })));
+        props.state.focusedLocation && props.range.contains(props.state.focusedLocation) && React.createElement(CellFocus, { location: props.state.focusedLocation }),
+        props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) && !props.state.disableFillHandle && !props.state.currentlyEditedCell && React.createElement(FillHandle, { state: props.state, location: props.state.selectedRanges[props.state.activeSelectedRangeIdx].last })));
 };
 function renderSelectedRanges(state, pane) {
-    return state.selectedRanges.map(function (range, i) { return !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && React.createElement(PartialArea, { key: i, pane: pane, range: range, class: "rg-partial-area-selected-range", style: {} }); });
+    return state.selectedRanges.map(function (range, i) { return !(state.focusedLocation && range.contains(state.focusedLocation) && range.columns.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && React.createElement(PartialArea, { key: i, pane: pane, range: range, class: "rg-partial-area-selected-range", style: {} }); });
 }

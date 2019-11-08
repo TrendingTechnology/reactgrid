@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Location } from "../Common";
+import * as React from 'react';
+import { Location } from '../Model';
 interface CellFocusProps {
     location: Location;
     color?: string;

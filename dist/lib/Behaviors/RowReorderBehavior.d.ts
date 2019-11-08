@@ -1,4 +1,4 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Model';
 export declare class RowReorderBehavior extends Behavior {
     private initialRowIdx;
     private lastPossibleDropLocation?;
@@ -9,6 +9,6 @@ export declare class RowReorderBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
     handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State;
     getShadowPosition(location: PointerLocation, state: State): number;
-    getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined;
+    getLastPossibleDropLocation(state: State, currentLocation: PointerLocation): PointerLocation | undefined;
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State;
 }

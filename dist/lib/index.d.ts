@@ -1,4 +1,3 @@
 export * from './Components/ReactGrid';
-export * from './Common/PublicModel';
-export * from './Common/Constants';
+export * from './Model/PublicModel';
 export * from './CellTemplates/keyCodeCheckings';

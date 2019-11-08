@@ -38,26 +38,27 @@ var ContextMenu = (function (_super) {
         var colOptions = onColumnContextMenu && onColumnContextMenu(customContextMenuOptions(state));
         var rangeOptions = onRangeContextMenu && onRangeContextMenu(customContextMenuOptions(state));
         if (focusedLocation) {
-            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
+            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.rowId) && rowOptions) {
                 contextMenuOptions = rowOptions;
             }
-            else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
+            else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.column.columnId) && colOptions) {
                 contextMenuOptions = colOptions;
             }
             else if (state.selectionMode == 'range' && rangeOptions) {
                 contextMenuOptions = rangeOptions;
             }
         }
-        return ((contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
-            React.createElement("div", { className: "rg-context-menu", style: {
-                    top: contextMenuPosition[0] + 'px',
-                    left: contextMenuPosition[1] + 'px',
-                } }, contextMenuOptions.map(function (el, idx) {
-                React.createElement("div", { key: idx, className: "rg-context-menu-option", onPointerDown: function (e) { return e.stopPropagation(); }, onClick: function () {
-                        el.handler();
-                        state.updateState(function (state) { return (__assign({}, state, { contextMenuPosition: [-1, -1] })); });
-                    } }, el.title);
-            }))));
+        return (contextMenuPosition[0] !== -1 &&
+            contextMenuPosition[1] !== -1 &&
+            contextMenuOptions.length > 0 && (React.createElement("div", { className: "rg-context-menu", style: {
+                top: contextMenuPosition[0] + 'px',
+                left: contextMenuPosition[1] + 'px',
+            } }, contextMenuOptions.map(function (el, idx) {
+            React.createElement("div", { key: idx, className: "rg-context-menu-option", onPointerDown: function (e) { return e.stopPropagation(); }, onClick: function () {
+                    el.handler();
+                    state.update(function (state) { return (__assign({}, state, { contextMenuPosition: [-1, -1] })); });
+                } }, el.label);
+        }))));
     };
     return ContextMenu;
 }(React.Component));
@@ -65,21 +66,24 @@ export { ContextMenu };
 function customContextMenuOptions(state) {
     return [
         {
-            title: 'Copy',
+            id: 'copy',
+            label: 'Copy',
             handler: function () { return copySelectedRangeToClipboard(state, false); }
         },
         {
-            title: 'Cut',
+            id: 'cut',
+            label: 'Cut',
             handler: function () { return copySelectedRangeToClipboard(state, true); }
         },
         {
-            title: 'Paste',
+            id: 'paste',
+            label: 'Paste',
             handler: function () {
                 if (isBrowserIE()) {
-                    setTimeout(function () { return state.updateState(function (state) { return pasteData(state, getDataToPasteInIE()); }); });
+                    setTimeout(function () { return state.update(function (state) { return pasteData(state, getDataToPasteInIE()); }); });
                 }
                 else {
-                    navigator.clipboard.readText().then(function (e) { return state.updateState(function (state) { return pasteData(state, e.split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ text: t, data: t, type: 'text' }); }); })); }); });
+                    navigator.clipboard.readText().then(function (e) { return state.update(function (state) { return pasteData(state, e.split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ text: t, data: t, type: 'text' }); }); })); }); });
                 }
             }
         }

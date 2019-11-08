@@ -9,16 +9,19 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { scrollIntoView } from "./scrollIntoView";
-import { trySetDataAndAppendChange } from "./trySetDataAndAppendChange";
+import { scrollIntoView } from './scrollIntoView';
+import { tryAppendChange } from './tryAppendChange';
+import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 export function focusLocation(state, location, resetSelection) {
     if (resetSelection === void 0) { resetSelection = true; }
     scrollIntoView(state, location);
     if (state.focusedLocation && state.currentlyEditedCell) {
-        state = trySetDataAndAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
+        state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
-    var cellTemplate = state.cellTemplates[location.cell.type];
-    var isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(location.cell.data);
+    var _a = getCompatibleCellAndTemplate(state, location), cell = _a.cell, cellTemplate = _a.cellTemplate;
+    var isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(cell);
+    if (!isFocusable)
+        return state;
     if (resetSelection)
         state = __assign({}, state, { activeSelectedRangeIdx: 0, selectedRanges: [state.cellMatrix.getRange(location, location)], selectedIndexes: [], selectedIds: [], selectionMode: 'range' });
     return __assign({}, state, { contextMenuPosition: [-1, -1], focusedLocation: location, currentlyEditedCell: undefined });

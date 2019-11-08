@@ -23,7 +23,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import { focusLocation } from '../Functions';
-import { Location, Behavior } from '../Common';
+import { Behavior } from '../Model';
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
 var CellSelectionBehavior = (function (_super) {
     __extends(CellSelectionBehavior, _super);
@@ -31,7 +31,7 @@ var CellSelectionBehavior = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     CellSelectionBehavior.prototype.handlePointerDown = function (event, location, state) {
-        if (event.shiftKey && state.focusedLocation) {
+        if (!state.disableRangeSelection && event.shiftKey && state.focusedLocation) {
             var range = state.cellMatrix.getRange(state.focusedLocation, location);
             if (event.ctrlKey && state.selectionMode === 'range') {
                 return updateActiveSelectedRange(state, range);
@@ -40,7 +40,7 @@ var CellSelectionBehavior = (function (_super) {
                 return selectRange(state, range, false);
             }
         }
-        else if (event.ctrlKey) {
+        else if (!state.disableRangeSelection && event.ctrlKey) {
             var pointedRangeIdx = state.selectedRanges.findIndex(function (range) { return range.contains(location); });
             var pointedRange = state.selectedRanges[pointedRangeIdx];
             if (pointedRange) {
@@ -61,7 +61,7 @@ var CellSelectionBehavior = (function (_super) {
     CellSelectionBehavior.prototype.handlePointerEnter = function (event, location, state) {
         var range = state.cellMatrix.getRange(state.focusedLocation, location);
         if (state.disableRangeSelection) {
-            return focusLocation(state, new Location(state.focusedLocation.row, state.focusedLocation.col));
+            return state;
         }
         else if (state.selectionMode === 'range') {
             return updateActiveSelectedRange(state, range);
@@ -69,9 +69,6 @@ var CellSelectionBehavior = (function (_super) {
         else {
             return selectRange(state, range, false);
         }
-    };
-    CellSelectionBehavior.prototype.handleDoubleClick = function (event, location, state) {
-        return state;
     };
     return CellSelectionBehavior;
 }(Behavior));

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuOption, Location, State } from '../Common';
+import { MenuOption, Location, State } from '../Model';
 interface ContextMenuProps {
     contextMenuPosition: number[];
     focusedLocation?: Location;

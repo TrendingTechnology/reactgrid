@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Location, State } from "../Common";
+import * as React from 'react';
+import { Location, State } from '../Model';
 interface FillHandleProps {
     state: State;
     location: Location;

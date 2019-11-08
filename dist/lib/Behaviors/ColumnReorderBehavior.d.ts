@@ -1,10 +1,9 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Model';
 export declare class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx;
     private lastPossibleDropLocation?;
     private pointerOffset;
     private selectedIdxs;
-    private selectedIds;
     autoScrollDirection: Direction;
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
     handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State;
