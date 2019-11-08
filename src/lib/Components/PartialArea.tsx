@@ -1,27 +1,27 @@
-import * as React from "react";
-import { Range } from "../Common";
+import * as React from 'react';
+import { Range } from '../Model';
 
-export interface PartialRangeProps {
+export interface PartialAreaProps {
     range: Range,
     pane: Range,
     style: React.CSSProperties
     class?: string
 }
 
-export const PartialArea: React.FunctionComponent<PartialRangeProps> = (props) => {
+export const PartialArea: React.FunctionComponent<PartialAreaProps> = props => {
     const { range, pane, style } = props;
-    const top = (range.first.row.idx <= pane.first.row.idx) ? pane.first.row.top : range.first.row.top;
-    const left = (range.first.col.idx <= pane.first.col.idx) ? pane.first.col.left : range.first.col.left;
-    const width = (range.last.col.idx > pane.last.col.idx ? pane.last.col.right : range.last.col.right) - left;
+    const top = range.first.row.idx <= pane.first.row.idx ? pane.first.row.top : range.first.row.top;
+    const left = range.first.column.idx <= pane.first.column.idx ? pane.first.column.left : range.first.column.left;
+    const width = (range.last.column.idx > pane.last.column.idx ? pane.last.column.right : range.last.column.right) - left;
     const height = (range.last.row.idx > pane.last.row.idx ? pane.last.row.bottom : range.last.row.bottom) - top;
     const hasTopBorder = range.first.row.idx >= pane.first.row.idx;
     const hasBottomBorder = range.last.row.idx <= pane.last.row.idx;
-    const hasRightBorder = range.last.col.idx <= pane.last.col.idx;
-    const hasLeftBorder = range.first.col.idx >= pane.first.col.idx;
+    const hasRightBorder = range.last.column.idx <= pane.last.column.idx;
+    const hasLeftBorder = range.first.column.idx >= pane.first.column.idx;
     return (
         <div
             className={`rg-partial-area ${props.class}`}
-            key={range.first.col.idx + pane.last.col.idx}
+            key={range.first.column.idx + pane.last.column.idx}
             style={{
                 ...style,
                 top: top - (top === 0 ? 0 : 1), left: left - (left === 0 ? 0 : 1),
@@ -32,5 +32,5 @@ export const PartialArea: React.FunctionComponent<PartialRangeProps> = (props) =
                 borderLeft: hasLeftBorder ? (style.borderLeft ? style.borderLeft : style.border) : ''
             }}
         />
-    )
-}
+    );
+};

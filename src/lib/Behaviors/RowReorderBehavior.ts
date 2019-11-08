@@ -1,6 +1,8 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction, DropPosition, Id } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction, DropPosition, Id } from '../Model';
 
+// TODO do a total rewrite here
 export class RowReorderBehavior extends Behavior {
+    // TODO dont use internal state. Always fresh recalculation based on input data!
     private initialRowIdx!: number;
     private lastPossibleDropLocation?: PointerLocation;
     private pointerOffset!: number;
@@ -17,13 +19,13 @@ export class RowReorderBehavior extends Behavior {
         const upperRows = upperIndexes.map(i => state.cellMatrix.rows[i]);
         const upperRowsHeight = upperRows.reduce((sum, row) => sum + row.height, 0);
         this.pointerOffset = upperRowsHeight + location.cellY;
-        this.selectedIds = rows.map(r => r.id);
+        this.selectedIds = rows.map(r => r.rowId);
         return {
             ...state,
             lineOrientation: 'horizontal',
             shadowSize: rows.reduce((sum, col) => sum + col.height, 0),
             shadowPosition: this.getShadowPosition(location, state)
-        }
+        };
     }
 
     handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -31,16 +33,14 @@ export class RowReorderBehavior extends Behavior {
         let shadowCursor = '-webkit-grabbing';
         let linePosition = state.linePosition;
         const pointerLocation = location.viewportY + state.viewportElement.scrollTop;
-        this.lastPossibleDropLocation = this.getLastPossibleDropLocation(location);
+        this.lastPossibleDropLocation = this.getLastPossibleDropLocation(state, location);
         if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.idx !== this.initialRowIdx) {
             const drawDown = this.lastPossibleDropLocation.row.idx > this.initialRowIdx;
-            linePosition = Math.min(this.lastPossibleDropLocation.viewportY - this.lastPossibleDropLocation.cellY + (drawDown ? this.lastPossibleDropLocation.row.height : 0) + state.viewportElement.scrollTop,
-                state.visibleRange.height + state.cellMatrix.frozenTopRange.height + state.cellMatrix.frozenBottomRange.height + state.viewportElement.scrollTop
-            );
-            if (!location.row.canDrop) {
+            linePosition = Math.min(this.lastPossibleDropLocation.viewportY - this.lastPossibleDropLocation.cellY + (drawDown ? this.lastPossibleDropLocation.row.height : 0) + state.viewportElement.scrollTop, state.visibleRange.height + state.cellMatrix.frozenTopRange.height + state.cellMatrix.frozenBottomRange.height + state.viewportElement.scrollTop);
+            if (!state.props.canReorderRows) {
                 this.position = drawDown ? 'after' : 'before';
             } else {
-                if (location.row.canDrop && location.row.canDrop(this.selectedIds, this.position)) {
+                if (state.props.canReorderRows && state.props.canReorderRows(this.lastPossibleDropLocation.row.rowId, this.selectedIds, this.position)) {
                     if (drawDown) {
                         if (pointerLocation > location.row.top && pointerLocation < location.row.top + location.row.height / 2) {
                             this.position = 'on';
@@ -69,7 +69,7 @@ export class RowReorderBehavior extends Behavior {
             shadowPosition,
             linePosition,
             shadowCursor
-        }
+        };
     }
 
     getShadowPosition(location: PointerLocation, state: State): number {
@@ -83,16 +83,17 @@ export class RowReorderBehavior extends Behavior {
         return y;
     }
 
-    getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
-        if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIds, this.position)) {
-            return this.lastPossibleDropLocation = currentLocation;
+    getLastPossibleDropLocation(state: State, currentLocation: PointerLocation): PointerLocation | undefined {
+        if (!state.props.canReorderRows || state.props.canReorderRows(currentLocation.row.rowId, this.selectedIds, this.position)) {
+            return (currentLocation);
         }
         return this.lastPossibleDropLocation;
     }
 
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
-        if (location.row.idx !== this.initialRowIdx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.onDrop && (!this.lastPossibleDropLocation.row.canDrop || this.lastPossibleDropLocation.row.canDrop(this.selectedIds, this.position))) {
-            this.lastPossibleDropLocation.row.onDrop(this.selectedIds, this.position);
+        if (location.row.idx !== this.initialRowIdx && this.lastPossibleDropLocation &&
+            state.props.onRowsReordered) {
+            state.props.onRowsReordered(this.lastPossibleDropLocation.row.rowId, this.selectedIds, this.position);
         }
         return {
             ...state,

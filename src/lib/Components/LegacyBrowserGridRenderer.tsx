@@ -1,26 +1,26 @@
-import * as React from "react";
-import { Line } from "./Line";
-import { Shadow } from "./Shadow";
-import { ContextMenu } from "./ContextMenu";
-import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent } from "../Common";
-import { CellEditor } from "./CellEditor";
-import { Pane } from "./Pane";
-import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from "../Functions";
-import { pasteData, copySelectedRangeToClipboardInIE } from "../Behaviors/DefaultBehavior";
+import * as React from 'react';
+import { Line } from './Line';
+import { Shadow } from './Shadow';
+import { ContextMenu } from './ContextMenu';
+import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent } from '../Model';
+import { CellEditor } from './CellEditor';
+import { Pane } from './Pane';
+import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from '../Functions';
+import { pasteData } from '../Behaviors/DefaultBehavior';
 
 interface LegacyBrowserGridRendererProps {
-    state: State,
-    viewportElementRefHandler: (viewportElement: HTMLDivElement) => void,
-    hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void,
-    onKeyDown: (event: KeyboardEvent) => void,
-    onKeyUp: (event: KeyboardEvent) => void,
-    onCopy: (event: ClipboardEvent) => void,
-    onCut: (event: ClipboardEvent) => void,
-    onPaste: (event: ClipboardEvent) => void,
-    onPointerDown: (event: PointerEvent) => void,
-    onContextMenu: (event: PointerEvent) => void,
-    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    state: State;
+    viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
+    hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
+    onKeyDown: (event: KeyboardEvent) => void;
+    onKeyUp: (event: KeyboardEvent) => void;
+    onCopy: (event: ClipboardEvent) => void;
+    onCut: (event: ClipboardEvent) => void;
+    onPaste: (event: ClipboardEvent) => void;
+    onPointerDown: (event: PointerEvent) => void;
+    onContextMenu: (event: PointerEvent) => void;
+    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
+    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
     onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
@@ -37,10 +37,10 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         const hiddenScrollableElement = state.hiddenScrollableElement;
         return (
             <div
-                className="react-grid-legacy-browser"
+                className="reactgrid-legacy-browser"
                 onCopy={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e)}
                 onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
-                onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.updateState((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
+                onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.update((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
                 onKeyDown={props.onKeyDown}
                 onKeyUp={props.onKeyUp}
                 onPointerDown={props.onPointerDown}
@@ -55,13 +55,14 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         overflowX: this.isHorizontalScrollbarVisible() ? 'scroll' : 'auto',
                         overflowY: this.isVerticalScrollbarVisible() ? 'scroll' : 'auto',
                     }}
-                    onPointerDown={(e: PointerEvent) => { if (this.isClickedOutOfGrid(e)) e.stopPropagation() }}
+                    onPointerDown={(e: PointerEvent) => {
+                        if (this.isClickedOutOfGrid(e)) e.stopPropagation();
+                    }}
                     onScroll={this.scrollHandler}
                 >
                     <div style={{ width: cellMatrix.width, height: cellMatrix.height }}></div>
                 </div>
-                {
-                    cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
+                {cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && (
                     <div
                         className="rg-frozen rg-frozen-top"
                         style={{
@@ -97,7 +98,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                 borders={{}}
                             />
                         </div>
-                        {cellMatrix.frozenRightRange.width > 0 &&
+                        {cellMatrix.frozenRightRange.width > 0 && (
                             <Pane
                                 id="TR"
                                 class="rg-pane-tr"
@@ -106,11 +107,10 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                 range={cellMatrix.frozenRightRange.slice(cellMatrix.frozenTopRange, 'rows')}
                                 borders={{}}
                             />
-                        }
+                        )}
                     </div>
-                }
-                {
-                    cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
+                )}
+                {cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && (
                     <div
                         className="rg-middle-wrapper"
                         style={{
@@ -119,7 +119,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             height: this.isVerticalScrollbarVisible() ? hiddenScrollableElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height : state.visibleRange.height,
                         }}
                     >
-                        {cellMatrix.frozenLeftRange.width > 0 &&
+                        {cellMatrix.frozenLeftRange.width > 0 && (
                             <div
                                 className="rg-middle rg-frozen-left"
                                 ref={(frozenLeftScrollableElement: HTMLDivElement) => frozenLeftScrollableElement && this.frozenLeftScrollableElementRefHandler(state, frozenLeftScrollableElement)}
@@ -137,8 +137,8 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                     borders={{}}
                                 />
                             </div>
-                        }
-                        {cellMatrix.frozenRightRange.width > 0 &&
+                        )}
+                        {cellMatrix.frozenRightRange.width > 0 && (
                             <div
                                 className="rg-middle rg-frozen-right"
                                 ref={(frozenRightScrollableElement: HTMLDivElement) => frozenRightScrollableElement && this.frozenRightScrollableElementRefHandler(state, frozenRightScrollableElement)}
@@ -157,11 +157,10 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                     borders={{}}
                                 />
                             </div>
-                        }
+                        )}
                     </div>
-                }
-                {
-                    cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 &&
+                )}
+                {cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 && (
                     <div
                         className="rg-frozen rg-frozen-bottom"
                         style={{
@@ -210,7 +209,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             />
                         }
                     </div>
-                }
+                )}
                 <div
                     className="rg-viewport"
                     ref={props.viewportElementRefHandler}
@@ -220,11 +219,11 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                     }}
                 >
                     <div
-                        data-cy="react-grid"
+                        data-cy="reac-grid"
                         className="rg-content"
                         style={{ width: cellMatrix.width, height: cellMatrix.height }}
                     >
-                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.col && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange &&
+                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.column && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange &&
                             <Pane
                                 id="MC"
                                 class="rg-pane-mc"
@@ -232,7 +231,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                 style={{
                                     top: cellMatrix.frozenTopRange.height, left: cellMatrix.frozenLeftRange.width,
                                     width: this.isHorizontalScrollbarVisible() ? cellMatrix.width : state.visibleRange.width,
-                                    height: this.isVerticalScrollbarVisible() ? cellMatrix.height : state.visibleRange.height,
+                                    height: this.isVerticalScrollbarVisible() ? cellMatrix.height : state.visibleRange.height
                                 }}
                                 range={cellMatrix.scrollableRange.slice(state.visibleRange, 'rows').slice(state.visibleRange, 'columns')}
                                 borders={{ right: false, bottom: false }}
@@ -242,37 +241,21 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             className="rg-input-xy"
                             ref={(input: HTMLInputElement) => {
                                 if (input) {
-                                    props.hiddenElementRefHandler(input)
-                                    input.setSelectionRange(0, 1)
+                                    props.hiddenElementRefHandler(input);
+                                    input.setSelectionRange(0, 1);
                                 }
                             }}
                             value="&nbsp;"
                             onChange={() => { }}
                         />
-                        <Line
-                            linePosition={state.linePosition}
-                            orientation={state.lineOrientation}
-                            cellMatrix={state.cellMatrix}
-                        />
-                        <Shadow
-                            shadowPosition={state.shadowPosition}
-                            orientation={state.lineOrientation}
-                            cellMatrix={state.cellMatrix}
-                            shadowSize={state.shadowSize}
-                            cursor={state.shadowCursor}
-                        />
-                        <ContextMenu
-                            state={state}
-                            onRowContextMenu={(menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []}
-                            onColumnContextMenu={(menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []}
-                            onRangeContextMenu={(menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []}
-                            contextMenuPosition={state.contextMenuPosition}
-                        />
+                        <Line linePosition={state.linePosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} />
+                        <Shadow shadowPosition={state.shadowPosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} shadowSize={state.shadowSize} cursor={state.shadowCursor} />
+                        <ContextMenu state={state} onRowContextMenu={(menuOptions: MenuOption[]) => (props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : [])} onColumnContextMenu={(menuOptions: MenuOption[]) => (props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : [])} onRangeContextMenu={(menuOptions: MenuOption[]) => (props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : [])} contextMenuPosition={state.contextMenuPosition} />
                     </div>
-                </div >
+                </div>
                 {state.currentlyEditedCell && <CellEditor state={state} />}
-            </div >
-        )
+            </div>
+        );
     }
 
     private hiddenScrollableElementRefHandler(state: State, hiddenScrollableElement: HTMLDivElement) {
@@ -321,9 +304,9 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
 
         // TODO this is done outside of the GridRenderer
         if (scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop || scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft) {
-            state.updateState((state: State) => recalcVisibleRange(state))
+            state.update((state: State) => recalcVisibleRange(state));
         }
-    }
+    };
 
     private isClickedOutOfGrid(event: PointerEvent): boolean {
         const hiddenScrollableElement = this.props.state.hiddenScrollableElement;
@@ -333,19 +316,15 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         const bottomEmptySpace = hiddenScrollableElement.clientHeight - cellMatrix.height;
 
         if (cellMatrix.width > hiddenScrollableElement.clientWidth) {
-            if (event.clientX > hiddenScrollableElement.clientWidth + hiddenScrollableElement.getBoundingClientRect().left)
-                return true;
+            if (event.clientX > hiddenScrollableElement.clientWidth + hiddenScrollableElement.getBoundingClientRect().left) return true;
         } else {
-            if (event.clientX > hiddenScrollableElement.clientWidth - rightEmptySpace + hiddenScrollableElement.getBoundingClientRect().left)
-                return true;
+            if (event.clientX > hiddenScrollableElement.clientWidth - rightEmptySpace + hiddenScrollableElement.getBoundingClientRect().left) return true;
         }
 
         if (cellMatrix.height > hiddenScrollableElement.clientHeight) {
-            if (event.clientY > hiddenScrollableElement.clientHeight + hiddenScrollableElement.getBoundingClientRect().top)
-                return true;
+            if (event.clientY > hiddenScrollableElement.clientHeight + hiddenScrollableElement.getBoundingClientRect().top) return true;
         } else {
-            if (event.clientY > hiddenScrollableElement.clientHeight - bottomEmptySpace + hiddenScrollableElement.getBoundingClientRect().top)
-                return true;
+            if (event.clientY > hiddenScrollableElement.clientHeight - bottomEmptySpace + hiddenScrollableElement.getBoundingClientRect().top) return true;
         }
         return false;
     }
@@ -357,4 +336,55 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
     private isVerticalScrollbarVisible(): boolean {
         return this.props.state.hiddenScrollableElement && this.props.state.cellMatrix.height > this.props.state.hiddenScrollableElement.clientHeight;
     }
+}
+
+export function copySelectedRangeToClipboardInIE(state: State, removeValues = false) {
+    // const div = document.createElement('div');
+    // const activeSelectedRange = getActiveSelectedRange(state);
+    // if (!activeSelectedRange) return;
+
+    // let text = '';
+    // activeSelectedRange.rows.forEach((row, rowIdx) => {
+    //     activeSelectedRange.cols.forEach((col, colIdx) => {
+    //         const prevCol = colIdx - 1 >= 0 ? activeSelectedRange.cols[colIdx - 1] : undefined;
+    //         const nextCol = colIdx + 1 < activeSelectedRange.cols.length ? activeSelectedRange.cols[colIdx + 1] : undefined;
+    //         const cell = state.cellMatrix.getCell(row.rowId, col.columnId);
+    //         const prevCell = prevCol ? state.cellMatrix.getCell(row.rowId, prevCol.columnId) : undefined;
+    //         const nextCell = nextCol ? state.cellMatrix.getCell(row.rowId, nextCol.columnId) : undefined;
+    //         const cellData = cell.data ? cell.data.toString() : '';
+    //         const prevCellData = prevCell && prevCell.data ? prevCell.data.toString() : '';
+    //         const nextCellData = nextCell && nextCell.data ? nextCell.data.toString() : '';
+    //         text = text + cellData;
+    //         if (!cellData) {
+    //             text = text + '\t';
+    //             if (prevCellData.length > 0 && nextCellData.length > 0) {
+    //                 text = text + '\t';
+    //             }
+    //         } else {
+    //             if (nextCellData.length > 0) {
+    //                 text = text + '\t';
+    //             }
+    //         }
+    //         if (removeValues) {
+    //             state = tryAppendChange(state, newLocation(row, col), emptyCell);
+    //         }
+    //     });
+    //     const areAllEmptyCells = activeSelectedRange.cols.every(el => {
+    //         const cellData = state.cellMatrix.getCell(row.rowId, el.columnId).data;
+    //         if (!cellData) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     });
+    //     if (areAllEmptyCells) {
+    //         text = text.substring(0, text.length - 1);
+    //     }
+    //     text = activeSelectedRange.rows.length > 1 && rowIdx < activeSelectedRange.rows.length - 1 ? text + '\n' : text;
+    // });
+    // div.setAttribute('contenteditable', 'true');
+    // document.body.appendChild(div);
+    // div.focus();
+    // (window as any).clipboardData.setData('text', text);
+    // document.body.removeChild(div);
 }

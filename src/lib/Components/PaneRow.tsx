@@ -1,6 +1,6 @@
-import * as React from "react";
-import { Pane } from "./Pane";
-import { State, Borders, Range } from "../Common";
+import * as React from 'react';
+import { Pane } from './Pane';
+import { State, Borders, Range } from '../Model';
 
 export interface PaneRowProps {
     id: string,
@@ -12,7 +12,7 @@ export interface PaneRowProps {
     zIndex: number,
 }
 
-export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
+export const PaneRow: React.FunctionComponent<PaneRowProps> = props => {
     const matrix = props.state.cellMatrix;
     const state = props.state;
     return (
@@ -32,8 +32,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
                     style={{ left: 0, position: 'sticky', zIndex: props.zIndex + 1 }}
                     range={matrix.frozenLeftRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, right: true }}
-                />
-            }
+                />}
             {state.visibleRange && state.visibleRange.width > 0 &&
                 <Pane
                     id={props.id + 'C'}
@@ -42,8 +41,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
                     style={{ width: matrix.scrollableRange.width }}
                     range={props.range.slice(state.visibleRange, 'columns')}
                     borders={{ ...props.borders, right: false, bottom: false }}
-                />
-            }
+                />}
             {matrix.frozenRightRange.width > 0 &&
                 <Pane
                     id={props.id + 'R'}
@@ -56,5 +54,4 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
             }
         </div>
     );
-
-}
+};
