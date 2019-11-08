@@ -6,6 +6,8 @@ import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
 export interface NumberCell extends Cell {
     type: 'number',
     value: number
+    format?: string
+    hideZero?: boolean
 }
 
 export class NumberCellTemplate implements CellTemplate<NumberCell> {
@@ -15,14 +17,24 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     }
 
     handleKeyDown(cell: NumberCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+        console.log(Number.isNaN(cell.value))
         if (!ctrl && !alt && !shift && isNumberInput(keyCode))
             return { cell: { ...cell, data: NaN }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
+    update(cell: NumberCell, newCell: NumberCell | CompatibleCell): NumberCell {
+
+        if (newCell.value !== undefined && newCell.value !== NaN)
+            return { ...cell, value: newCell.value } as NumberCell;
+
+        const parsed = parseFloat((newCell as CompatibleCell).text);
+        return { ...cell, value: parsed > 0 || parsed < 0 ? parsed : 0 }
+    }
+
     render(cell: NumberCell, isInEditMode: boolean, onCellChanged: (cell: NumberCell, commit: boolean) => void): React.ReactNode {
         if (!isInEditMode) {
-            return cell.value;
+            return cell.value === 0 && cell.hideZero == true ? '' : cell.value;
         }
 
         return <input
@@ -34,8 +46,15 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
                 }
             }}
             value={cell.value}
-            onChange={e => onCellChanged({ ...cell, value: parseFloat(e.currentTarget.value) }, false)}
+            onChange={e => {
+                onCellChanged({ ...cell, value: Number(e.currentTarget.value) }, false)
+            }}
+
             onKeyDown={e => {
+                if ((e.keyCode >= 48 && e.keyCode >= 57) || (e.keyCode <= 96 && e.keyCode >= 105)) {
+                    e.preventDefault()
+                    return
+                }
                 if (isNumberInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
                 if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.value.toString(); // reset
             }}
