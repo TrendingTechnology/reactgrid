@@ -1,20 +1,19 @@
-import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
-import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { CellTemplates, Id, Focus, Cell } from "./PublicModel";
+import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, CellChange } from '.';
+import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
+import { CellTemplates, Id, Focus, Cell, ReactGridProps } from './PublicModel';
+import { isBrowserIE, isBrowserEdge } from '../Functions';
+
+export type StateModifier = (state: State) => State;
+export type StateUpdater = (modifier: StateModifier) => void;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
-
-export type StateUpdater = (modifier: (state: State) => State) => void;
-
 export class State {
-    constructor(public readonly updateState: StateUpdater) {
-        //    this.isLegacyBrowser = 
-    }
-    //readonly isLegacyBrowser: boolean;
+    constructor(public update: StateUpdater) { }
+    readonly props!: ReactGridProps;
+    readonly legacyBrowserMode = isBrowserIE() || isBrowserEdge();
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
-    readonly floatingCellEditor: boolean = false;
 
     readonly cellTemplates!: CellTemplates;
     hiddenFocusElement!: HTMLDivElement; // updated without setState
@@ -24,16 +23,17 @@ export class State {
     // TODO try to eliminate
     hiddenScrollableElement!: HTMLDivElement;
 
-    readonly queuedDataChanges: DataChange[] = [];
+    readonly queuedCellChanges: CellChange[] = [];
     currentlyEditedCell?: Cell;
     readonly customFocuses: Focus[] = [];
-    readonly disableFillHandle?: boolean;
-    readonly disableRangeSelection?: boolean;
-    readonly disableColumnSelection?: boolean;
-    readonly disableRowSelection?: boolean;
+    readonly disableFillHandle: boolean = false;
+    readonly disableRangeSelection: boolean = false;
+    readonly enableColumnSelection: boolean = false;
+    readonly enableRowSelection: boolean = false;
 
     // CONTEXT MENU
-    readonly contextMenuPosition: number[] = [-1, -1] // [top, left]
+    // TODO { top, left }
+    readonly contextMenuPosition: number[] = [-1, -1]; // [top, left]
 
     // LINE AND SHADOW
     readonly lineOrientation: Orientation = 'horizontal';
@@ -43,7 +43,7 @@ export class State {
     readonly shadowCursor: string = 'default';
 
     // SELECTION
-    readonly selectionMode: SelectionMode = 'range'
+    readonly selectionMode: SelectionMode = 'range';
     readonly selectedRanges: Range[] = [];
     readonly selectedIndexes: number[] = [];
     readonly selectedIds: Id[] = [];

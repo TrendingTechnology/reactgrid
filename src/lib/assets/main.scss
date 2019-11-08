@@ -80,8 +80,8 @@
 }
 
 /* MAIN */ 
-.react-grid, 
-.react-grid-legacy-browser {
+.reactgrid, 
+.reactgrid-legacy-browser {
     width: 100%;
     height: 100%;
 
@@ -205,7 +205,7 @@
     }
 }
 
-.react-grid {
+.reactgrid {
     .rg-content {
         .rg-pane-row-t, .rg-pane-row-b {
             position: sticky;
@@ -228,7 +228,7 @@
     }
 }
 
-.react-grid-legacy-browser {
+.reactgrid-legacy-browser {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;

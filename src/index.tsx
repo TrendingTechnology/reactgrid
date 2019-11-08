@@ -1,10 +1,9 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import Grid from "./test-grid"
+import { TestGrid } from "./TestGrid"
 // DO NOT MOVE
 // this index.tsx is required by react-scripts-ts
-
 ReactDOM.render(
-  <Grid columns={10} rows={150} />,
+  <TestGrid />,
   document.getElementById('root') as HTMLElement
 );

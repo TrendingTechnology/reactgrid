@@ -1,5 +1,5 @@
-import { keyCodes } from '../Common/Constants';
-import { KeyboardEvent } from '../Common';
+import { keyCodes } from '../Functions/keyCodes';
+import { KeyboardEvent } from '../Model';
 
 export const isTextInput = (keyCode: number) =>
     (keyCode >= keyCodes.ZERO && keyCode <= keyCodes.Z) ||

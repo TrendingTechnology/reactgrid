@@ -1,17 +1,22 @@
 import * as React from 'react';
-import { CellTemplate, CellRenderProps } from '../Common';
+import { CellTemplate, Cell, CompatibleCell } from '../Model';
 
-export class HeaderCellTemplate implements CellTemplate<string, any> {
+export interface HeaderCell extends Cell {
+    type: 'header',
+    text: string,
+}
 
-    isReadonly = () => true;
+export class HeaderCellTemplate implements CellTemplate<HeaderCell> {
 
-    isValid = (cellData: string) => (typeof (cellData) === 'string');
+    validate(cell: HeaderCell): CompatibleCell<HeaderCell> {
+        return cell;
+    }
+
+    render(cell: HeaderCell, isInEditMode: boolean, onCellChanged: (cell: HeaderCell, commit: boolean) => void): React.ReactNode {
+        return cell.text;
+    }
 
     isFocusable = () => false;
 
-    cellDataToText = (cellData: string) => cellData;
-
-    getCustomStyle = (cellData: string) => ({ background: '#f3f3f3' })
-
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => props.cellData
+    getStyle = (cell: HeaderCell) => ({ background: '#f3f3f3' })
 }

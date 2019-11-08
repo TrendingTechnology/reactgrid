@@ -1,5 +1,5 @@
-import * as React from "react";
-import { CellMatrix, Orientation } from "../Common";
+import * as React from 'react';
+import { CellMatrix, Orientation } from '../Model';
 
 interface LineProps {
     linePosition: number;
@@ -7,10 +7,9 @@ interface LineProps {
     cellMatrix: CellMatrix;
 }
 export class Line extends React.Component<LineProps> {
-
     render() {
         const { cellMatrix, linePosition } = this.props;
-        const isVertical = this.props.orientation == 'vertical' ? true : false
+        const isVertical = this.props.orientation == 'vertical' ? true : false;
         return (
             linePosition !== -1 &&
             <div

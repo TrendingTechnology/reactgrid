@@ -1,27 +1,25 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction, Column, Id } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Model';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
     private lastPossibleDropLocation?: PointerLocation;
     private pointerOffset!: number;
     private selectedIdxs!: number[];
-    private selectedIds!: Id[];
     autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        this.initialColumnIdx = location.col.idx;
+        this.initialColumnIdx = location.column.idx;
         this.lastPossibleDropLocation = location;
         this.selectedIdxs = state.selectedIndexes.sort();
-        const columns = this.selectedIdxs.map(i => state.cellMatrix.cols[i]);
-        const leftIndexes = this.selectedIdxs.filter(i => i < location.col.idx);
-        const leftColumns = leftIndexes.map(i => state.cellMatrix.cols[i]);
-        const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width, 0);
+        const columns = this.selectedIdxs.map(i => state.cellMatrix.columns[i]);
+        const leftIndexes = this.selectedIdxs.filter(i => i < location.column.idx);
+        const leftColumns = leftIndexes.map(i => state.cellMatrix.columns[i]);
+        const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width!, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        this.selectedIds = columns.map(c => c.id)
         return {
             ...state,
             lineOrientation: 'vertical',
-            shadowSize: columns.reduce((sum, col) => sum + col.width, 0),
+            shadowSize: columns.reduce((sum, col) => sum + col.width!, 0),
             shadowPosition: this.getShadowPosition(location, state)
         }
     }
@@ -47,10 +45,11 @@ export class ColumnReorderBehavior extends Behavior {
     handlePointerEnter(event: PointerEvent, location: PointerLocation, state: State): State {
         const dropLocation = this.getLastPossibleDropLocation(location, state)
         if (!dropLocation) return state;
-        const drawRight = dropLocation.col.idx > this.initialColumnIdx;
-        const linePosition = Math.min(dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.col.width : 0) + state.viewportElement.scrollLeft,
+        const drawRight = dropLocation.column.idx > this.initialColumnIdx;
+        const linePosition = Math.min(dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.column.width : 0) + state.viewportElement.scrollLeft,
             state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft
         )
+        this.lastPossibleDropLocation = dropLocation;
         return {
             ...state,
             linePosition
@@ -58,17 +57,17 @@ export class ColumnReorderBehavior extends Behavior {
     }
 
     getLastPossibleDropLocation(currentLocation: PointerLocation, state: State): PointerLocation | undefined {
-        const position = currentLocation.col.idx <= this.initialColumnIdx ? 'before' : 'after';
-        if (!currentLocation.col.canDrop || currentLocation.col.canDrop(this.selectedIdxs, position)) {
-            return this.lastPossibleDropLocation = currentLocation;
+        const position = currentLocation.column.idx <= this.initialColumnIdx ? 'before' : 'after';
+        if (!state.props.canReorderColumns || state.props.canReorderColumns(currentLocation.column.columnId, this.selectedIdxs, position)) {
+            return currentLocation;
         }
         return this.lastPossibleDropLocation;
     }
 
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
-        if (this.initialColumnIdx !== location.col.idx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.col.onDrop) {
-            const isBefore = this.lastPossibleDropLocation.col.idx <= this.initialColumnIdx;
-            this.lastPossibleDropLocation.col.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
+        if (this.initialColumnIdx !== location.column.idx && this.lastPossibleDropLocation && state.props.onColumnsReordered) {
+            const isBefore = this.lastPossibleDropLocation.column.idx <= this.initialColumnIdx;
+            state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, this.selectedIdxs, isBefore ? 'before' : 'after');
         }
         return {
             ...state,
