@@ -6,7 +6,7 @@ import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const newState = handleKeyDownInternal(state, event);
-    if (newState !== state) { event.stopPropagation(); }
+    if (newState !== state) { event.stopPropagation(); event.preventDefault(); }
     return newState;
 }
 
