@@ -44,7 +44,7 @@ var DefaultBehavior = (function (_super) {
         return state.currentBehavior.handlePointerDown(event, location, state);
     };
     DefaultBehavior.prototype.getNewBehavior = function (event, location, state) {
-        if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
+        if (location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
             return new ResizeColumnBehavior();
         }
         else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {

@@ -61,6 +61,7 @@
     right: 0;
     width: $resize-handle-area;
     height: 100%;
+    touch-action: none;
     pointer-events: auto;
     z-index: 1;
 
