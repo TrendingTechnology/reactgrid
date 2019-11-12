@@ -17,7 +17,6 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     }
 
     handleKeyDown(cell: NumberCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-        console.log(Number.isNaN(cell.value))
         if (!ctrl && !alt && !shift && isNumberInput(keyCode))
             return { cell: { ...cell, data: NaN }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
@@ -34,7 +33,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
 
     render(cell: NumberCell, isInEditMode: boolean, onCellChanged: (cell: NumberCell, commit: boolean) => void): React.ReactNode {
         if (!isInEditMode) {
-            return cell.value === 0 && cell.hideZero == true ? '' : cell.value;
+            return cell.value === 0 && cell.hideZero ? '' : cell.value;
         }
 
         return <input
