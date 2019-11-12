@@ -1,4 +1,7 @@
 export function isBrowserEdge() {
-    var userAgent = window.navigator.userAgent;
-    return userAgent.indexOf('Edge/') > 0;
+    if (typeof window !== 'undefined') {
+        return window.navigator.userAgent.indexOf('Edge/') > 0;
+    }
+    else
+        return false;
 }
