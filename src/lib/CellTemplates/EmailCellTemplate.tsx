@@ -6,7 +6,7 @@ import { isNavigationKey, isTextInput } from './keyCodeCheckings';
 export interface EmailCell extends Cell {
     type: 'email',
     text: string,
-    isValid: boolean
+    isValid?: boolean
 }
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
@@ -15,7 +15,6 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
         if (cell.text === undefined || cell.text === null)
             throw 'EmailCell is missing text property'
         const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        cell.isValid = true;
         if (!email_regex.test(cell.text.replace(/\s+/g, ''))) {
             cell.isValid = false;
         }
