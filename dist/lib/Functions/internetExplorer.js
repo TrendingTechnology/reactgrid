@@ -1,6 +1,9 @@
 export function isBrowserIE() {
-    var userAgent = window.navigator.userAgent;
-    return userAgent.indexOf('Trident/') > 0;
+    if (typeof window !== 'undefined') {
+        return window.navigator.userAgent.indexOf('Trident') > 0;
+    }
+    else
+        return false;
 }
 export function getDataToPasteInIE() {
     var data = window.clipboardData.getData('text');
