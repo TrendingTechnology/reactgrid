@@ -1,41 +1,41 @@
 import * as React from 'react';
-// import { keyCodes } from '../Functions/keyCodes';
-// import { CellRenderProps as CellRenderProps, CellTemplate } from '../Model';
+import { keyCodes } from '../Functions/keyCodes';
+import { CellTemplate, Cell, CompatibleCell } from '../Model';
 
-// type CheckboxCell = Cell<'checkbox', boolean, {}>
+export interface CheckboxCell extends Cell {
+    type: 'checkbox',
+    value: boolean
+}
 
-// export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
+export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
 
-//     isValid(cell: CheckboxCell): boolean {
-//         return typeof (cell.data) === 'boolean';
-//     }
+    validate(cell: any): CompatibleCell<CheckboxCell> {
+        return { ...cell, text: cell.value.toString() };
+    }
 
-//     toText(cell: CheckboxCell) {
-//         return cell ? 'true' : '';
-//     }
+    handleKeyDown(cell: CheckboxCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: CheckboxCell; enableEditMode: boolean } {
+        if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
+            return { cell: { ...cell, value: !cell.value }, enableEditMode: false }
+        return { cell, enableEditMode: false }
+    }
 
-//     handleKeyDown(cell: CheckboxCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-//         if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
-//             cell.data = !cell.data
-//         return { cell, enableEditMode: false }
-//     }
+    update(cell: CheckboxCell, newCell: CheckboxCell | CompatibleCell): CheckboxCell {
+        // A CompatibleCell will provide the properties a CheckboxCell needs
+        return newCell as CheckboxCell;
+    }
 
-//     renderContent: (props: CellRenderProps<CheckboxCell>) => React.ReactNode = (props) => {
-//         return <input
-//             type="checkbox"
-//             style={{
-//                 width: '20px',
-//                 height: '20px',
-//                 marginLeft: 'auto',
-//                 marginRight: 'auto',
-//                 padding: 0,
-//                 border: 0,
-//                 background: 'transparent',
-//                 pointerEvents: 'auto',
-//                 zIndex: 1
-//             }}
-//             checked={props.cell.data}
-//             onChange={() => props.onCellChanged({ ...props.cell, data: !props.cell.data }, true)}
-//         />
-//     }
-// }
+    render(cell: CheckboxCell, isInEditMode: boolean, onCellChanged: (cell: CheckboxCell, commit: boolean) => void): React.ReactNode {
+        return (
+            <label className="rg-checkbox-container">
+                <input
+                    type="checkbox"
+                    className="rg-checkbox-cell-input"
+                    checked={cell.value}
+                    onChange={e => onCellChanged({ ...cell, value: !cell.value }, true)}
+                />
+                <span className="rg-checkbox-checkmark"></span>
+            </label>
+        )
+    }
+
+}
