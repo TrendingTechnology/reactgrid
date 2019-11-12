@@ -1,6 +1,8 @@
 export function isBrowserIE() {
-    const userAgent = window.navigator.userAgent;
-    return userAgent.indexOf('Trident/') > 0;
+    if (typeof window !== 'undefined') { // condition needed for circle ci compiler
+        return window.navigator.userAgent.indexOf('Trident') > 0;
+    } else
+        return false;
 }
 
 // TODO this has to be done in a different way
