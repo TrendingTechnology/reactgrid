@@ -27,22 +27,11 @@ export const TestGrid: React.FunctionComponent = () => {
             columnId: ci, rezisable: true
         } as Column));
 
-        const rows = new Array(rowCount).fill(0).map((_, ri) => {
-            if (ri < 10) {
-                return {
-                    rowId: ri, cells: columns.map((_, ci) => ({
-                        type: 'text', text: `malink@wp.pl`
-                    }))
-                }
-            } else {
-                return {
-                    rowId: ri, cells: columns.map((_, ci) => ({
-                        type: 'checkbox', value: false
-                    }))
-                }
-            }
-        
-        });
+        const rows = new Array(rowCount).fill(0).map((_, ri) => ({
+            rowId: ri, cells: columns.map((_, ci) => ({
+                type: 'text', text: `${ri} - ${ci}`
+            }))
+        }));
         return { rows, columns }
     })
 

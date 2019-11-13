@@ -10,7 +10,7 @@ export interface CheckboxCell extends Cell {
 export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
 
     validate(cell: any): CompatibleCell<CheckboxCell> {
-        return { ...cell, text: cell.value.toString() };
+        return { ...cell, text: cell.value !== undefined || cell.value !== null ? cell.value.toString() : '' };
     }
 
     handleKeyDown(cell: CheckboxCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: CheckboxCell; enableEditMode: boolean } {
@@ -21,7 +21,10 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
 
     update(cell: CheckboxCell, newCell: CheckboxCell | CompatibleCell): CheckboxCell {
         // A CompatibleCell will provide the properties a CheckboxCell needs
-        return newCell as CheckboxCell;
+        if (newCell.value !== undefined && newCell.value !== NaN)
+            return { ...cell, value: newCell.value } as CheckboxCell;
+        const text = (newCell as CompatibleCell).text;
+        return { ...cell, value: text.length > 0 ? true : false }
     }
 
     render(cell: CheckboxCell, isInEditMode: boolean, onCellChanged: (cell: CheckboxCell, commit: boolean) => void): React.ReactNode {
