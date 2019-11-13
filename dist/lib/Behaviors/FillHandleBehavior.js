@@ -22,6 +22,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 import * as React from 'react';
 import { Behavior } from '../Model';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
@@ -96,22 +103,22 @@ var FillHandleBehavior = (function (_super) {
             case 'right':
                 values = activeSelectedRange.rows.map(function (row) { return getCompatibleCell(newLocation(row, activeSelectedRange.last.column)); });
                 state = this.fillRows(state, values);
-                state = __assign({}, state, { selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, newLocation(activeSelectedRange.last.row, location.column))], selectedIds: activeSelectedRange.columns.map(function (col) { return col.columnId; }).concat(this.fillRange.columns.map(function (col) { return col.columnId; })) });
+                state = __assign(__assign({}, state), { selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, newLocation(activeSelectedRange.last.row, location.column))], selectedIds: __spreadArrays(activeSelectedRange.columns.map(function (col) { return col.columnId; }), this.fillRange.columns.map(function (col) { return col.columnId; })) });
                 break;
             case 'left':
                 values = activeSelectedRange.rows.map(function (row) { return getCompatibleCell(newLocation(row, activeSelectedRange.last.column)); });
                 state = this.fillRows(state, values);
-                state = __assign({}, state, { selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, newLocation(activeSelectedRange.first.row, location.column))], selectedIds: activeSelectedRange.columns.map(function (col) { return col.columnId; }).concat(this.fillRange.columns.map(function (col) { return col.columnId; })) });
+                state = __assign(__assign({}, state), { selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, newLocation(activeSelectedRange.first.row, location.column))], selectedIds: __spreadArrays(activeSelectedRange.columns.map(function (col) { return col.columnId; }), this.fillRange.columns.map(function (col) { return col.columnId; })) });
                 break;
             case 'up':
                 values = activeSelectedRange.columns.map(function (column) { return getCompatibleCell(newLocation(activeSelectedRange.last.row, column)); });
                 state = this.fillColumns(state, values);
-                state = __assign({}, state, { selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, { row: location.row, column: activeSelectedRange.first.column })], selectedIds: activeSelectedRange.rows.map(function (row) { return row.rowId; }).concat(this.fillRange.rows.map(function (row) { return row.rowId; })) });
+                state = __assign(__assign({}, state), { selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, { row: location.row, column: activeSelectedRange.first.column })], selectedIds: __spreadArrays(activeSelectedRange.rows.map(function (row) { return row.rowId; }), this.fillRange.rows.map(function (row) { return row.rowId; })) });
                 break;
             case 'down':
                 values = activeSelectedRange.columns.map(function (column) { return getCompatibleCell(newLocation(activeSelectedRange.last.row, column)); });
                 state = this.fillColumns(state, values);
-                state = __assign({}, state, { selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, newLocation(location.row, activeSelectedRange.last.column))], selectedIds: activeSelectedRange.rows.map(function (row) { return row.rowId; }).concat(this.fillRange.rows.map(function (row) { return row.rowId; })) });
+                state = __assign(__assign({}, state), { selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, newLocation(location.row, activeSelectedRange.last.column))], selectedIds: __spreadArrays(activeSelectedRange.rows.map(function (row) { return row.rowId; }), this.fillRange.rows.map(function (row) { return row.rowId; })) });
                 break;
         }
         return state;

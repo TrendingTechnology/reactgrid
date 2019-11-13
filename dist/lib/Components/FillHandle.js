@@ -27,7 +27,7 @@ export var FillHandle = function (props) {
             left: props.location.column.right - (dimensions.height / 2),
         }, "data-cy": "rg-touch-fill-handle", onPointerDown: function (event) {
             if (event.pointerType !== 'mouse' && event.pointerType !== undefined) {
-                props.state.update(function (state) { return (__assign({}, state, { currentBehavior: new FillHandleBehavior() })); });
+                props.state.update(function (state) { return (__assign(__assign({}, state), { currentBehavior: new FillHandleBehavior() })); });
             }
         } },
         React.createElement("div", { className: "rg-fill-handle", "data-cy": "rg-fill-handle" })));

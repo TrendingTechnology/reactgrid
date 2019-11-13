@@ -30,7 +30,7 @@ function handleKeyDownInternal(state, event) {
         var _b = cellTemplate.handleKeyDown(cell, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey), newCell = _b.cell, enableEditMode = _b.enableEditMode;
         if (JSON.stringify(newCell) !== JSON.stringify(cell) || enableEditMode) {
             if (enableEditMode) {
-                return __assign({}, state, { currentlyEditedCell: newCell });
+                return __assign(__assign({}, state), { currentlyEditedCell: newCell });
             }
             else {
                 return tryAppendChange(state, location, newCell);
@@ -53,7 +53,7 @@ function handleKeyDownInternal(state, event) {
         switch (event.keyCode) {
             case keyCodes.A:
                 var cm = state.cellMatrix;
-                return __assign({}, state, { selectedRanges: [cm.getRange(cm.first, cm.last)], selectionMode: 'range', activeSelectedRangeIdx: 0 });
+                return __assign(__assign({}, state), { selectedRanges: [cm.getRange(cm.first, cm.last)], selectionMode: 'range', activeSelectedRangeIdx: 0 });
             case keyCodes.HOME:
                 return focusCell(0, 0, state);
             case keyCodes.END:
@@ -115,10 +115,10 @@ function handleKeyDownInternal(state, event) {
             case keyCodes.PAGE_DOWN:
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
-                return isSingleCellSelected ? __assign({}, moveFocusDown(state), { currentlyEditedCell: undefined }) :
+                return isSingleCellSelected ? __assign(__assign({}, moveFocusDown(state)), { currentlyEditedCell: undefined }) :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
             case keyCodes.ESC:
-                return (state.currentlyEditedCell) ? __assign({}, state, { currentlyEditedCell: undefined }) : state;
+                return (state.currentlyEditedCell) ? __assign(__assign({}, state), { currentlyEditedCell: undefined }) : state;
         }
     }
     return state;
@@ -194,13 +194,13 @@ function moveFocusInsideSelectedRange(state, direction, asr, location) {
         var nextSelectionRangeIdx = selectedRangeIdx === 0 ? state.selectedRanges.length - 1 : (selectedRangeIdx - 1) % state.selectedRanges.length;
         var nextSelection = state.selectedRanges[nextSelectionRangeIdx];
         state = focusLocation(state, newLocation(nextSelection.last.row, nextSelection.last.column), false);
-        return __assign({}, state, { activeSelectedRangeIdx: nextSelectionRangeIdx });
+        return __assign(__assign({}, state), { activeSelectedRangeIdx: nextSelectionRangeIdx });
     }
     else if (newPosInRange === 0 && currentPosInRange === (asr.rows.length * asr.columns.length) - 1) {
         var nextSelectionRangeIdx = (selectedRangeIdx + 1) % state.selectedRanges.length;
         var nextSelection = state.selectedRanges[nextSelectionRangeIdx];
         state = focusLocation(state, newLocation(nextSelection.first.row, nextSelection.first.column), false);
-        return __assign({}, state, { activeSelectedRangeIdx: nextSelectionRangeIdx });
+        return __assign(__assign({}, state), { activeSelectedRangeIdx: nextSelectionRangeIdx });
     }
     else {
         var focusedCellColIdxInRange = direction === 'up' || direction === 'down' ? Math.floor(newPosInRange / rowCount) : newPosInRange % colCount;
@@ -246,5 +246,5 @@ function resizeSelection(state, firstColIdx, lastColIdx, firstRowIdx, lastRowIdx
     var end = state.cellMatrix.getLocation(lastRowIdx, lastColIdx);
     var selectedRanges = state.selectedRanges.slice();
     selectedRanges[state.activeSelectedRangeIdx] = state.cellMatrix.getRange(start, end);
-    return __assign({}, state, { selectedRanges: selectedRanges });
+    return __assign(__assign({}, state), { selectedRanges: selectedRanges });
 }

@@ -54,7 +54,7 @@ var ResizeColumnBehavior = (function (_super) {
             }
             linePosition = this.resizedColumn.left + this.minColumnWidth + offset + state.viewportElement.scrollLeft;
         }
-        return __assign({}, state, { linePosition: linePosition, lineOrientation: 'vertical' });
+        return __assign(__assign({}, state), { linePosition: linePosition, lineOrientation: 'vertical' });
     };
     ResizeColumnBehavior.prototype.handlePointerUp = function (event, location, state) {
         var newWidth = this.resizedColumn.width + location.viewportX - this.initialLocation.viewportX;
@@ -64,7 +64,7 @@ var ResizeColumnBehavior = (function (_super) {
         else if (state.props.onColumnResized) {
             state.props.onColumnResized(this.resizedColumn.columnId, this.minColumnWidth + state.viewportElement.scrollLeft);
         }
-        return __assign({}, state, { linePosition: -1 });
+        return __assign(__assign({}, state), { linePosition: -1 });
     };
     return ResizeColumnBehavior;
 }(Behavior));

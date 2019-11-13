@@ -45,7 +45,7 @@ var CellSelectionBehavior = (function (_super) {
             var pointedRange = state.selectedRanges[pointedRangeIdx];
             if (pointedRange) {
                 state = focusLocation(state, location, false);
-                state = __assign({}, state, { activeSelectedRangeIdx: pointedRangeIdx });
+                state = __assign(__assign({}, state), { activeSelectedRangeIdx: pointedRangeIdx });
             }
             else {
                 var range = state.cellMatrix.getRange(location, location);
