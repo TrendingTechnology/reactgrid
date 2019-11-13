@@ -1,107 +1,92 @@
 import * as React from 'react';
-// import { keyCodes } from '../Functions/keyCodes';
-// import { isTextInput, isNavigationKey } from './keyCodeCheckings'
-// import { CellRenderProps, CellTemplate } from '../Model';
+import { keyCodes } from '../Functions/keyCodes';
+import { CellTemplate, Cell, CompatibleCell } from '../Model';
+import { isNavigationKey, isTextInput } from './keyCodeCheckings'
 
-// interface GroupHeaderCellData {
-//     name: string;
-//     isExpanded: boolean | undefined;
-//     depth: number;
-// }
+export interface GroupCell extends Cell { // rename GroupHeaderCell to GroupCell ?? 
+    type: 'group';
+    text: string; 
+    isExpanded: boolean | undefined;
+    depth?: number;
+}
 
-// type GroupHeaderCell = Cell<'group', GroupHeaderCellData, {}>
+export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
-// export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCell> {
+    validate(cell: GroupCell): CompatibleCell<GroupCell> {
+        if (cell.text === undefined || cell.text === null)
+            throw 'GroupCell is missing text property'
+        return { ...cell }
+    }
 
-//     isValid(cell: GroupHeaderCell): boolean {
-//         return typeof (cell.data.name) === 'string' && (cell.data.isExpanded === undefined || typeof (cell.data.isExpanded) === 'boolean') && typeof (cell.data.depth) === 'number';
-//     }
+    update(cell: GroupCell, newCell: GroupCell | CompatibleCell): GroupCell {
+        return newCell as GroupCell;
+    }
 
-//     textToCellData(text: string): any {
-//         return { name: text, isExpanded: false, depth: 1 };
-//     }
+    handleKeyDown(cell: GroupCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
+        const cellCopy = { ...cell };
+        if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
+            cellCopy.isExpanded = !cellCopy.isExpanded;
+        } else if (!ctrl && !alt && isTextInput(keyCode)) {
+            cellCopy.text = '';
+            enableEditMode = true;
+        }
+        return { cell: cellCopy, enableEditMode };
+    }
 
-//     toText(cell: GroupHeaderCell) {
-//         return cell.data.name;
-//     }
+    render(cell: GroupCell, isInEditMode: boolean, onCellChanged: (cell: GroupCell, commit: boolean) => void): React.ReactNode {
+        const canBeExpanded = cell.isExpanded !== undefined;
+        const elementMarginMultiplier = cell.depth ? cell.depth - 1 : 0;
+        return (
+            !isInEditMode ?
+                <div
+                    className="rg-group-header-cell-template-wrapper"
+                    style={{ marginLeft: `calc( 1.4em * ${elementMarginMultiplier})` }}
+                >
+                    {canBeExpanded && 
+                        <Chevron cell={cell} onCellChanged={onCellChanged}/>
+                    }
+                    <div className="rg-group-header-cell-template-wrapper-content">{cell.text}</div>
+                </div>
+                :
+                <input
+                    className="rg-group-header-cell-template-input"
+                    ref={input => {
+                        if (input) {
+                            input.focus();
+                            input.setSelectionRange(input.value.length, input.value.length);
+                        }
+                    }}
+                    defaultValue={cell.text}
+                    onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false) }
+                    onCopy={e => e.stopPropagation()}
+                    onCut={e => e.stopPropagation()}
+                    onPaste={e => e.stopPropagation()}
+                    onPointerDown={e => e.stopPropagation()}
+                    onKeyDown={e => {
+                        if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
+                        if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.text;
+                    }}
+                />
+        );
+    }
 
-//     handleKeyDown(cell: GroupHeaderCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-//         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
-//         const cellCopy = { ...cell };
-//         if (keyCode === keyCodes.SPACE && cellCopy.data.isExpanded !== undefined) {
-//             cellCopy.data.isExpanded = !cellCopy.data.isExpanded;
-//         } else if (!ctrl && !alt && isTextInput(keyCode)) {
-//             cellCopy.data.name = '';
-//             enableEditMode = true;
-//         }
-//         return { cell: cellCopy, enableEditMode };
-//     }
-
-//     renderContent: (props: CellRenderProps<GroupHeaderCell>) => React.ReactNode = (props) => {
-//         const cellData = { ...props.cell.data };
-
-//         const isHeaderTreeRoot = cellData.depth !== 1;
-//         const canBeExpanded = cellData.isExpanded !== undefined;
-//         const elementMarginMultiplier = canBeExpanded && isHeaderTreeRoot ? cellData.depth - 2 : cellData.depth - 1;
-//         return (
-//             !props.isInEditMode ?
-//                 <div
-//                     style={{ display: 'flex', alignItems: 'center', width: '100%', marginLeft: `calc( 1.4em * ${(cellData.depth ? elementMarginMultiplier : 1)} )` }}>
-//                     {cellData.isExpanded !== undefined && <Chevron cellData={cellData} cellProps={props} />}
-//                     <div style={{ display: 'flex', alignItems: 'center' }}>{cellData.name}</div>
-//                 </div>
-//                 :
-//                 <input
-//                     style={{
-//                         position: 'inherit',
-//                         width: '100%',
-//                         height: '100%',
-//                         padding: 0,
-//                         border: 0,
-//                         background: 'transparent',
-//                         fontSize: '1em',
-//                         outline: 'none',
-//                     }}
-//                     ref={input => {
-//                         if (input) {
-//                             input.focus();
-//                             input.setSelectionRange(input.value.length, input.value.length);
-//                         }
-//                     }}
-//                     defaultValue={cellData.name}
-//                     onChange={e =>
-//                         props.onCellChanged({ ...props.cell, data: { ...cellData, name: e.currentTarget.value } }, false)
-//                     }
-//                     onCopy={e => e.stopPropagation()}
-//                     onCut={e => e.stopPropagation()}
-//                     onPaste={e => e.stopPropagation()}
-//                     onPointerDown={e => e.stopPropagation()}
-//                     onKeyDown={e => {
-//                         if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
-//                         if (e.keyCode == keyCodes.ESC) (e as any).currentTarget.value = props.cell.data.name; // reset
-//                     }}
-//                 />
-//         );
-//     }
-// }
+}
 
 // class Chevron extends React.Component<IChevronProps> {
-//     render() {
-//         const { cellData, cellProps } = this.props;
-//         return (
-//             <div
-//                 onPointerDown={e => {
-//                     e.stopPropagation();
-//                     cellData.isExpanded = !cellData.isExpanded;
-//                     cellProps.onCellDataChanged(cellData, true);
-//                 }}
-//                 className="rg-group-header-cell-template-chevron-wrapper"
-//             >
-//                 <div style={{ transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all',}}>
-//                     ❯
-//                 </div>
-//             </div>
-//         )
-//     }
-// }
+const Chevron: React.FC<{cell: GroupCell, onCellChanged: (cell: GroupCell, commit: boolean) => void}> = ({ cell, onCellChanged }) => {
+    return (
+        <div
+            onPointerDown={e => {
+                e.stopPropagation();
+                onCellChanged({...cell, isExpanded: !cell.isExpanded}, true);
+            }}
+            className="rg-group-header-cell-template-chevron-wrapper"
+        >
+            <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all'}}>
+                ❯
+            </div>
+        </div>
+    )
+}
 
