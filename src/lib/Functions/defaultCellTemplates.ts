@@ -1,7 +1,7 @@
 import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
 import { NumberCellTemplate } from '../CellTemplates/NumberCellTemplate';
 import { HeaderCellTemplate } from '../CellTemplates/HeaderCellTemplate';
-// import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
+import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
 // import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
 import { EmailCellTemplate } from '../CellTemplates/EmailCellTemplate';
 // import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
@@ -12,7 +12,7 @@ export const defaultCellTemplates: CellTemplates = {
     text: new TextCellTemplate(),
     number: new NumberCellTemplate(),
     header: new HeaderCellTemplate(),
-    //checkbox: new CheckboxCellTemplate(),
+    checkbox: new CheckboxCellTemplate(),
     //date: new DateCellTemplate(),
     email: new EmailCellTemplate(),
     //time: new TimeCellTemplate(),
