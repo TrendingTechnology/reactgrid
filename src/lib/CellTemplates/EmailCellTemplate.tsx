@@ -6,19 +6,24 @@ import { isNavigationKey, isTextInput } from './keyCodeCheckings';
 export interface EmailCell extends Cell {
     type: 'email',
     text: string,
-    isValid?: boolean
+    isValid?: boolean | undefined
 }
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
-    validate(cell: any): CompatibleCell<EmailCell> {
+    validate(cell: any): CompatibleCell<EmailCell> {        
         if (cell.text === undefined || cell.text === null)
             throw 'EmailCell is missing text property'
-        const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!email_regex.test(cell.text.replace(/\s+/g, ''))) {
+        if (!this.isEmailValid(cell.text))
             cell.isValid = false;
-        }
         return cell;
+    }
+
+    isEmailValid(email: string): boolean {
+        const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (email_regex.test(email.replace(/\s+/g, '')))
+            return true;
+        return false;
     }
 
     handleKeyDown(cell: EmailCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: EmailCell, enableEditMode: boolean } {
@@ -28,13 +33,16 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     }
 
     update(cell: EmailCell, newCell: EmailCell | CompatibleCell): EmailCell {
-        // A CompatibleCell will provide the properties a EmailCell needs
+        if (newCell.text !== undefined && newCell.text.length !== 0) {
+            const isValid = this.isEmailValid((newCell as CompatibleCell).text);
+            return { ...cell, text: newCell.text, isValid } as EmailCell;
+        }
         return newCell as EmailCell;
     }
 
     render(cell: EmailCell, isInEditMode: boolean, onCellChanged: (cell: EmailCell, commit: boolean) => void): React.ReactNode {
         if (!isInEditMode) {
-            return <span className={cell.isValid === false ? `rg-email-cell-template-invalid` : ``}>{cell.text}</span>
+            return <span className={cell.isValid === false ? `rg-email-cell-template-invalid` : `rg-email-cell-template-valid`}>{cell.text}</span>
         }
 
         return <input
