@@ -5,7 +5,7 @@ import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
 // import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
 import { EmailCellTemplate } from '../CellTemplates/EmailCellTemplate';
 // import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
-// import { GroupHeaderCellTemplate } from '../CellTemplates/GroupHeaderCellTemplate';
+import { GroupCellTemplate } from '../CellTemplates/GroupHeaderCellTemplate';
 import { CellTemplates } from '../Model/PublicModel';
 
 export const defaultCellTemplates: CellTemplates = {
@@ -16,5 +16,5 @@ export const defaultCellTemplates: CellTemplates = {
     //date: new DateCellTemplate(),
     email: new EmailCellTemplate(),
     //time: new TimeCellTemplate(),
-    //group: new GroupHeaderCellTemplate()
+    group: new GroupCellTemplate()
 };
