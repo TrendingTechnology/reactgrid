@@ -33,6 +33,9 @@
     background: $template-bg-color;
     font-size: $template-font-size;
     outline: none;
+    &-invalid {
+        color: $template-content-invalid;
+    }
 }
 
 /* GROUP HEADER TEMPLATE */
