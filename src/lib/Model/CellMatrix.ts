@@ -49,7 +49,9 @@ export class CellMatrix {
                 const height = row.height || DEFAULT_ROW_HEIGHT;
                 rows.push({ ...row, top, height, idx, bottom: top + height });
                 totalHeight += height;
-                //this.rowIndexLookup[row.rowId] = idx;
+
+                // TODO what with rowIndexLookup?
+                this.rowIndexLookup[row.rowId] = idx;
                 return rows;
             },
             [] as GridRow[]
@@ -60,7 +62,8 @@ export class CellMatrix {
                 const width = column.width || DEFAULT_COLUMN_WIDTH;
                 cols.push({ ...column, idx, left, width, right: left + width });
                 totalWidth += width;
-                //this.columnIndexLookup[column.columnId] = idx;
+                // TODO what with columnIndexLookup?
+                this.columnIndexLookup[column.columnId] = idx;
                 return cols;
             },
             [] as GridColumn[]
