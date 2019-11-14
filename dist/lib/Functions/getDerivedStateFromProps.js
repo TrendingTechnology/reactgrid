@@ -41,5 +41,5 @@ export function getDerivedStateFromProps(props, state) {
     if (state.visibleRange && dataHasChanged) {
         state = recalcVisibleRange(state);
     }
-    return __assign({}, state, { cellTemplates: __assign({}, defaultCellTemplates, props.customCellTemplates) });
+    return __assign({}, state, { cellTemplates: __assign({}, defaultCellTemplates, props.customCellTemplates), highlightLocations: props.highlightLocations || [], disableFillHandle: props.disableFillHandle || false, disableRangeSelection: props.disableRangeSelection || false, enableColumnSelection: props.enableColumnSelection || false, enableRowSelection: props.enableRowSelection || false });
 }
