@@ -58,8 +58,6 @@ export const TestGrid: React.FunctionComponent = () => {
         onColumnResized={handleColumnResize}
         enableRowSelection
         enableColumnSelection
-
-
     />
 }
 
