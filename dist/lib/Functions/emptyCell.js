@@ -1,1 +1,1 @@
-export var emptyCell = { type: 'text', text: '', value: NaN };
+export var emptyCell = { type: 'text', text: '' };

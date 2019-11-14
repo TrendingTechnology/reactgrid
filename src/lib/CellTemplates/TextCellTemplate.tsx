@@ -17,8 +17,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
     }
 
     update(cell: TextCell, newCell: TextCell | CompatibleCell): TextCell {
-        // A CompatibleCell will provide the properties a TextCell needs
-        return newCell as TextCell;
+        return { ...cell, text: newCell.text !== undefined ? newCell.text : '' };
     }
 
     handleKeyDown(cell: TextCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: TextCell, enableEditMode: boolean } {
@@ -42,14 +41,12 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             }}
             defaultValue={cell.text}
             onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
-            //onBlur={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, true)} // TODO should it be added to each cell? // additional question, because everything works without that
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
                 if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.text; // reset
             }}
         />
     }

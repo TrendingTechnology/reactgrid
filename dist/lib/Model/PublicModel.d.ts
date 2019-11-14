@@ -59,7 +59,7 @@ export interface Column {
     readonly columnId: Id;
     readonly width?: number;
     readonly reorderable?: boolean;
-    readonly rezisable?: boolean;
+    readonly resizable?: boolean;
 }
 export interface CellStyle {
     readonly color?: string;

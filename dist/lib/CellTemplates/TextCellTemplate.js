@@ -21,7 +21,7 @@ var TextCellTemplate = (function () {
         return cell;
     };
     TextCellTemplate.prototype.update = function (cell, newCell) {
-        return newCell;
+        return __assign({}, cell, { text: newCell.text !== undefined ? newCell.text : '' });
     };
     TextCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         if (!ctrl && !alt && isTextInput(keyCode))
@@ -39,8 +39,6 @@ var TextCellTemplate = (function () {
             }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(__assign({}, cell, { text: e.currentTarget.value }), false); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
                 if (isTextInput(e.keyCode) || (isNavigationKey(e)))
                     e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC)
-                    e.currentTarget.value = cell.text;
             } });
     };
     return TextCellTemplate;

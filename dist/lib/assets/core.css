@@ -30,6 +30,8 @@
   background: transparent;
   font-size: 1em;
   outline: none; }
+  .rg-email-cell-template-invalid {
+    color: red; }
 
 /* GROUP HEADER TEMPLATE */
 .rg-group-header-cell-template-input {

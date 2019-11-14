@@ -31,5 +31,5 @@ export var CellRenderer = function (props) {
                 throw 'commit should be set to true in this case.';
             props.state.update(function (state) { return tryAppendChange(state, location, cell); });
         }),
-        location.row.idx === 0 && location.column.rezisable && React.createElement(ResizeHandle, null)));
+        location.row.idx === 0 && location.column.resizable && React.createElement(ResizeHandle, null)));
 };

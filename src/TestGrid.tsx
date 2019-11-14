@@ -3,8 +3,8 @@ import React from 'react';
 import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
 
-const columnCount = 50;
-const rowCount = 200;
+const columnCount = 10;
+const rowCount = 150;
 
 interface Data {
     [key: string]: string
@@ -23,8 +23,15 @@ export const TestGrid: React.FunctionComponent = () => {
 
 
     const [state, setState] = React.useState<TestGridState>(() => {
-        const columns = new Array(columnCount).fill(0).map((_, ci) => ({ columnId: ci, rezisable: true } as Column));
-        const rows = new Array(rowCount).fill(0).map((_, ri) => ({ rowId: ri, cells: columns.map((_, ci) => ({ type: 'text', text: `${ri} - ${ci}` })) }));
+        const columns = new Array(columnCount).fill(0).map((_, ci) => ({
+            columnId: ci, resizable: true
+        } as Column));
+
+        const rows = new Array(rowCount).fill(0).map((_, ri) => ({
+            rowId: ri, cells: columns.map((_, ci) => ({
+                type: 'text', text: `${ri} - ${ci}`
+            }))
+        }));
         return { rows, columns }
     })
 

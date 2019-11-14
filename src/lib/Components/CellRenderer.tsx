@@ -32,7 +32,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
                 if (!commit) throw 'commit should be set to true in this case.';
                 props.state.update(state => tryAppendChange(state, location, cell));
             })}
-            {location.row.idx === 0 && location.column.rezisable && <ResizeHandle />}
+            {location.row.idx === 0 && location.column.resizable && <ResizeHandle />}
         </div>
     );
 };
