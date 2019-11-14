@@ -49,7 +49,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             return { ...cell, value: 0 } as NumberCell;
         }
         if (newCell.value !== undefined && newCell.value !== NaN && (newCell as NumberCell).isValid) {
-            return { ...cell, value: newCell.value } as NumberCell;
+            return { ...cell, value: this.parseNumber(newCell.value) } as NumberCell;
         }
         const parsed = this.parseNumber((newCell as CompatibleCell).text)
         return { ...cell, value: (parsed! > 0 || parsed! < 0) || (!cellValidated.isValid) ? parsed : 0 }
@@ -76,7 +76,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         if (!isInEditMode) {
 
             if (cell.format == '#.##') {
-                return <span className={`${cell.isValid ? 'number-is-valid' : 'number-is-un-valid'}`}>{(this.replaceDotsToCommas(cell.value))}</span>
+                return <span className={`${cell.isValid ? 'number-is-valid' : 'number-is-un-valid'}`}>{(this.replaceDotsToCommas(cell.value.toFixed(3)))}</span>
             }
             else {
                 return <span className={`${cell.isValid ? 'number-is-valid' : 'number-is-un-valid'}`}>{this.replaceDotsToCommas(cell.value)}</span>

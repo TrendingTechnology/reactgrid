@@ -2,9 +2,9 @@ import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
 import { NumberCellTemplate } from '../CellTemplates/NumberCellTemplate';
 import { HeaderCellTemplate } from '../CellTemplates/HeaderCellTemplate';
 // import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
-import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
+// import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
 // import { EmailCellTemplate } from '../CellTemplates/EmailCellTemplate';
-import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
+// import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
 // import { GroupHeaderCellTemplate } from '../CellTemplates/GroupHeaderCellTemplate';
 import { CellTemplates } from '../Model/PublicModel';
 
@@ -13,8 +13,8 @@ export const defaultCellTemplates: CellTemplates = {
     number: new NumberCellTemplate(),
     header: new HeaderCellTemplate(),
     //checkbox: new CheckboxCellTemplate(),
-    date: new DateCellTemplate(),
+    // date: new DateCellTemplate(),
     //email: new EmailCellTemplate(),
-    time: new TimeCellTemplate(),
+    // time: new TimeCellTemplate(),
     //group: new GroupHeaderCellTemplate()
 };
