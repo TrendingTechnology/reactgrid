@@ -43,6 +43,8 @@ export interface CellTemplates {
 export interface CellLocation {
     readonly rowId: Id;
     readonly columnId: Id;
+    // TODO some another way?
+    readonly color?: string;
 }
 
 export interface Focus {
