@@ -51,11 +51,19 @@ var GridContent = (function (_super) {
     };
     return GridContent;
 }(React.Component));
+function renderHighlights(props) {
+    var highlightLocations = props.state.highlightLocations.filter(function (value) { return Object.keys(value).length !== 0; });
+    return highlightLocations.map(function (highlight, id) {
+        var location = props.state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
+        return location && props.range.contains(location) && React.createElement(CellFocus, { key: id, location: location, color: highlight.color });
+    });
+}
 export var Pane = function (props) {
     return (React.createElement("div", { key: props.id, className: "rg-pane " + props.class, style: __assign({ width: props.range.width }, props.style) },
         React.createElement(GridContent, { state: props.state, range: props.range, borders: props.borders }),
         renderSelectedRanges(props.state, props.range),
         props.state.currentBehavior.renderPanePart(props.state, props.range),
+        props.state.highlightLocations && renderHighlights(props),
         props.state.focusedLocation && props.range.contains(props.state.focusedLocation) && React.createElement(CellFocus, { location: props.state.focusedLocation }),
         props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) && !props.state.disableFillHandle && !props.state.currentlyEditedCell && React.createElement(FillHandle, { state: props.state, location: props.state.selectedRanges[props.state.activeSelectedRangeIdx].last })));
 };

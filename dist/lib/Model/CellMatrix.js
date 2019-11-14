@@ -14,6 +14,7 @@ var DEFAULT_ROW_HEIGHT = 25;
 var DEFAULT_COLUMN_WIDTH = 150;
 var CellMatrix = (function () {
     function CellMatrix(props) {
+        var _this = this;
         this.props = props;
         this.width = 0;
         this.height = 0;
@@ -27,6 +28,7 @@ var CellMatrix = (function () {
             var height = row.height || DEFAULT_ROW_HEIGHT;
             rows.push(__assign({}, row, { top: top, height: height, idx: idx, bottom: top + height }));
             totalHeight += height;
+            _this.rowIndexLookup[row.rowId] = idx;
             return rows;
         }, []);
         this.columns = props.columns.reduce(function (cols, column, idx) {
@@ -34,6 +36,7 @@ var CellMatrix = (function () {
             var width = column.width || DEFAULT_COLUMN_WIDTH;
             cols.push(__assign({}, column, { idx: idx, left: left, width: width, right: left + width }));
             totalWidth += width;
+            _this.columnIndexLookup[column.columnId] = idx;
             return cols;
         }, []);
         this.height = totalHeight;

@@ -30,6 +30,7 @@ export interface CellTemplates {
 export interface CellLocation {
     readonly rowId: Id;
     readonly columnId: Id;
+    readonly color?: string;
 }
 export interface Focus {
     readonly rowId: Id;
