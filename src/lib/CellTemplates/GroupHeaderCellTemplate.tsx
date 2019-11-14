@@ -5,7 +5,7 @@ import { isNavigationKey, isTextInput } from './keyCodeCheckings'
 
 export interface GroupCell extends Cell { // rename GroupHeaderCell to GroupCell ?? 
     type: 'group';
-    text: string; 
+    text: string;
     isExpanded: boolean | undefined;
     depth?: number;
 }
@@ -43,8 +43,8 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                     className="rg-group-header-cell-template-wrapper"
                     style={{ marginLeft: `calc( 1.4em * ${elementMarginMultiplier})` }}
                 >
-                    {canBeExpanded && 
-                        <Chevron cell={cell} onCellChanged={onCellChanged}/>
+                    {canBeExpanded &&
+                        <Chevron cell={cell} onCellChanged={onCellChanged} />
                     }
                     <div className="rg-group-header-cell-template-wrapper-content">{cell.text}</div>
                 </div>
@@ -58,14 +58,13 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                         }
                     }}
                     defaultValue={cell.text}
-                    onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false) }
+                    onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}
                     onPointerDown={e => e.stopPropagation()}
                     onKeyDown={e => {
                         if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
-                        if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.text;
                     }}
                 />
         );
@@ -74,16 +73,16 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 }
 
 // class Chevron extends React.Component<IChevronProps> {
-const Chevron: React.FC<{cell: GroupCell, onCellChanged: (cell: GroupCell, commit: boolean) => void}> = ({ cell, onCellChanged }) => {
+const Chevron: React.FC<{ cell: GroupCell, onCellChanged: (cell: GroupCell, commit: boolean) => void }> = ({ cell, onCellChanged }) => {
     return (
         <div
             onPointerDown={e => {
                 e.stopPropagation();
-                onCellChanged({...cell, isExpanded: !cell.isExpanded}, true);
+                onCellChanged({ ...cell, isExpanded: !cell.isExpanded }, true);
             }}
             className="rg-group-header-cell-template-chevron-wrapper"
         >
-            <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all'}}>
+            <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>
                 ❯
             </div>
         </div>

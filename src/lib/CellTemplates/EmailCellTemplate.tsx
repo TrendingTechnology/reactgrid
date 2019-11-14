@@ -55,7 +55,6 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
             onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
             onKeyDown={e => {
                 if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.text; // reset
             }}
             defaultValue={cell.text}
             onCopy={e => e.stopPropagation()}
