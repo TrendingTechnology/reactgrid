@@ -1,0 +1,374 @@
+/* CHECKBOX CELL TEMPLATE */
+.rg-checkbox-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+  border: 0;
+  z-index: 1;
+  background: transparent;
+  pointer-events: auto; }
+  .rg-checkbox-container .rg-checkbox-cell-input {
+    width: 20px;
+    height: 20px; }
+
+/* DATE TEMPLATE */
+.rg-date-cell-template {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 1em;
+  outline: none; }
+
+/* EMAIL TEMPLATE */
+.rg-email-cell-template {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 1em;
+  outline: none; }
+  .rg-email-cell-template-invalid {
+    color: red; }
+
+/* GROUP HEADER TEMPLATE */
+.rg-group-header-cell-template-input {
+  position: inherit;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 1em;
+  outline: none; }
+
+.rg-group-header-cell-template-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%; }
+  .rg-group-header-cell-template-wrapper-content {
+    display: flex;
+    align-items: center; }
+
+.rg-group-header-cell-template-chevron-wrapper {
+  z-index: 1;
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  height: 1.4em;
+  width: 1.4em;
+  font-weight: bold;
+  cursor: pointer; }
+
+/* NUMBER TEMPLATE */
+.rg-number-cell-template {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 1em;
+  outline: none; }
+
+/* TEXT TEMPLATE */
+.rg-text-cell-template {
+  position: inherit;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 1em;
+  outline: none;
+  font-family: inherit; }
+
+/* TIME TEMPLATE */
+.rg-time-cell-template {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 1em;
+  outline: none; }
+
+/* PANE ROW */
+.rg-pane-row {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row; }
+  .rg-pane-row .rg-pane-l,
+  .rg-pane-row .rg-pane-r {
+    background-color: #ffffff; }
+  .rg-pane-row .rg-pane-l,
+  .rg-pane-row .rg-pane-tl {
+    box-shadow: 3px 0px 3px -3px #ffffff; }
+  .rg-pane-row .rg-pane-r,
+  .rg-pane-row .rg-pane-tr {
+    box-shadow: -3px 0px 3px -3px #ffffff; }
+
+/* FILL HANDLE */
+.rg-touch-fill-handle {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: rgba(255, 255, 255, 0.01);
+  touch-action: none;
+  pointer-events: auto;
+  z-index: 1; }
+  .rg-touch-fill-handle .rg-fill-handle {
+    position: absolute;
+    cursor: crosshair;
+    top: 50%;
+    left: 50%;
+    transform: translate(calc(-50% - ( 1px/2 )), calc(-50% - ( 1px/2 )));
+    -ms-transform: translate(-50%, -50%);
+    width: 5px;
+    height: 5px;
+    background-color: #3579f8;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ffffff; }
+
+/* RESIZE HANDLE */
+.rg-touch-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 11px;
+  height: 100%;
+  touch-action: none;
+  pointer-events: auto;
+  z-index: 1; }
+  .rg-touch-resize-handle:hover .rg-resize-handle {
+    cursor: w-resize;
+    background-color: #3579f8; }
+  .rg-touch-resize-handle .rg-resize-handle {
+    position: absolute;
+    right: 0;
+    width: 6px;
+    height: 100%; }
+
+/* MAIN */
+.reactgrid,
+.reactgrid-legacy-browser {
+  width: 100%;
+  height: 100%; }
+  .reactgrid .rg-partial-area,
+  .reactgrid-legacy-browser .rg-partial-area {
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box; }
+    .reactgrid .rg-partial-area.rg-partial-area-part,
+    .reactgrid-legacy-browser .rg-partial-area.rg-partial-area-part {
+      border-width: 1px;
+      border-style: dashed;
+      border-color: #000000; }
+    .reactgrid .rg-partial-area.rg-partial-area-selected-range,
+    .reactgrid-legacy-browser .rg-partial-area.rg-partial-area-selected-range {
+      border-width: 1px;
+      border-style: solid;
+      border-color: #3579f8;
+      background-color: rgba(53, 121, 248, 0.15); }
+  .reactgrid .rg-viewport,
+  .reactgrid-legacy-browser .rg-viewport {
+    position: absolute;
+    overflow: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none; }
+    .reactgrid .rg-viewport .rg-content,
+    .reactgrid-legacy-browser .rg-viewport .rg-content {
+      position: relative;
+      outline: none; }
+      .reactgrid .rg-viewport .rg-content .rg-context-menu,
+      .reactgrid-legacy-browser .rg-viewport .rg-content .rg-context-menu {
+        position: fixed;
+        z-index: 1000;
+        background-color: #ffffff;
+        font-size: 1em;
+        box-shadow: 8px 20px 8px 15px rgba(0, 0, 0, 0.2); }
+        .reactgrid .rg-viewport .rg-content .rg-context-menu .rg-context-menu-option,
+        .reactgrid-legacy-browser .rg-viewport .rg-content .rg-context-menu .rg-context-menu-option {
+          padding: 8px 20px 8px 15px;
+          cursor: pointer; }
+      .reactgrid .rg-viewport .rg-content .rg-shadow,
+      .reactgrid-legacy-browser .rg-viewport .rg-content .rg-shadow {
+        position: absolute;
+        background-color: #000000;
+        opacity: 0.1;
+        z-index: 4; }
+      .reactgrid .rg-viewport .rg-content .rg-line,
+      .reactgrid-legacy-browser .rg-viewport .rg-content .rg-line {
+        position: absolute;
+        background-color: #74b9ff;
+        z-index: 3; }
+  .reactgrid .rg-pane,
+  .reactgrid-legacy-browser .rg-pane {
+    position: relative;
+    height: 100%; }
+    .reactgrid .rg-pane .cell,
+    .reactgrid-legacy-browser .rg-pane .cell {
+      font-size: 1em;
+      box-sizing: border-box;
+      white-space: nowrap;
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      overflow: hidden;
+      padding: 0 1px; }
+    .reactgrid .rg-pane .rg-separator-line,
+    .reactgrid-legacy-browser .rg-pane .rg-separator-line {
+      position: absolute;
+      box-sizing: border-box;
+      pointer-events: none; }
+      .reactgrid .rg-pane .rg-separator-line-row,
+      .reactgrid-legacy-browser .rg-pane .rg-separator-line-row {
+        width: 100%;
+        border-bottom-width: 1px;
+        border-bottom-color: #e5e5e5;
+        border-bottom-style: solid; }
+      .reactgrid .rg-pane .rg-separator-line-col,
+      .reactgrid-legacy-browser .rg-pane .rg-separator-line-col {
+        height: 100%;
+        top: 0;
+        border-right-width: 1px;
+        border-right-color: #e5e5e5;
+        border-right-style: solid; }
+    .reactgrid .rg-pane .rg-cell-focus,
+    .reactgrid-legacy-browser .rg-pane .rg-cell-focus {
+      position: absolute;
+      pointer-events: none;
+      box-sizing: border-box;
+      border-style: solid;
+      border-width: 2px;
+      border-color: #3579f8; }
+  .reactgrid .rg-celleditor,
+  .reactgrid-legacy-browser .rg-celleditor {
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 5;
+    padding-top: 1px;
+    background-color: #ffffff;
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-color: #3579f8;
+    border-width: 2px; }
+
+.reactgrid .rg-content .rg-pane-row-t, .reactgrid .rg-content .rg-pane-row-b {
+  position: sticky;
+  background-color: #ffffff; }
+
+.reactgrid .rg-content .rg-pane-row-t {
+  top: 0;
+  box-shadow: 0 3px 3px -3px rgba(0, 0, 0, 0.2); }
+
+.reactgrid .rg-content .rg-pane-row-b {
+  bottom: 0;
+  box-shadow: 0 -3px 3px -3px rgba(0, 0, 0, 0.2); }
+
+.reactgrid .rg-content .rg-hidden-element {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0; }
+
+.reactgrid-legacy-browser {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none; }
+  .reactgrid-legacy-browser .rg-frozen-right,
+  .reactgrid-legacy-browser .rg-pane-br {
+    box-shadow: -3px 0px 3px -3px #ffffff; }
+  .reactgrid-legacy-browser .rg-frozen-left,
+  .reactgrid-legacy-browser .rg-pane-bl {
+    box-shadow: 3px 0px 3px -3px #ffffff; }
+  .reactgrid-legacy-browser .rg-frozen-top {
+    box-shadow: 0 3px 3px -3px rgba(0, 0, 0, 0.2); }
+  .reactgrid-legacy-browser .rg-frozen-bottom {
+    box-shadow: 0 -3px 3px -3px rgba(0, 0, 0, 0.2); }
+  .reactgrid-legacy-browser .rg-content {
+    width: unset;
+    height: unset; }
+  .reactgrid-legacy-browser .rg-pane-tl,
+  .reactgrid-legacy-browser .rg-pane-tr {
+    position: absolute;
+    top: 0;
+    z-index: 1; }
+  .reactgrid-legacy-browser .rg-pane-tl,
+  .reactgrid-legacy-browser .rg-pane-bl {
+    left: 0; }
+  .reactgrid-legacy-browser .rg-pane-tr {
+    right: 0; }
+  .reactgrid-legacy-browser .rg-pane-tc,
+  .reactgrid-legacy-browser .rg-pane-bc {
+    padding-bottom: 100px;
+    overflow-x: scroll;
+    overflow-y: hidden; }
+  .reactgrid-legacy-browser .rg-pane-wrapper {
+    position: absolute;
+    top: 0;
+    overflow: hidden; }
+  .reactgrid-legacy-browser .rg-pane-bl,
+  .reactgrid-legacy-browser .rg-pane-br {
+    position: absolute;
+    bottom: 0;
+    z-index: 1; }
+  .reactgrid-legacy-browser .rg-pane-ml,
+  .reactgrid-legacy-browser .rg-pane-mr {
+    background-color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-right: 100px; }
+  .reactgrid-legacy-browser .rg-pane-mc {
+    position: absolute; }
+  .reactgrid-legacy-browser .rg-hidden-scrollable-element {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1; }
+  .reactgrid-legacy-browser .rg-middle-wrapper {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    border-left: 0.1px transparent solid; }
+    .reactgrid-legacy-browser .rg-middle-wrapper .rg-middle {
+      position: absolute;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1; }
+    .reactgrid-legacy-browser .rg-middle-wrapper .rg-frozen-left {
+      left: 0; }
+    .reactgrid-legacy-browser .rg-middle-wrapper .rg-frozen-right {
+      right: 0; }
+  .reactgrid-legacy-browser .rg-frozen {
+    position: absolute;
+    background-color: #ffffff;
+    z-index: 3;
+    pointer-events: none; }
+    .reactgrid-legacy-browser .rg-frozen.rg-frozen-top {
+      top: 0; }
+    .reactgrid-legacy-browser .rg-frozen.rg-frozen-bottom .rg-pane-bl-wrapper {
+      position: absolute;
+      bottom: 0;
+      overflow: hidden; }
+  .reactgrid-legacy-browser .rg-viewport {
+    overflow: hidden; }
+    .reactgrid-legacy-browser .rg-viewport .rg-content .rg-input-xy {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      background-color: #ffffff; }
