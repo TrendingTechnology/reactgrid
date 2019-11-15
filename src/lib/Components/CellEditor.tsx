@@ -7,11 +7,11 @@ interface CellEditorProps {
 }
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
-    const [cell, setCell] = React.useState(props.state.currentlyEditedCell!);
+
     const location = props.state.focusedLocation!;
     const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state));
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
-    const cellTemplate = props.state.cellTemplates[cell.type];
+    const cellTemplate = props.state.cellTemplates[props.state.currentlyEditedCell!.type];
     // TODO custom style
     //const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
     return (
@@ -25,10 +25,9 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 //...customStyle,
             }}
         >
-            {cellTemplate.render(cell, true, (cell, commit) => {
+            {cellTemplate.render(props.state.currentlyEditedCell!, true, (cell, commit) => {
                 props.state.currentlyEditedCell = commit ? undefined : cell;
                 if (commit) props.state.update(state => tryAppendChange(state, location, cell));
-                else setCell(cell);
             })}
         </div>
     );
