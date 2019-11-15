@@ -43,6 +43,8 @@ export interface CellTemplates {
 export interface CellLocation {
     readonly rowId: Id;
     readonly columnId: Id;
+    // TODO some another way?
+    readonly color?: string;
 }
 
 export interface Focus {
@@ -94,7 +96,7 @@ export interface Column {
     // default: false
     readonly reorderable?: boolean;
     // default: false
-    readonly rezisable?: boolean;
+    readonly resizable?: boolean;
     //readonly canDrop?: (columnIds: Id[], position: DropPosition) => boolean;
     //readonly onDrop?: (columnIds: Id[], position: DropPosition) => void;
     // if onResize === undefined => not resizable

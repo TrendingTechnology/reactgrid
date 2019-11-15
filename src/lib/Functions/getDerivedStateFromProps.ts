@@ -38,10 +38,10 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
     return {
         ...state,
         cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates },
-        //customFocuses: props.additionalFocuses,
-        // disableFillHandle: props.disableFillHandle || false,
-        // disableRangeSelection: props.disableRangeSelection || false,
-        // enableColumnSelection: props.enableColumnSelection || false,
-        // enableRowSelection: props.enableRowSelection || false
+        highlightLocations: props.highlightLocations || [],
+        disableFillHandle: props.disableFillHandle || false,
+        disableRangeSelection: props.disableRangeSelection || false,
+        enableColumnSelection: props.enableColumnSelection || false,
+        enableRowSelection: props.enableRowSelection || false
     };
 }

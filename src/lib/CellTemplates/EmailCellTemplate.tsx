@@ -1,59 +1,66 @@
 import * as React from 'react';
-// import { keyCodes } from '../Functions/keyCodes';
-// import { CellTemplate, Cell } from '../Model';
-// import { isTextInput, isNavigationKey } from './keyCodeCheckings';
+import { keyCodes } from '../Functions/keyCodes';
+import { CellTemplate, Cell, CompatibleCell } from '../Model';
+import { isNavigationKey, isTextInput } from './keyCodeCheckings';
 
-// interface EmailCell extends Cell {
-//     text: string;
-// }
+export interface EmailCell extends Cell {
+    type: 'email',
+    text: string,
+    isValid?: boolean | undefined
+}
 
-// export class EmailCellTemplate implements CellTemplate<EmailCell> {
+export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
-//     isValid(cell: EmailCell): boolean {
-//         const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-//         return email_regex.test(cell.data.replace(/\s+/g, ''));
-//     }
+    validate(cell: any): CompatibleCell<EmailCell> {        
+        if (cell.text === undefined || cell.text === null)
+            throw 'EmailCell is missing text property'
+        if (!this.isEmailValid(cell.text))
+            cell.isValid = false;
+        return cell;
+    }
 
-//     toText(cell: EmailCell) {
-//         return cell.data;
-//     }
+    isEmailValid(email: string): boolean {
+        const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (email_regex.test(email.replace(/\s+/g, '')))
+            return true;
+        return false;
+    }
 
-//     handleKeyDown1(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-//         if (!ctrl && !alt && isTextInput(keyCode)) return { cellData: '', enableEditMode: true };
-//         return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
-//     }
+    handleKeyDown(cell: EmailCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: EmailCell, enableEditMode: boolean } {
+        if (!ctrl && !alt && isTextInput(keyCode))
+            return { cell: { ...cell, text: '' }, enableEditMode: true }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+    }
 
-//     render: (props: CellRenderProps<string, any>) => React.ReactNode = props => {
-//         if (!props.isInEditMode) return props.cellData;
-//         return (
-//             <input
-//                 type="email"
-//                 style={{
-//                     width: '100%',
-//                     height: '100%',
-//                     padding: 0,
-//                     border: 0,
-//                     background: 'transparent',
-//                     fontSize: 14,
-//                     outline: 'none'
-//                 }}
-//                 ref={input => {
-//                     if (input) {
-//                         input.focus();
-//                         // input.setSelectionRange(input.value.length, input.value.length);
-//                     }
-//                 }}
-//                 defaultValue={props.cell.data}
-//                 onChange={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, false)}
-//                 onCopy={e => e.stopPropagation()}
-//                 onCut={e => e.stopPropagation()}
-//                 onPaste={e => e.stopPropagation()}
-//                 onPointerDown={e => e.stopPropagation()}
-//                 onKeyDown={e => {
-//                     if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-//                     if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cell.data; // reset
-//                 }}
-//             />
-//         );
-//     };
-// }
+    update(cell: EmailCell, newCell: EmailCell | CompatibleCell): EmailCell {
+        if (newCell.text !== undefined && newCell.text.length !== 0) {
+            const isValid = this.isEmailValid((newCell as CompatibleCell).text);
+            return { ...cell, text: newCell.text, isValid } as EmailCell;
+        }
+        return newCell as EmailCell;
+    }
+
+    render(cell: EmailCell, isInEditMode: boolean, onCellChanged: (cell: EmailCell, commit: boolean) => void): React.ReactNode {
+        if (!isInEditMode) {
+            return <span className={cell.isValid === false ? `rg-email-cell-template-invalid` : `rg-email-cell-template-valid`}>{cell.text}</span>
+        }
+
+        return <input
+            className="rg-email-cell-template"
+            ref={input => {
+                if (input) {
+                    input.focus();
+                }
+            }}
+            onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
+            onKeyDown={e => {
+                if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
+            }}
+            defaultValue={cell.text}
+            onCopy={e => e.stopPropagation()}
+            onCut={e => e.stopPropagation()}
+            onPaste={e => e.stopPropagation()}
+            onPointerDown={e => e.stopPropagation()}
+        />
+    }
+}

@@ -4,7 +4,7 @@ import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
 
 const columnCount = 10;
-const rowCount = 25;
+const rowCount = 150;
 
 interface Data {
     [key: string]: string
@@ -24,7 +24,7 @@ export const TestGrid: React.FunctionComponent = () => {
 
     const [state, setState] = React.useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
-            columnId: ci, rezisable: true
+            columnId: ci, resizable: true
         } as Column));
 
         const rows = new Array(rowCount).fill(0).map((_, ri) => {
@@ -70,8 +70,6 @@ export const TestGrid: React.FunctionComponent = () => {
         onColumnResized={handleColumnResize}
         enableRowSelection
         enableColumnSelection
-
-
     />
 }
 

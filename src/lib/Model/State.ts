@@ -1,6 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, CellChange } from '.';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
-import { CellTemplates, Id, Focus, Cell, ReactGridProps } from './PublicModel';
+import { CellTemplates, Id, Cell, ReactGridProps, CellLocation } from './PublicModel';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export type StateModifier = (state: State) => State;
@@ -25,7 +25,8 @@ export class State {
 
     readonly queuedCellChanges: CellChange[] = [];
     currentlyEditedCell?: Cell;
-    readonly customFocuses: Focus[] = [];
+    // TODO updated customFocuses, CellLocation can be here?
+    readonly highlightLocations: CellLocation[] = [];
     readonly disableFillHandle: boolean = false;
     readonly disableRangeSelection: boolean = false;
     readonly enableColumnSelection: boolean = false;

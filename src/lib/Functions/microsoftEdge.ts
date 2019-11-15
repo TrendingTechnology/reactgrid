@@ -1,4 +1,6 @@
 export function isBrowserEdge() {
-  const userAgent = window.navigator.userAgent;
-  return userAgent.indexOf('Edge/') > 0;
+  if (typeof window !== 'undefined') { // condition needed for circle ci compiler
+    return window.navigator.userAgent.indexOf('Edge/') > 0;
+  } else
+    return false;
 }
