@@ -18,9 +18,8 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
 
     update(cell: TextCell, newCell: TextCell | CompatibleCell): TextCell {
         // A CompatibleCell will provide the properties a TextCell needs
-        return newCell as TextCell;
+        return { ...cell, text: newCell.text !== undefined ? newCell.text : '' };
     }
-
     handleKeyDown(cell: TextCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: TextCell, enableEditMode: boolean } {
         if (!ctrl && !alt && isTextInput(keyCode))
             return { cell: { ...cell, text: '' }, enableEditMode: true }

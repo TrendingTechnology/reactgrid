@@ -49,10 +49,6 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         return { ...cell, value: (parsed! > 0 || parsed! < 0) || (!cellValidated.isValid) ? parsed : 0 }
     }
 
-    replaceDotsToCommas(value: number) {
-        return value.toString().replace(".", ",")
-    }
-
     replaceCommasToDots(value: any) {
         return value.toString().replace(",", ".")
     }
@@ -85,8 +81,8 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             }}
 
             onKeyDown={e => {
-                if (isNumberInput(e.keyCode) || isNavigationKey(e) || e.keyCode == 188) e.stopPropagation()
-                if (!isNumberInput(e.keyCode) && !isNavigationKey(e) && e.keyCode != 188) e.preventDefault()
+                if (isNumberInput(e.keyCode) || isNavigationKey(e) || (e.keyCode == 188 || e.keyCode == 190)) e.stopPropagation()
+                if (!isNumberInput(e.keyCode) && !isNavigationKey(e) && (e.keyCode != 188 && e.keyCode != 190)) e.preventDefault()
 
             }}
             onCopy={e => e.stopPropagation()}
