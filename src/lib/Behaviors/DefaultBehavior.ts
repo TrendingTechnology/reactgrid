@@ -126,7 +126,10 @@ export class DefaultBehavior extends Behavior {
             pastedRows = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ type: 'text', text: t })))
         }
         event.preventDefault()
-        return { ...pasteData(state, pastedRows) } //`, selectionMode: selectionMode || 'range' };
+        return { 
+            ...pasteData(state, pastedRows),
+            selectionMode: 'range'
+        };
     }
 
     handleCut(event: ClipboardEvent, state: State): State {
