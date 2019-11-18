@@ -6,56 +6,85 @@ import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
 export interface NumberCell extends Cell {
     type: 'number',
     value: number
-    format?: string
+    format?: Intl.NumberFormat;
     hideZero?: boolean
+    isValid: boolean | undefined
 }
 
 export class NumberCellTemplate implements CellTemplate<NumberCell> {
 
-    validate(cell: NumberCell): CompatibleCell<NumberCell> {
-        return { ...cell, text: cell.value.toString() }
+    validate(cell: any): CompatibleCell<NumberCell> {
+        const number_regex = /^[0-9,.]+$/
+        if (!number_regex.test(cell.value) || cell.value === undefined || cell.value === NaN) {
+            return { ...cell, value: 0, text: '', isValid: false }
+        } else {
+            return { ...cell, isValid: true, text: cell.value }
+        }
     }
 
     handleKeyDown(cell: NumberCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-        if (!ctrl && !alt && !shift && isNumberInput(keyCode))
-            return { cell: { ...cell, data: NaN }, enableEditMode: true }
+        const char = String.fromCharCode(keyCode)
+        if (!ctrl && !alt && !shift && (isNumberInput(keyCode)))
+            return { cell: { ...cell, value: Number(char) }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
+    parseNumber(strg: string): number {
+        var decimal = '.';
+        if (strg.indexOf(',') > strg.indexOf('.')) decimal = ',';
+        strg = strg.replace(new RegExp("[^0-9$" + decimal + "]", "g"), "");
+        strg = this.replaceCommasToDots(strg)
+        return parseFloat(strg);
+    }
+
     update(cell: NumberCell, newCell: NumberCell | CompatibleCell): NumberCell {
+        const cellValidated = this.validate(newCell)
+        const isCurrnetValueFormat = isNaN(this.replaceCommasToDots(cellValidated.text))
+        if (isCurrnetValueFormat) {
+            return { ...cell, value: 0 } as NumberCell;
+        }
+        if (newCell.value !== undefined && newCell.value !== NaN && (newCell as NumberCell).isValid) {
+            return { ...cell, value: this.parseNumber(newCell.value.toString()) } as NumberCell;
+        }
+        const parsed = this.parseNumber((newCell as CompatibleCell).text)
+        return { ...cell, value: (parsed! > 0 || parsed! < 0) || (!cellValidated.isValid) ? parsed : 0 }
+    }
 
-        if (newCell.value !== undefined && newCell.value !== NaN)
-            return { ...cell, value: newCell.value } as NumberCell;
+    replaceCommasToDots(value: any) {
+        return value.toString().replace(",", ".")
+    }
 
-        const parsed = parseFloat((newCell as CompatibleCell).text);
-        return { ...cell, value: parsed > 0 || parsed < 0 ? parsed : 0 }
+
+    isValidPrecisonFormat(format: string | undefined): boolean {
+        if (format && format.substring(0, 2) == '#.' && new RegExp("^[#\#]+$").test(format.substring(2, format.length))) return true
+        return false
     }
 
     render(cell: NumberCell, isInEditMode: boolean, onCellChanged: (cell: NumberCell, commit: boolean) => void): React.ReactNode {
+
         if (!isInEditMode) {
-            return cell.value === 0 && cell.hideZero ? '' : cell.value;
+            return <span className='number-is-valid'>{cell.format ? cell.format.format(cell.value) : cell.value.toString()}</span>
         }
 
         return <input
             className="rg-number-cell-template"
+            style={{ textAlign: "right" }}
             ref={input => {
                 if (input) {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            value={cell.value}
+            defaultValue={cell.format ? new Intl.NumberFormat(cell.format.resolvedOptions().locale, { useGrouping: false, maximumFractionDigits: 20 }).format(cell.value) : cell.value.toString()}
             onChange={e => {
-                onCellChanged({ ...cell, value: Number(e.currentTarget.value) }, false)
+
+                onCellChanged({ ...cell, value: parseFloat(e.currentTarget.value.replace(',', '.')) }, false)
             }}
 
             onKeyDown={e => {
-                if ((e.keyCode >= 48 && e.keyCode >= 57) || (e.keyCode <= 96 && e.keyCode >= 105)) {
-                    e.preventDefault()
-                    return
-                }
-                if (isNumberInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.value.toString(); // reset
+                if (isNumberInput(e.keyCode) || isNavigationKey(e) || (e.keyCode == 188 || e.keyCode == 190)) e.stopPropagation()
+                if (!isNumberInput(e.keyCode) && !isNavigationKey(e) && (e.keyCode != 188 && e.keyCode != 190)) e.preventDefault()
+
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

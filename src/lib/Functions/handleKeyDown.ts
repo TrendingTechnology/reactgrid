@@ -6,7 +6,7 @@ import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const newState = handleKeyDownInternal(state, event);
-    if (newState !== state) { event.stopPropagation(); event.preventDefault(); } // TODO event.preventDefault(); causes typing text without enter edit mode...
+    if (newState !== state) { event.stopPropagation(); event.preventDefault(); }
     return newState;
 }
 

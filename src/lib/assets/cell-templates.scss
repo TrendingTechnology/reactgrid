@@ -84,6 +84,17 @@
     outline: none;
 }
 
+.number-is-valid{
+   width: 100%;
+   text-align: right;  
+}
+
+.number-is-un-valid{
+    width: 100%;
+    text-align: right;
+    // color: red;
+ }
+
 /* TEXT TEMPLATE */
 .rg-text-cell-template {
     position: inherit;
