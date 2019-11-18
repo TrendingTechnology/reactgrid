@@ -14,7 +14,7 @@ export interface ReactGridProps {
     readonly license: 'non-commercial' | string;
     readonly customCellTemplates?: CellTemplates;
     readonly focusLocation?: CellLocation;
-    readonly highlightLocations?: CellLocation[];
+    readonly highlightLocations?: HighlightLocation[];
     readonly frozenTopRows?: number;
     readonly frozenBottomRows?: number;
     readonly frozenLeftColumns?: number;
@@ -47,10 +47,10 @@ export interface CellLocation {
     readonly color?: string;
 }
 
-export interface Focus {
+export interface HighlightLocation {
     readonly rowId: Id;
     readonly columnId: Id;
-    readonly className: string;
+    readonly color?: string;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
