@@ -16,14 +16,14 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     validate(cell: any): CompatibleCell<NumberCell> {
         const number_regex = /^[0-9,.]+$/
         if (!number_regex.test(cell.value) || cell.value === undefined || cell.value === NaN) {
-            return { ...cell, value: 0, text: '', isValid: false }
+            return { ...cell, value: 0, isValid: false }
         } else {
             return { ...cell, isValid: true, text: cell.value }
         }
     }
 
     handleKeyDown(cell: NumberCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-        if (!ctrl && !alt && !shift && (isNumberInput(keyCode) || keyCode == 188))
+        if (!ctrl && !alt && !shift && (isNumberInput(keyCode)))
             return { cell: { ...cell }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
@@ -81,9 +81,11 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             }}
 
             onKeyDown={e => {
-                if (isNumberInput(e.keyCode) || isNavigationKey(e) || (e.keyCode == 188 || e.keyCode == 190)) e.stopPropagation()
-                if (!isNumberInput(e.keyCode) && !isNavigationKey(e) && (e.keyCode != 188 && e.keyCode != 190)) e.preventDefault()
-
+                console.log()
+                if (isNumberInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation()
+                if (!isNumberInput(e.keyCode) && !isNavigationKey(e)
+                    && (e.keyCode != 188 && e.keyCode != 190 && e.keyCode != 110) &&
+                    (e.keyCode != 67 && e.keyCode != 86 && e.keyCode != 88)) e.preventDefault()
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

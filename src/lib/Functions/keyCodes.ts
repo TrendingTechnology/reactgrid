@@ -23,5 +23,12 @@ export const keyCodes = {
     PAGE_DOWN: 34,
     SEMI_COLON: 186,
     SINGLE_QUOTE: 222,
-    CTRL: 17
+    CTRL: 17,
+
+    NUM_PAD_DOT: 110,
+    DOT: 190,
+    COMMA: 188,
+    CUT: 88,
+    COPY: 67,
+    PASTE: 86,
 };
