@@ -19,7 +19,6 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
     update(cell: TextCell, newCell: TextCell | CompatibleCell): TextCell {
         return { ...cell, text: newCell.text !== undefined ? newCell.text : '' };
     }
-
     handleKeyDown(cell: TextCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: TextCell, enableEditMode: boolean } {
         const char = String.fromCharCode(keyCode)
         if (!ctrl && !alt && isTextInput(keyCode))
