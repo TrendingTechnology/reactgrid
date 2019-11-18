@@ -29,8 +29,9 @@ var EmailCellTemplate = (function () {
         return false;
     };
     EmailCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
+        var char = String.fromCharCode(keyCode);
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cell: __assign({}, cell, { text: '' }), enableEditMode: true };
+            return { cell: __assign({}, cell, { text: !shift ? char.toLowerCase() : char }), enableEditMode: true };
         return { cell: cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     EmailCellTemplate.prototype.update = function (cell, newCell) {

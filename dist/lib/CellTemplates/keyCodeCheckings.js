@@ -11,8 +11,9 @@ export var isNumberInput = function (keyCode) {
 };
 export var isNavigationKey = function (e) {
     var currentTarget = e.currentTarget;
-    return (e.keyCode == keyCodes.LEFT_ARROW && currentTarget.selectionStart > 0) ||
-        (e.keyCode == keyCodes.RIGHT_ARROW && currentTarget.selectionStart < currentTarget.value.length) ||
+    return (e.keyCode == keyCodes.LEFT_ARROW && currentTarget.selectionStart >= -1) ||
+        (e.keyCode == keyCodes.RIGHT_ARROW && currentTarget.selectionStart < currentTarget.value.length + 1) ||
+        e.keyCode == keyCodes.UP_ARROW || e.keyCode == keyCodes.DOWN_ARROW ||
         e.keyCode == keyCodes.END || e.keyCode == keyCodes.HOME ||
         e.keyCode == keyCodes.BACKSPACE || e.keyCode == keyCodes.DELETE;
 };

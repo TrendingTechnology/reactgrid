@@ -6,7 +6,7 @@ export interface ReactGridProps {
     readonly license: 'non-commercial' | string;
     readonly customCellTemplates?: CellTemplates;
     readonly focusLocation?: CellLocation;
-    readonly highlightLocations?: CellLocation[];
+    readonly highlightLocations?: HighlightLocation[];
     readonly frozenTopRows?: number;
     readonly frozenBottomRows?: number;
     readonly frozenLeftColumns?: number;
@@ -32,10 +32,10 @@ export interface CellLocation {
     readonly columnId: Id;
     readonly color?: string;
 }
-export interface Focus {
+export interface HighlightLocation {
     readonly rowId: Id;
     readonly columnId: Id;
-    readonly className: string;
+    readonly color?: string;
 }
 export interface CellChange<TCell extends Cell = Cell> {
     readonly rowId: Id;

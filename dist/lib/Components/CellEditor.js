@@ -1,22 +1,19 @@
 import * as React from 'react';
 import { tryAppendChange } from '../Functions';
 export var CellEditor = function (props) {
-    var _a = React.useState(props.state.currentlyEditedCell), cell = _a[0], setCell = _a[1];
     var location = props.state.focusedLocation;
-    var _b = React.useState(calculatedEditorPosition(location, props.state)), position = _b[0], setPosition = _b[1];
+    var _a = React.useState(calculatedEditorPosition(location, props.state)), position = _a[0], setPosition = _a[1];
     React.useEffect(function () { return setPosition(calculatedEditorPosition(location, props.state)); }, []);
-    var cellTemplate = props.state.cellTemplates[cell.type];
+    var cellTemplate = props.state.cellTemplates[props.state.currentlyEditedCell.type];
     return (React.createElement("div", { className: "rg-celleditor", style: {
             top: position.top - 1,
             left: position.left - 1,
             height: location.row.height + 1,
             width: location.column.width + 1,
-        } }, cellTemplate.render(cell, true, function (cell, commit) {
+        } }, cellTemplate.render(props.state.currentlyEditedCell, true, function (cell, commit) {
         props.state.currentlyEditedCell = commit ? undefined : cell;
         if (commit)
             props.state.update(function (state) { return tryAppendChange(state, location, cell); });
-        else
-            setCell(cell);
     })));
 };
 var calculatedXAxisOffset = function (location, state) {

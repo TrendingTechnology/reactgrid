@@ -24,8 +24,9 @@ var TextCellTemplate = (function () {
         return __assign({}, cell, { text: newCell.text !== undefined ? newCell.text : '' });
     };
     TextCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
+        var char = String.fromCharCode(keyCode);
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cell: __assign({}, cell, { text: '' }), enableEditMode: true };
+            return { cell: __assign({}, cell, { text: !shift ? char.toLowerCase() : char }), enableEditMode: true };
         return { cell: cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     TextCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
@@ -36,7 +37,15 @@ var TextCellTemplate = (function () {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
-            }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(__assign({}, cell, { text: e.currentTarget.value }), false); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
+            }, defaultValue: cell.text, onChange: function (e) {
+                var caretPositionStart = e.target.selectionStart;
+                var input = e.target;
+                window.requestAnimationFrame(function () {
+                    input.selectionStart = caretPositionStart;
+                    input.selectionEnd = caretPositionStart;
+                });
+                onCellChanged(__assign({}, cell, { text: e.currentTarget.value }), false);
+            }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
                 if (isTextInput(e.keyCode) || (isNavigationKey(e)))
                     e.stopPropagation();
             } });

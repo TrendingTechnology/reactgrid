@@ -26,11 +26,12 @@ var GroupCellTemplate = (function () {
     GroupCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         var enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         var cellCopy = __assign({}, cell);
+        var char = String.fromCharCode(keyCode);
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
         }
         else if (!ctrl && !alt && isTextInput(keyCode)) {
-            cellCopy.text = '';
+            cellCopy.text = !shift ? char.toLowerCase() : char;
             enableEditMode = true;
         }
         return { cell: cellCopy, enableEditMode: enableEditMode };
