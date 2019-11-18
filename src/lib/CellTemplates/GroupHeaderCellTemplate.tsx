@@ -25,10 +25,11 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     handleKeyDown(cell: GroupCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
+        const char = String.fromCharCode(keyCode)
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
         } else if (!ctrl && !alt && isTextInput(keyCode)) {
-            cellCopy.text = '';
+            cellCopy.text = !shift ? char.toLowerCase() : char;
             enableEditMode = true;
         }
         return { cell: cellCopy, enableEditMode };

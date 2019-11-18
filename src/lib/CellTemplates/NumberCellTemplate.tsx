@@ -23,8 +23,9 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     }
 
     handleKeyDown(cell: NumberCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-        if (!ctrl && !alt && !shift && (isNumberInput(keyCode) || keyCode == 188))
-            return { cell: { ...cell }, enableEditMode: true }
+        const char = String.fromCharCode(keyCode)
+        if (!ctrl && !alt && !shift && (isNumberInput(keyCode)))
+            return { cell: { ...cell, value: Number(char) }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 

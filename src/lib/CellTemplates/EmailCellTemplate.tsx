@@ -11,7 +11,7 @@ export interface EmailCell extends Cell {
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
-    validate(cell: any): CompatibleCell<EmailCell> {        
+    validate(cell: any): CompatibleCell<EmailCell> {
         if (cell.text === undefined || cell.text === null)
             throw 'EmailCell is missing text property'
         if (!this.isEmailValid(cell.text))
@@ -27,8 +27,9 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     }
 
     handleKeyDown(cell: EmailCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: EmailCell, enableEditMode: boolean } {
+        const char = String.fromCharCode(keyCode)
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cell: { ...cell, text: '' }, enableEditMode: true }
+            return { cell: { ...cell, text: !shift ? char.toLowerCase() : char }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 

@@ -22,8 +22,10 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
+        ...(cellTemplate.getStyle && cellTemplate.getStyle(cell, false) || {}),
         // TODO when to prevent scrolling?
         touchAction: isFocused || cell.type === 'header' ? 'none' : 'auto' // prevent scrolling
+
     };
 
     return (
