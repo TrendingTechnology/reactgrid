@@ -18,6 +18,12 @@ interface TestGridState {
 interface TestGridProps {
 }
 
+const emailValidator = (email: string): boolean => {
+    const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (email_regex.test(email.replace(/\s+/g, '')))
+        return true;
+    return false;
+}
 
 export const TestGrid: React.FunctionComponent = () => {
 
@@ -34,11 +40,13 @@ export const TestGrid: React.FunctionComponent = () => {
                 rowId: ri, cells: columns.map((_, ci) =>  {
                     if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
                     switch (ci) {
-                        case 0:     // Group cell
+                        case 0:
                             return { type: 'group', text: `${ri} - ${ci}`, isExpanded: ri % 4 && undefined, depth: ri % 4 }
-                        case 1:     // Text cell
-                            return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
-                        case 2:     // Number cell
+                        case 1:
+                            return { type: 'text', text: `${ri} - ${ci}` }
+                        case 2: 
+                            return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
+                        case 3: 
                             return { ...myNumberCell, value: 2.78 }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }

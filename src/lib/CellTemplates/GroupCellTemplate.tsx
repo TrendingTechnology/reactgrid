@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
-import { isNavigationKey, isTextInput } from './keyCodeCheckings';
+import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface GroupCell extends Cell { // rename GroupHeaderCell to GroupCell ?? 
@@ -29,7 +29,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         const char = String.fromCharCode(keyCode)
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
-        } else if (!ctrl && !alt && isTextInput(keyCode)) {
+        } else if (!ctrl && !alt && isAlphaNumericKey(keyCode)) {
             cellCopy.text = !shift ? char.toLowerCase() : char;
             enableEditMode = true;
         }
@@ -59,13 +59,13 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                         }
                     }}
                     defaultValue={cell.text}
-                    onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
+                    onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}
                     onPointerDown={e => e.stopPropagation()}
                     onKeyDown={e => {
-                        if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
+                        if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
                     }}
                 />
         );
