@@ -16,7 +16,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     //const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
     return (
         <div
-            className="rg-celleditor"
+            className={`rg-celleditor rg-${props.state.currentlyEditedCell!.type}-celleditor`}
             style={{
                 top: position.top - 1,
                 left: position.left - 1,

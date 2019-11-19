@@ -39,8 +39,8 @@
 }
 
 /* GROUP HEADER TEMPLATE */
-.rg-group-header-cell-template {
-    &-input {
+.rg-group-celleditor {
+    input {
         position: inherit;
         width: 100%;
         height: 100%;
@@ -50,18 +50,21 @@
         font-size: $template-font-size;
         outline: none;
     }
+}
 
-    &-wrapper {
+.rg-group-cell {
+    .wrapper {
         display: flex;
         align-items: center;
         width: 100%;
         &-content {
             display: flex;
             align-items: center;
+            width: 100%;
         }
     }
     
-    &-chevron-wrapper {
+    .chevron {
         z-index: $template-z-index;
         pointer-events: auto;
         display: flex;
@@ -90,16 +93,18 @@
 }
 
 /* TEXT TEMPLATE */
-.rg-text-cell-template {
-    position: inherit;
-    width: 100%;
-    height: 100%;
-    padding: $template-padding;
-    border: $template-margin;
-    background: $template-bg-color;
-    font-size: $template-font-size;
-    outline: none;
-    font-family: inherit;
+.rg-text-celleditor {
+    input {
+        position: inherit;
+        width: 100%;
+        height: 100%;
+        padding: $template-padding;
+        border: $template-margin;
+        background: $template-bg-color;
+        font-size: $template-font-size;
+        outline: none;
+        font-family: inherit;
+    }
 }
 
 /* TIME TEMPLATE */

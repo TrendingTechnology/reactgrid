@@ -41,7 +41,6 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             return cell.renderer ? cell.renderer(cell.text) : cell.text;
 
         return <input
-            className="rg-text-cell-template"
             ref={input => {
                 if (input) {
                     input.focus();

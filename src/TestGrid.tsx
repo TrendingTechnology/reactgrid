@@ -30,20 +30,21 @@ export const TestGrid: React.FunctionComponent = () => {
         } as Column));
 
         const rows = new Array(rowCount).fill(0).map((_, ri) => {
-            if (ri < 10) {
-                return {
-                    rowId: ri, cells: columns.map((_, ci) => ({
-                        ...myNumberCell, value: 2.78,
-                    }))
-                }
-            } else {
-                return {
-                    rowId: ri, cells: columns.map((_, ci) => ({
-                        type: 'text', text: `text`
-                    }))
-                }
+            return {
+                rowId: ri, cells: columns.map((_, ci) =>  {
+                    if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
+                    switch (ci) {
+                        case 0:     // Group cell
+                            return { type: 'group', text: `${ri} - ${ci}`, isExpanded: ri % 4 && undefined, depth: ri % 4 }
+                        case 1:     // Text cell
+                            return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
+                        case 2:     // Number cell
+                            return { ...myNumberCell, value: 2.78 }
+                        default:
+                            return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
+                    }
+                })
             }
-
         });
 
         return { rows, columns }
