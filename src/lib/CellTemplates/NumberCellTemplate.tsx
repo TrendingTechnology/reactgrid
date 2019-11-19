@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
-import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
+import { inNumericKey, isNavigationKey } from './keyCodeCheckings'
 import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface NumberCell extends Cell {
@@ -25,8 +25,11 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     }
 
     handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-        const char = String.fromCharCode(keyCode)
-        if (!ctrl && !alt && !shift && (isNumberInput(keyCode)))
+        const char = String.fromCharCode(keyCode);
+        console.log(keyCode);
+        console.log(char);
+        console.log(Number(char));
+        if (!ctrl && !alt && !shift && (inNumericKey(keyCode)))
             return { cell: this.getCompatibleCell({ ...cell, value: Number(char) }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
@@ -53,12 +56,12 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             }}
             defaultValue={format.format(cell.value)}
             onChange={e => {
-                onCellChanged({ ...cell, value: parseFloat(e.currentTarget.value.replace(',', '.')) }, false)
+                onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(',', '.')) }), false)
             }}
 
             onKeyDown={e => {
-                if (isNumberInput(e.keyCode) || isNavigationKey(e) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
-                if (!isNumberInput(e.keyCode) && !isNavigationKey(e) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD)) e.preventDefault();
+                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD)) e.preventDefault();
 
             }}
             onCopy={e => e.stopPropagation()}

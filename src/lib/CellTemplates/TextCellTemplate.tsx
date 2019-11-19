@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
-import { isTextInput, isNavigationKey } from './keyCodeCheckings'
+import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings'
 import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface TextCell extends Cell {
@@ -25,7 +25,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
 
     handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<TextCell>, enableEditMode: boolean } {
         const char = String.fromCharCode(keyCode)
-        if (!ctrl && !alt && isTextInput(keyCode))
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: this.getCompatibleCell({ ...cell, text: shift ? char : char.toLowerCase() }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
@@ -63,7 +63,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
-                if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
+                if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
             }}
         />
     }
