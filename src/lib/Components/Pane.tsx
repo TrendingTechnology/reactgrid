@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, Borders, State } from '../Model';
+import { Range, Borders, State, Highlight } from '../Model';
 import { CellFocus } from './CellFocus';
 import { FillHandle } from './FillHandle';
 import { RowRenderer } from './RowRenderer';
@@ -31,7 +31,7 @@ class GridContent extends React.Component<RowsProps> {
         } else {
             return true; // needed when select range by touch after first focus
         }
-        return this.props.state.visibleRange != nextProps.state.visibleRange || this.props.state.cellMatrix.props != nextProps.state.cellMatrix.props;
+        return this.props.state.visibleRange !== nextProps.state.visibleRange || this.props.state.cellMatrix.props !== nextProps.state.cellMatrix.props;
     }
 
     render() {
@@ -47,9 +47,9 @@ class GridContent extends React.Component<RowsProps> {
 
 function renderHighlights(props: PaneProps) {
     const highlightLocations = props.state.highlightLocations.filter((value: any) => Object.keys(value).length !== 0); // TODO why?
-    return highlightLocations.map((highlight: any, id: number) => {
+    return highlightLocations.map((highlight: Highlight, id: number) => {
         const location = props.state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
-        return location && props.range.contains(location) && <CellFocus key={id} location={location} color={highlight.color} />; // TODO maybe new component or another way?
+        return location && props.range.contains(location) && <CellFocus key={id} location={location} color={highlight.borderColor} />; // TODO maybe new component or another way?
     });
 }
 

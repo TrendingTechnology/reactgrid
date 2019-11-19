@@ -21,6 +21,8 @@ interface TestGridProps {
 
 export const TestGrid: React.FunctionComponent = () => {
 
+    const myFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
+    const myNumberCell = { type: 'number', format: myFormat };
 
     const [state, setState] = React.useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
@@ -31,7 +33,7 @@ export const TestGrid: React.FunctionComponent = () => {
             if (ri < 10) {
                 return {
                     rowId: ri, cells: columns.map((_, ci) => ({
-                        type: 'number', value: 2.78, format: new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' })
+                        ...myNumberCell, value: 2.78,
                     }))
                 }
             } else {

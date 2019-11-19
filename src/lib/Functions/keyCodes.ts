@@ -3,6 +3,7 @@ export const keyCodes = {
     BACKSPACE: 8,
     TAB: 9,
     ENTER: 13,
+    CTRL: 17,
     SPACE: 32,
     END: 35,
     ESC: 27,
@@ -22,6 +23,7 @@ export const keyCodes = {
     PAGE_UP: 33,
     PAGE_DOWN: 34,
     SEMI_COLON: 186,
+    COMMA: 188,
+    PERIOD: 190,
     SINGLE_QUOTE: 222,
-    CTRL: 17
 };

@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation, Id, SelectionMode, Cell, CompatibleCell } from "../Model";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation, Compatible, Cell } from "../Model";
 import { handleKeyDown } from "../Functions/handleKeyDown";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
@@ -105,7 +105,7 @@ export class DefaultBehavior extends Behavior {
         if (!activeSelectedRange) {
             return state;
         }
-        let pastedRows: CompatibleCell[][] = [];
+        let pastedRows: Compatible<Cell>[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const document = new DOMParser().parseFromString(htmlData, 'text/html')
         // TODO Do we need selection mode here ?
@@ -114,7 +114,7 @@ export class DefaultBehavior extends Behavior {
         if (htmlData && document.body.firstElementChild!.getAttribute('data-reactgrid') === 'reactgrid') {
             const tableRows = document.body.firstElementChild!.firstElementChild!.children
             for (let ri = 0; ri < tableRows.length; ri++) {
-                const row: CompatibleCell[] = [];
+                const row: Compatible<Cell>[] = [];
                 for (let ci = 0; ci < tableRows[ri].children.length; ci++) {
                     const rawData = tableRows[ri].children[ci].getAttribute('data-reactgrid');
                     const data = rawData && JSON.parse(rawData);
@@ -123,7 +123,7 @@ export class DefaultBehavior extends Behavior {
                 pastedRows.push(row)
             }
         } else {
-            pastedRows = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ type: 'text', text: t })))
+            pastedRows = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ type: 'text', text: t, value: parseFloat(t) })))
         }
         event.preventDefault()
         return { ...pasteData(state, pastedRows) } //`, selectionMode: selectionMode || 'range' };
@@ -136,14 +136,7 @@ export class DefaultBehavior extends Behavior {
     }
 }
 
-// export function validateOuterData(state: State, clipboardData: ClipboardData): Cell {
-//     const type = clipboardData.type
-//     if (type && state.cellTemplates[type] && state.cellTemplates[type].va..isValid(clipboardData.data))
-//         return { data: clipboardData.data, type }
-//     return { data: clipboardData.text, type: 'text' }
-// }
-
-export function pasteData(state: State, rows: CompatibleCell[][]): State {
+export function pasteData(state: State, rows: Compatible<Cell>[][]): State {
     const activeSelectedRange = getActiveSelectedRange(state)
     if (rows.length === 1 && rows[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>

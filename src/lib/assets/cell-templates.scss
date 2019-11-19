@@ -74,7 +74,7 @@
 }
 
 /* NUMBER TEMPLATE */
-.rg-number-cell-template {
+.rg-number-cell input {
     width: 100%;
     height: 100%;
     padding: $template-padding;
@@ -82,18 +82,12 @@
     background: $template-bg-color;
     font-size: $template-font-size;
     outline: none;
+    text-align: "right";
 }
 
-.number-is-valid{
-   width: 100%;
+.rg-number-cell { 
    text-align: right;  
 }
-
-.number-is-un-valid{
-    width: 100%;
-    text-align: right;
-    // color: red;
- }
 
 /* TEXT TEMPLATE */
 .rg-text-cell-template {

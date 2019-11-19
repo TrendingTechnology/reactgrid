@@ -1,44 +1,56 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
-import { CellTemplate, Cell, CompatibleCell } from '../Model';
+import { CellTemplate, Compatible, Cell, Uncertain, UncertainCompatible } from '../Model';
+import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface CheckboxCell extends Cell {
     type: 'checkbox',
-    value: boolean
+    checked: boolean
+    checkedText?: string
+    uncheckedText?: string
 }
 
 export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
 
-    validate(cell: any): CompatibleCell<CheckboxCell> {
-        return { ...cell, text: cell.value !== undefined || cell.value !== null ? cell.value.toString() : '' };
+    getCompatibleCell(uncertainCell: Uncertain<CheckboxCell>): Compatible<CheckboxCell> {
+        const checked = getCellProperty(uncertainCell, 'checked', 'boolean');
+        const text = checked ?
+            uncertainCell.checkedText ? uncertainCell.checkedText : '1' :
+            uncertainCell.uncheckedText ? uncertainCell.uncheckedText : '';
+        return { ...uncertainCell, checked, value: checked ? 1 : NaN, text };
     }
 
-    handleKeyDown(cell: CheckboxCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: CheckboxCell; enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<CheckboxCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<CheckboxCell>; enableEditMode: boolean } {
         if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
-            return { cell: { ...cell, value: !cell.value }, enableEditMode: false }
+            return { cell: this.getCompatibleCell(this.toggleCheckboxCell(cell)), enableEditMode: false }
         return { cell, enableEditMode: false }
     }
 
-    update(cell: CheckboxCell, newCell: CheckboxCell | CompatibleCell): CheckboxCell {
-        // A CompatibleCell will provide the properties a CheckboxCell needs
-        if (newCell.value !== undefined && newCell.value !== NaN)
-            return { ...cell, value: newCell.value } as CheckboxCell;
-        const text = (newCell as CompatibleCell).text;
-        return { ...cell, value: text.length > 0 ? true : false }
+    private toggleCheckboxCell(cell: Compatible<CheckboxCell>): Compatible<CheckboxCell> {
+        return this.getCompatibleCell({ ...cell, checked: !cell.checked })
     }
 
-    render(cell: CheckboxCell, isInEditMode: boolean, onCellChanged: (cell: CheckboxCell, commit: boolean) => void): React.ReactNode {
+    update(cell: Compatible<CheckboxCell>, cellToMerge: UncertainCompatible<CheckboxCell>): Compatible<CheckboxCell> {
+        const checked = cellToMerge.type === 'checkbox' ?
+            cellToMerge.checked :
+            cellToMerge.value ? true : false;
+        return this.getCompatibleCell({ ...cell, checked });
+    }
+
+    render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): React.ReactNode {
         return (
             <label className="rg-checkbox-container">
                 <input
                     type="checkbox"
                     className="rg-checkbox-cell-input"
-                    checked={cell.value}
-                    onChange={e => onCellChanged({ ...cell, value: !cell.value }, true)}
+                    checked={cell.checked}
+                    onChange={e => onCellChanged(this.toggleCheckboxCell(cell), true)}
                 />
                 <span className="rg-checkbox-checkmark"></span>
             </label>
         )
     }
+
+
 
 }
