@@ -46,7 +46,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
 
         switch (event.keyCode) {
 
-            case keyCodes.A:
+            case keyCodes.KEY_A:
                 const cm = state.cellMatrix;
                 return { ...state, selectedRanges: [cm.getRange(cm.first, cm.last)], selectionMode: 'range', activeSelectedRangeIdx: 0 }
             case keyCodes.HOME:
@@ -119,7 +119,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return isSingleCellSelected ?
                     { ...moveFocusDown(state), currentlyEditedCell: undefined } :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
-            case keyCodes.ESC:
+            case keyCodes.ESCAPE:
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
         }
     }
