@@ -35,7 +35,11 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         if (!isInEditMode) 
             return cell.text;
 
-        const defaultDate = `${cell.date.getFullYear()}-${(cell.date.getMonth() + 1)}-${cell.date.getDate()}`;
+        const year = cell.date.getFullYear().toString().padStart(2, '0');
+        const month = (cell.date.getMonth() + 1).toString().padStart(2, '0');
+        const day = cell.date.getDate().toString().padStart(2, '0');
+
+        const defaultDate = `${year}-${month}-${day}`;
         
         return <input
             ref={input => {

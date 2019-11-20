@@ -1,13 +1,13 @@
 /* CHECKBOX CELL TEMPLATE */
-.rg-checkbox-container {
-    margin-left: auto;
-    margin-right: auto;
+.rg-checkbox-cell {
+    align-items: center;
+    justify-content: center;
     padding: $template-padding;
     border: $template-margin;
     z-index: $template-z-index;
     background: $template-bg-color;
     pointer-events: auto;
-    .rg-checkbox-cell-input {
+    input {
         width: $template-checkbox-size;
         height: $template-checkbox-size;
     }
@@ -117,4 +117,8 @@
     background: $template-bg-color;
     font-size: $template-font-size;
     outline: none;
+}
+
+.rg-time-cell { 
+    justify-content: flex-end;
 }

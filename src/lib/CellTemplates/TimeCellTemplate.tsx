@@ -16,7 +16,7 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
     getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell> {
         const time = getCellProperty(uncertainCell, 'time', 'object');
         const dateFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
-        const value = time.getTime();
+        const value = time.getTime() % 86400000; // each day has 86400000 millis
         const text = dateFormat.format(time);
         return { ...uncertainCell, time, value, text }
     }
@@ -28,7 +28,12 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
     }
 
     update(cell: Compatible<TimeCell>, cellToMerge: UncertainCompatible<TimeCell>): Compatible<TimeCell> {
-        return this.getCompatibleCell({ ...cell, time: new Date(cellToMerge.value) });
+        const timestamp = Date.parse(`01-01-1970 ${cellToMerge.text}`);
+        if (!Number.isNaN(timestamp)) {
+            return this.getCompatibleCell({ ...cell, time: new Date(timestamp) });
+        }
+        const time = new Date( !Number.isNaN(cellToMerge.value) ? cellToMerge.value % 86400000 : '01-01-1970 00:00:00' );
+        return this.getCompatibleCell({ ...cell, time });
     }
 
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode {
@@ -36,16 +41,20 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
         if (!isInEditMode) 
             return cell.text;
 
-        // const defaultDate = `${cell.time.getFullYear()}-${(cell.time.getMonth() + 1)}-${cell.time.getDate()}`;
+        const hours = cell.time.getHours().toString().padStart(2, '0');
+        const minutes = cell.time.getMinutes().toString().padStart(2, '0');
+        const seconds = cell.time.getSeconds().toString().padStart(2, '0');
+        const defaultTime = `${hours}:${minutes}:${seconds}`;
         
         return <input
             ref={input => {
                 if (input) input.focus();
             }}
             type="time"
-            // defaultValue={defaultDate}
+            step={1}
+            defaultValue={defaultTime}
             onChange={e => {
-                const timestamp = Date.parse(e.currentTarget.value);
+                const timestamp = Date.parse(`01-01-1970 ${e.currentTarget.value}`);
                 if (!Number.isNaN(timestamp)) {
                     const time = new Date(timestamp);
                     onCellChanged(this.getCompatibleCell({ ...cell, time }), false)

@@ -4,10 +4,10 @@ import { CellTemplate, Compatible, Cell, Uncertain, UncertainCompatible } from '
 import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface CheckboxCell extends Cell {
-    type: 'checkbox',
-    checked: boolean
-    checkedText?: string
-    uncheckedText?: string
+    type: 'checkbox';
+    checked: boolean;
+    checkedText?: string;
+    uncheckedText?: string;
 }
 
 export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
@@ -39,15 +39,14 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
 
     render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): React.ReactNode {
         return (
-            <label className="rg-checkbox-container">
+            <>
                 <input
                     type="checkbox"
-                    className="rg-checkbox-cell-input"
                     checked={cell.checked}
                     onChange={e => onCellChanged(this.toggleCheckboxCell(cell), true)}
                 />
-                <span className="rg-checkbox-checkmark"></span>
-            </label>
+                <span></span>
+            </>
         )
     }
 

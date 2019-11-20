@@ -30,7 +30,8 @@ export const TestGrid: React.FunctionComponent = () => {
     const myFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
     const myNumberCell = { type: 'number', format: myFormat };
 
-    const now = new Date();
+    const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', })
+    const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
     const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
@@ -41,6 +42,7 @@ export const TestGrid: React.FunctionComponent = () => {
             return {
                 rowId: ri, cells: columns.map((_, ci) =>  {
                     if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
+                    const now = new Date();
                     switch (ci) {
                         case 0:
                             return { type: 'group', text: `${ri} - ${ci}`, isExpanded: ri % 4 && undefined, depth: ri % 4 }
@@ -51,9 +53,11 @@ export const TestGrid: React.FunctionComponent = () => {
                         case 3: 
                             return { ...myNumberCell, value: 2.78 }
                         case 4: 
-                            return { type: 'date', format: new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' }), date: new Date(now.setHours(now.getHours() + (24))) }
+                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours(now.getHours() + (ri * 24))) }
                         case 5: 
-                            return { type: 'time', format: new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' }), time: new Date(now.setHours(now.getHours() + (24))) }
+                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + (ri))) }
+                        case 6: 
+                            return { type: 'checkbox', checked: false }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
                     }
