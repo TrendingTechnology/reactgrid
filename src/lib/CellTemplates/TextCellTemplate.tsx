@@ -49,12 +49,6 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             }}
             defaultValue={cell.text}
             onChange={e => {
-                // const caretPositionStart = e.target.selectionStart;
-                // const input = e.target;
-                // window.requestAnimationFrame(() => {
-                //     input.selectionStart = caretPositionStart;
-                //     input.selectionEnd = caretPositionStart;
-                // });
                 onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false);
             }}
             onCopy={e => e.stopPropagation()}

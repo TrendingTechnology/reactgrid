@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
@@ -30,7 +30,9 @@ export const TestGrid: React.FunctionComponent = () => {
     const myFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
     const myNumberCell = { type: 'number', format: myFormat };
 
-    const [state, setState] = React.useState<TestGridState>(() => {
+    const now = new Date();
+
+    const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
             columnId: ci, resizable: true
         } as Column));
@@ -48,6 +50,8 @@ export const TestGrid: React.FunctionComponent = () => {
                             return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                         case 3: 
                             return { ...myNumberCell, value: 2.78 }
+                        case 4: 
+                            return { type: 'date', format: new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' }), date: new Date(now.setHours(now.getHours() + (24))) }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
                     }

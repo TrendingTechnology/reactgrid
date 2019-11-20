@@ -14,7 +14,11 @@
 }
 
 /* DATE TEMPLATE */
-.rg-date-cell-template {
+.rg-date-cell { 
+    justify-content: flex-end;
+}
+
+.rg-date-celleditor input {
     width: 100%;
     height: 100%;
     padding: $template-padding;
@@ -92,18 +96,16 @@
 }
 
 /* TEXT TEMPLATE */
-.rg-text-celleditor {
-    input {
-        position: inherit;
-        width: 100%;
-        height: 100%;
-        padding: $template-padding;
-        border: $template-margin;
-        background: $template-bg-color;
-        font-size: $template-font-size;
-        outline: none;
-        font-family: inherit;
-    }
+.rg-text-celleditor input {
+    width: 100%;
+    height: 100%;
+    padding: $template-padding;
+    border: $template-margin;
+    background: $template-bg-color;
+    font-size: $template-font-size;
+    outline: none;
+    font-family: inherit;
+    
 }
 
 /* TIME TEMPLATE */
