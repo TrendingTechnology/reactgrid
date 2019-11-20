@@ -52,6 +52,8 @@ export const TestGrid: React.FunctionComponent = () => {
                             return { ...myNumberCell, value: 2.78 }
                         case 4: 
                             return { type: 'date', format: new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' }), date: new Date(now.setHours(now.getHours() + (24))) }
+                        case 5: 
+                            return { type: 'time', format: new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' }), time: new Date(now.setHours(now.getHours() + (24))) }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
                     }

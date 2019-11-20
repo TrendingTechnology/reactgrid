@@ -3,7 +3,6 @@ import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
 import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings'
 import { getCellProperty } from '../Functions/getCellProperty';
-import { parse } from 'path';
 
 export interface DateCell extends Cell {
     type: 'date';
@@ -22,7 +21,6 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
     }
 
     handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DateCell>, enableEditMode: boolean } {
-        const char = String.fromCharCode(keyCode)
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: this.getCompatibleCell({ ...cell }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
