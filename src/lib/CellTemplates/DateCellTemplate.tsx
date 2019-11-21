@@ -6,7 +6,7 @@ import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface DateCell extends Cell {
     type: 'date';
-    date: Date;
+    date?: Date;
     format?: Intl.DateTimeFormat;
 }
 
@@ -16,7 +16,7 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         const date = getCellProperty(uncertainCell, 'date', 'object');
         const dateFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
         const value = date.getTime();
-        const text = dateFormat.format(date);
+        const text = !Number.isNaN(value) ? dateFormat.format(date) : '';
         return { ...uncertainCell, date, value, text }
     }
 
@@ -35,9 +35,9 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         if (!isInEditMode) 
             return cell.text;
 
-        const year = cell.date.getFullYear().toString().padStart(2, '0');
-        const month = (cell.date.getMonth() + 1).toString().padStart(2, '0');
-        const day = cell.date.getDate().toString().padStart(2, '0');
+        const year = cell.date!.getFullYear().toString().padStart(2, '0');
+        const month = (cell.date!.getMonth() + 1).toString().padStart(2, '0');
+        const day = cell.date!.getDate().toString().padStart(2, '0');
 
         const defaultDate = `${year}-${month}-${day}`;
         
