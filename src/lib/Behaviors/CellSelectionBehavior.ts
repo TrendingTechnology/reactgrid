@@ -5,6 +5,7 @@ import { newLocation } from '../Functions/newLocation';
 
 export class CellSelectionBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
+        if (((event.target as HTMLDivElement).className === 'rg-viewport')) return state;
         if (!state.disableRangeSelection && event.shiftKey && state.focusedLocation) {
             const range = state.cellMatrix.getRange(state.focusedLocation, location);
             if (event.ctrlKey && state.selectionMode === 'range') {

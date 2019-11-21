@@ -4,12 +4,13 @@ import { Location } from '../Model';
 interface CellFocusProps {
     location: Location;
     color?: string;
+    className?: string;
 }
 
 export const CellFocus: React.FunctionComponent<CellFocusProps> = props => (
     <div
         key={props.color}
-        className="rg-cell-focus"
+        className={`rg-cell-focus ${props.className || ''}`}
         style={{
             top: props.location.row.top - (props.location.row.top === 0 ? 0 : 1),
             left: props.location.column.left - (props.location.column.left === 0 ? 0 : 1),

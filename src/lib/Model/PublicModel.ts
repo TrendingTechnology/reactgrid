@@ -14,7 +14,7 @@ export interface ReactGridProps {
     readonly license: 'non-commercial' | string;
     readonly customCellTemplates?: CellTemplates;
     readonly focusLocation?: CellLocation;
-    readonly highlightLocations?: HighlightLocation[];
+    readonly highlights?: Highlight[];
     readonly frozenTopRows?: number;
     readonly frozenBottomRows?: number;
     readonly frozenLeftColumns?: number;
@@ -47,10 +47,11 @@ export interface CellLocation {
     readonly color?: string;
 }
 
-export interface HighlightLocation {
+export interface Highlight {
     readonly rowId: Id;
     readonly columnId: Id;
-    readonly color?: string;
+    readonly borderColor?: string;
+    readonly className?: string;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -64,24 +65,25 @@ export interface CellChange<TCell extends Cell = Cell> {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // This interface is used for the communication between ReactGrid and a cell
 export interface CellTemplate<TCell extends Cell = Cell> {
-    // Validate and convert to exchangable cell type
-    validate(cell: TCell): CompatibleCell<TCell>
+    // Validate and convert to compatible cell type
+    getCompatibleCell(uncertainCell: Uncertain<TCell>): Compatible<TCell>
     // Returns true if the data in the cell is not replacable
     // Default: _ => true
-    isFocusable?(cell: TCell): boolean;
-    // Reduces current cell and new cell to one cell
+    isFocusable?(cell: Compatible<TCell>): boolean;
+    // Update cell based on new props
     // If not implemented, cell will be read-only
-    update?(cell: TCell, newCell: TCell | CompatibleCell): TCell;
+    update?(cell: Compatible<TCell>, cellToMerge: UncertainCompatible<TCell>): Compatible<TCell>;
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
     // Default: cell => { cell, enableEditMode: false }
-    // TODO pass whole event
-    handleKeyDown?(cell: TCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: TCell; enableEditMode: boolean };
+    handleKeyDown?(cell: Compatible<TCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<TCell>; enableEditMode: boolean };
     // Custom styles based on cell data applied to the cells div element
     // Default: _ => cell.style | {}
-    getStyle?(cell: TCell, isInEditMode: boolean): CellStyle;
+    getStyle?(cell: Compatible<TCell>, isInEditMode: boolean): CellStyle;
+    //
+    getClassName?(cell: Compatible<TCell>, isInEditMode: boolean): string;
     // Render the cell content
-    render(cell: TCell, isInEditMode: boolean, onCellChanged: (cell: TCell, commit: boolean) => void): React.ReactNode;
+    render(cell: Compatible<TCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TCell>, commit: boolean) => void): React.ReactNode;
 }
 
 export type Id = number | string;
@@ -106,7 +108,6 @@ export interface Column {
 export interface CellStyle {
     readonly color?: string;
     readonly background?: string;
-    readonly className?: string;
     // TODO
     //readonly borderLeft
     //readonly borderRight
@@ -118,14 +119,24 @@ export interface CellStyle {
 export interface Cell {
     type: string;
     style?: CellStyle;
+    className?: string;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export type Uncertain<TCell extends Cell> = Partial<TCell> & Cell;
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // Extended & excangable cell (compatible between different types)
-export type CompatibleCell<TCell extends Cell = Cell> = TCell & {
+export type Compatible<TCell extends Cell> = TCell & {
     text: string;
-    value?: number;
-};
+    value: number;
+}
+
+export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
+    text: string;
+    value: number;
+}
+
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Row {

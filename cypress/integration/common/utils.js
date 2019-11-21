@@ -64,6 +64,7 @@ class Utils {
         cy.wait(200);
     }
 
+    // TODO not used ?
     fillCellsByTouch(fromX, fromY, toX, toY, type, autoScroll = false) {
         if (type === 'cell') {
             this.selectCellByTouch(fromX, fromY);

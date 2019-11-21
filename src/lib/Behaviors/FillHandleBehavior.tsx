@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, Range, PointerEvent, CellMatrix, Behavior, GridRow, GridColumn, Location, Cell, CompatibleCell } from '../Model';
+import { State, Range, PointerEvent, CellMatrix, Behavior, GridRow, GridColumn, Location, Compatible, Cell } from '../Model';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { tryAppendChange } from '../Functions';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
@@ -90,7 +90,7 @@ export class FillHandleBehavior extends Behavior {
     handlePointerUp(event: PointerEvent, location: Location, state: State): State {
         const activeSelectedRange = getActiveSelectedRange(state);
         const cellMatrix = state.cellMatrix;
-        let values: CompatibleCell[];
+        let values: Compatible<Cell>[];
         if (!activeSelectedRange || this.fillRange === undefined) {
             //state.commitChanges();
             return state;
@@ -140,7 +140,7 @@ export class FillHandleBehavior extends Behavior {
         return state;
     }
 
-    private fillRows(state: State, values: Cell[]): State {
+    private fillRows(state: State, values: Compatible<Cell>[]): State {
         this.fillRange &&
             this.fillRange.rows.forEach((row: GridRow, i: number) =>
                 this.fillRange!.columns.forEach((col: GridColumn) => {
@@ -150,7 +150,7 @@ export class FillHandleBehavior extends Behavior {
         return state;
     }
 
-    private fillColumns(state: State, values: Cell[]): State {
+    private fillColumns(state: State, values: Compatible<Cell>[]): State {
         this.fillRange &&
             this.fillRange.rows.forEach((row: GridRow) =>
                 this.fillRange!.columns.forEach((col: GridColumn, i: number) => {
