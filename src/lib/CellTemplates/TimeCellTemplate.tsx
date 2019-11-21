@@ -1,57 +1,71 @@
 import * as React from 'react';
-// import { isTextInput, isNavigationKey } from './keyCodeCheckings'
-// import { CellRenderProps, CellTemplate, keyCodes } from '../Model';
+import { keyCodes } from '../Functions/keyCodes';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings'
+import { getCellProperty } from '../Functions/getCellProperty';
+import { parse } from 'path';
 
-// type TimeCell = Cell<'time', string, {}>
+export interface TimeCell extends Cell {
+    type: 'time';
+    time?: Date;
+    format?: Intl.DateTimeFormat;
+}
 
-// export class TimeCellTemplate implements CellTemplate<TimeCell> {
+export class TimeCellTemplate implements CellTemplate<TimeCell> {
 
-//     isValid(cell: TimeCell): boolean {
-//         const time_regex = /^\d{2}\:\d{2}$/;
-//         return time_regex.test(cell.data.replace(/\s+/g, ''));
-//     }
+    getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell> {
+        const time = uncertainCell.time ? getCellProperty(uncertainCell, 'time', 'object') : new Date(NaN);
+        const timeFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
+        const value = time.getTime() % 86400000; // each day has 86400000 millis
+        const text = !Number.isNaN(value) ? timeFormat.format(time) : '';
+        return { ...uncertainCell, time, value, text }
+    }
 
-//     toText(cell: TimeCell) {
-//         return cell.data;
-//     }
+    handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<TimeCell>, enableEditMode: boolean } {
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
+            return { cell: this.getCompatibleCell({ ...cell }), enableEditMode: true }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+    }
 
-//     handleKeyDown(cell: TimeCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-//         if (!ctrl && !alt && isTextInput(keyCode))
-//             return { cell: { ...cell, data: '' }, enableEditMode: true }
-//         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
-//     }
+    update(cell: Compatible<TimeCell>, cellToMerge: UncertainCompatible<TimeCell>): Compatible<TimeCell> {
+        const timestamp = Date.parse(`01-01-1970 ${cellToMerge.text}`);
+        if (cellToMerge.text !== '' && !Number.isNaN(timestamp)) {
+            return this.getCompatibleCell({ ...cell, time: new Date(timestamp) });
+        }
+        const time = new Date(  cellToMerge.value  );
+        return this.getCompatibleCell({ ...cell, time });
+    }
 
-//     renderContent: (props: CellRenderProps<TimeCell>) => React.ReactNode = (props) => {
-//         if (!props.isInEditMode)
-//             return props.cell.data;
+    render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode {
 
-//         return <input
-//             type='time'
-//             style={{
-//                 width: '100%',
-//                 height: '100%',
-//                 padding: 0,
-//                 border: 0,
-//                 background: 'transparent',
-//                 fontSize: 14,
-//                 outline: 'none'
-//             }}
-//             ref={input => {
-//                 if (input) {
-//                     input.focus();
-//                     // input.setSelectionRange(input.value.length, input.value.length);
-//                 }
-//             }}
-//             defaultValue={props.cell.data}
-//             onChange={e => props.onCellChanged({ ...props.cell, data: e.currentTarget.value }, false)}
-//             onCopy={e => e.stopPropagation()}
-//             onCut={e => e.stopPropagation()}
-//             onPaste={e => e.stopPropagation()}
-//             onPointerDown={e => e.stopPropagation()}
-//             onKeyDown={e => {
-//                 if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-//                 if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cell.data; // reset
-//             }}
-//         />
-//     }
-// }
+        if (!isInEditMode) 
+            return cell.text;
+
+        const hours = cell.time!.getHours().toString().padStart(2, '0');
+        const minutes = cell.time!.getMinutes().toString().padStart(2, '0');
+        const defaultTime = `${hours}:${minutes}`;
+        
+        return <input
+            ref={input => {
+                if (input) input.focus();
+            }}
+            type="time"
+            defaultValue={defaultTime}
+            onChange={e => {
+                const timestamp = Date.parse(`01-01-1970 ${e.currentTarget.value}`);
+                if (!Number.isNaN(timestamp)) {
+                    const time = new Date(timestamp);
+                    onCellChanged(this.getCompatibleCell({ ...cell, time }), false)
+                }
+            }}
+            onKeyDown={e => {
+                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD)) e.preventDefault();
+            }}
+            onCopy={e => e.stopPropagation()}
+            onCut={e => e.stopPropagation()}
+            onPaste={e => e.stopPropagation()}
+            onPointerDown={e => e.stopPropagation()}
+        />
+    }
+}

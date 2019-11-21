@@ -1,7 +1,7 @@
-import { Location, State, Cell } from '../Model';
+import { Location, State, Cell, Compatible } from '../Model';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
-export function tryAppendChange(state: State, location: Location, cell: Cell): State {
+export function tryAppendChange(state: State, location: Location, cell: Compatible<Cell>): State {
 
     const { cell: initialCell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     if (initialCell === cell || JSON.stringify(initialCell) === JSON.stringify(cell) || cellTemplate.update === undefined)

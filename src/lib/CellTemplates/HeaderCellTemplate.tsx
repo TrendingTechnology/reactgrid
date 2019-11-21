@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { CellTemplate, Cell, CompatibleCell } from '../Model';
+import { CellTemplate, Cell, Compatible, Uncertain } from '../Model';
+import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface HeaderCell extends Cell {
     type: 'header',
@@ -8,15 +9,17 @@ export interface HeaderCell extends Cell {
 
 export class HeaderCellTemplate implements CellTemplate<HeaderCell> {
 
-    validate(cell: HeaderCell): CompatibleCell<HeaderCell> {
-        return cell;
+    getCompatibleCell(uncertainCell: Uncertain<HeaderCell>): Compatible<HeaderCell> {
+        const text = getCellProperty(uncertainCell, 'text', 'string');
+        const value = parseFloat(text);
+        return { ...uncertainCell, text, value };
     }
 
-    render(cell: HeaderCell, isInEditMode: boolean, onCellChanged: (cell: HeaderCell, commit: boolean) => void): React.ReactNode {
+    render(cell: Compatible<HeaderCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HeaderCell>, commit: boolean) => void): React.ReactNode {
         return cell.text;
     }
 
     isFocusable = () => false;
 
-    getStyle = (cell: HeaderCell) => ({ background: '#f3f3f3' })
+    getStyle = (cell: Compatible<HeaderCell>) => ({ background: '#f3f3f3' })
 }

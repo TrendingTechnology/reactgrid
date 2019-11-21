@@ -1,3 +1,3 @@
-import { CompatibleCell } from '../Model';
+import { Compatible, Cell } from '../Model';
 
-export const emptyCell: CompatibleCell = { type: 'text', text: '' }
+export const emptyCell: Compatible<Cell> = { type: '', text: '', value: NaN }

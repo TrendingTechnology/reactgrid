@@ -1,61 +1,52 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
-import { CellTemplate, Cell, CompatibleCell } from '../Model';
-import { isNavigationKey, isTextInput } from './keyCodeCheckings';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings';
+import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface EmailCell extends Cell {
     type: 'email',
     text: string,
-    isValid?: boolean | undefined
+    validator?: (text: string) => boolean,
+    renderer?: (text: string) => React.ReactNode
 }
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
-    validate(cell: any): CompatibleCell<EmailCell> {
-        if (cell.text === undefined || cell.text === null)
-            throw 'EmailCell is missing text property'
-        if (!this.isEmailValid(cell.text))
-            cell.isValid = false;
-        return cell;
+    getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell> {
+        const text = getCellProperty(uncertainCell, 'text', 'string');
+        const value = parseFloat(text);
+        return { ...uncertainCell, text, value };
     }
 
-    isEmailValid(email: string): boolean {
-        const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (email_regex.test(email.replace(/\s+/g, '')))
-            return true;
-        return false;
-    }
-
-    handleKeyDown(cell: EmailCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: EmailCell, enableEditMode: boolean } {
-        const char = String.fromCharCode(keyCode)
-        if (!ctrl && !alt && isTextInput(keyCode))
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
+        const char = String.fromCharCode(keyCode);
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: { ...cell, text: !shift ? char.toLowerCase() : char }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    update(cell: EmailCell, newCell: EmailCell | CompatibleCell): EmailCell {
-        if (newCell.text !== undefined && newCell.text.length !== 0) {
-            const isValid = this.isEmailValid((newCell as CompatibleCell).text);
-            return { ...cell, text: newCell.text, isValid } as EmailCell;
-        }
-        return newCell as EmailCell;
+    update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell> {
+        // TODO how to validate
+        return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
     }
 
-    render(cell: EmailCell, isInEditMode: boolean, onCellChanged: (cell: EmailCell, commit: boolean) => void): React.ReactNode {
-        if (!isInEditMode) {
-            return <span className={cell.isValid === false ? `rg-email-cell-template-invalid` : `rg-email-cell-template-valid`}>{cell.text}</span>
-        }
+    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean) {
+        const isValid = cell.validator ? cell.validator(cell.text) : true;
+        return isValid ? 'valid' : 'invalid';
+    }
+
+    render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode {
+        if (!isInEditMode)
+            return cell.renderer ? cell.renderer(cell.text) : cell.text;
 
         return <input
-            className="rg-email-cell-template"
             ref={input => {
-                if (input) {
-                    input.focus();
-                }
+                if (input) input.focus();
             }}
-            onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
+            onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
             onKeyDown={e => {
-                if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
+                if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
             }}
             defaultValue={cell.text}
             onCopy={e => e.stopPropagation()}

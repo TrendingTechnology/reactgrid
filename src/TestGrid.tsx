@@ -1,47 +1,59 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
+import { NumberCell } from './lib/CellTemplates/NumberCellTemplate';
 
 const columnCount = 10;
 const rowCount = 150;
-
-interface Data {
-    [key: string]: string
-}
 
 interface TestGridState {
     columns: Column[]
     rows: Row[]
 }
 
-interface TestGridProps {
+const emailValidator = (email: string): boolean => {
+    const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (email_regex.test(email.replace(/\s+/g, '')))
+        return true;
+    return false;
 }
-
 
 export const TestGrid: React.FunctionComponent = () => {
 
+    const myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
+    const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
+    const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
-    const [state, setState] = React.useState<TestGridState>(() => {
+    const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
             columnId: ci, resizable: true
         } as Column));
 
         const rows = new Array(rowCount).fill(0).map((_, ri) => {
-            if (ri < 10) {
-                return {
-                    rowId: ri, cells: columns.map((_, ci) => ({
-                        type: 'number', value: 2.78, format: new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' })
-                    }))
-                }
-            } else {
-                return {
-                    rowId: ri, cells: columns.map((_, ci) => ({
-                        type: 'text', text: `text`
-                    }))
-                }
+            return {
+                rowId: ri, cells: columns.map((_, ci) =>  {
+                    if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
+                    const now = new Date();
+                    switch (ci) {
+                        case 0:
+                            return { type: 'group', text: `${ri} - ${ci}`, isExpanded: ri % 4 && undefined, depth: ri % 4 }
+                        case 1:
+                            return { type: 'text', text: `${ri} - ${ci}` }
+                        case 2: 
+                            return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
+                        case 3: 
+                            return { type: 'number', format: myNumberFormat, value: 2.78, nanToZero: false, hideZero: false } as NumberCell
+                        case 4: 
+                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
+                        case 5: 
+                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
+                        case 6: 
+                            return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono' , uncheckedText: false }
+                        default:
+                            return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
+                    }
+                })
             }
-
         });
 
         return { rows, columns }
@@ -68,6 +80,8 @@ export const TestGrid: React.FunctionComponent = () => {
         license={'non-commercial'}
         onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
+        // frozenLeftColumns={1}
+        // frozenRightColumns={2}
         enableRowSelection
         enableColumnSelection
     />
