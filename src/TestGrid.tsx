@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
+import { NumberCell } from './lib/CellTemplates/NumberCellTemplate';
 
 const columnCount = 10;
 const rowCount = 150;
@@ -41,7 +42,7 @@ export const TestGrid: React.FunctionComponent = () => {
                         case 2: 
                             return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                         case 3: 
-                            return { type: 'number', format: myNumberFormat, value: 2.78 }
+                            return { type: 'number', format: myNumberFormat, value: 2.78, nanToZero: false, hideZero: false } as NumberCell
                         case 4: 
                             return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
                         case 5: 

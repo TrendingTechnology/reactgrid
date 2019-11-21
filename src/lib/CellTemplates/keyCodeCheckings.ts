@@ -8,7 +8,7 @@ export const isAlphaNumericKey = (keyCode: number) =>
 
 export const inNumericKey = (keyCode: number) =>
     (keyCode >= keyCodes.KEY_0 && keyCode <= keyCodes.KEY_9) ||
-    (keyCode >= keyCodes.NUMPAD_0 && keyCode <= keyCodes.NUMPAD_0);
+    (keyCode >= keyCodes.NUMPAD_0 && keyCode <= keyCodes.NUMPAD_9);
 
 export const isNavigationKey = (keyCode: number) =>
     (keyCode == keyCodes.LEFT_ARROW) ||
