@@ -80,6 +80,8 @@ export const TestGrid: React.FunctionComponent = () => {
         license={'non-commercial'}
         onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
+        // frozenLeftColumns={1}
+        // frozenRightColumns={2}
         enableRowSelection
         enableColumnSelection
     />

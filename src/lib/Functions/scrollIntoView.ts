@@ -1,5 +1,6 @@
 import { State, Direction, PointerLocation } from '../Model';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
+import { LOADIPHLPAPI } from 'dns';
 
 export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
     const top = getScrollTop(state, location, direction === 'horizontal');
@@ -65,13 +66,17 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
     const isColumnBelowRightPane = () => column.right > visibleScrollAreaWidth + scrollLeft;
     const isColumnBelowLeftPane = () => column.left < scrollLeft && !isRightColFrozen;
 
+    const isFocusedAndHasRightFrozens = () => state.focusedLocation && frozenRightRange.columns.length > 0;
+    const isFocusOnRightFrozen = () => state.focusedLocation && state.focusedLocation.column.idx > frozenRightRange.columns[0].idx;
+    const isFocusOnLeftFrozen = () => state.focusedLocation && state.focusedLocation.column.idx > frozenLeftRange.columns.length;
+
     if (frozenRightRange.columns.length === 0 && shouldScrollToRight()) {
         if (location.cellX) {
             return cols[column.idx + 1] ? cols[column.idx + 1].right - visibleScrollAreaWidth + 1 : cols[column.idx].right - visibleScrollAreaWidth + 1;
         } else {
             return column.right - visibleScrollAreaWidth + 1;
         }
-    } else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.columns.length > 0) && state.focusedLocation.column.idx < frozenRightRange.columns[0].idx) {
+    } else if (isColumnBelowRightPane() && isFocusedAndHasRightFrozens() && !isFocusOnRightFrozen()) {
         return column.right - visibleScrollAreaWidth + 1;
     } else if (frozenLeftRange.columns.length === 0 && shouldScrollToLeft()) {
         if (location.cellX) {
@@ -79,7 +84,7 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
         } else {
             return column.left - 1;
         }
-    } else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.column.idx > frozenLeftRange.columns.length) {
+    } else if (isColumnBelowLeftPane() && !isFocusOnLeftFrozen()) {
         return column.left - 1;
     } else {
         return scrollLeft;
