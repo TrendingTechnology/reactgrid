@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
-
 import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
 
 const columnCount = 10;
 const rowCount = 150;
 
-interface Data {
-    [key: string]: string
-}
-
 interface TestGridState {
     columns: Column[]
     rows: Row[]
-}
-
-interface TestGridProps {
 }
 
 const emailValidator = (email: string): boolean => {
@@ -27,10 +19,8 @@ const emailValidator = (email: string): boolean => {
 
 export const TestGrid: React.FunctionComponent = () => {
 
-    const myFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
-    const myNumberCell = { type: 'number', format: myFormat };
-
-    const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', })
+    const myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
+    const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
     const [state, setState] = useState<TestGridState>(() => {
@@ -51,13 +41,13 @@ export const TestGrid: React.FunctionComponent = () => {
                         case 2: 
                             return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                         case 3: 
-                            return { ...myNumberCell, value: 2.78 }
+                            return { type: 'number', format: myNumberFormat, value: 2.78 }
                         case 4: 
-                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours(now.getHours() + (ri * 24))) }
+                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
                         case 5: 
-                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + (ri))) }
+                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
                         case 6: 
-                            return { type: 'checkbox', checked: false }
+                            return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono' , uncheckedText: false }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
                     }
