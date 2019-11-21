@@ -1,4 +1,5 @@
 import { GridColumn, Behavior, PointerLocation, State, PointerEvent, Direction } from '../Model';
+import { focusLocation } from '../Functions';
 
 export class ResizeColumnBehavior extends Behavior {
     // TODO min / max column with on column object
@@ -38,6 +39,11 @@ export class ResizeColumnBehavior extends Behavior {
             // TODO describe this
             state.props.onColumnResized(this.resizedColumn.columnId, this.minColumnWidth + state.viewportElement.scrollLeft);
         }
-        return { ...state, linePosition: -1 };
+        let focusedLocation = state.focusedLocation;
+        if (focusedLocation !== undefined && this.resizedColumn.columnId === focusedLocation.column.idx) {
+            const column = { ...focusedLocation.column, width: newWidth };
+            focusedLocation = { ...focusedLocation, column };
+        }
+        return { ...state, linePosition: -1, focusedLocation };
     }
 }
