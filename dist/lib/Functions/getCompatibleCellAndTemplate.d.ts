@@ -1,5 +1,5 @@
-import { State, Location, CompatibleCell, CellTemplate } from '../Model';
+import { State, Location, Compatible, Cell, CellTemplate } from '../Model';
 export declare function getCompatibleCellAndTemplate(state: State, location: Location): {
-    cell: CompatibleCell;
+    cell: Compatible<Cell>;
     cellTemplate: CellTemplate;
 };

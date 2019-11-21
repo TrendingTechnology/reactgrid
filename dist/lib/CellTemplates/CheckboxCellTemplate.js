@@ -11,27 +11,36 @@ var __assign = (this && this.__assign) || function () {
 };
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
+import { getCellProperty } from '../Functions/getCellProperty';
 var CheckboxCellTemplate = (function () {
     function CheckboxCellTemplate() {
     }
-    CheckboxCellTemplate.prototype.validate = function (cell) {
-        return __assign({}, cell, { text: cell.value !== undefined || cell.value !== null ? cell.value.toString() : '' });
+    CheckboxCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
+        var checked = getCellProperty(uncertainCell, 'checked', 'boolean');
+        var text = checked ?
+            uncertainCell.checkedText ? uncertainCell.checkedText : '1' :
+            uncertainCell.uncheckedText ? uncertainCell.uncheckedText : '';
+        return __assign(__assign({}, uncertainCell), { checked: checked, value: checked ? 1 : NaN, text: text });
     };
     CheckboxCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
-            return { cell: __assign({}, cell, { value: !cell.value }), enableEditMode: false };
+            return { cell: this.getCompatibleCell(this.toggleCheckboxCell(cell)), enableEditMode: false };
         return { cell: cell, enableEditMode: false };
     };
-    CheckboxCellTemplate.prototype.update = function (cell, newCell) {
-        if (newCell.value !== undefined && newCell.value !== NaN)
-            return __assign({}, cell, { value: newCell.value });
-        var text = newCell.text;
-        return __assign({}, cell, { value: text.length > 0 ? true : false });
+    CheckboxCellTemplate.prototype.toggleCheckboxCell = function (cell) {
+        return this.getCompatibleCell(__assign(__assign({}, cell), { checked: !cell.checked }));
+    };
+    CheckboxCellTemplate.prototype.update = function (cell, cellToMerge) {
+        var checked = cellToMerge.type === 'checkbox' ?
+            cellToMerge.checked :
+            cellToMerge.value ? true : false;
+        return this.getCompatibleCell(__assign(__assign({}, cell), { checked: checked }));
     };
     CheckboxCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
-        return (React.createElement("label", { className: "rg-checkbox-container" },
-            React.createElement("input", { type: "checkbox", className: "rg-checkbox-cell-input", checked: cell.value, onChange: function (e) { return onCellChanged(__assign({}, cell, { value: !cell.value }), true); } }),
-            React.createElement("span", { className: "rg-checkbox-checkmark" })));
+        var _this = this;
+        return (React.createElement(React.Fragment, null,
+            React.createElement("input", { type: "checkbox", checked: cell.checked, onChange: function (e) { return onCellChanged(_this.toggleCheckboxCell(cell), true); } }),
+            React.createElement("span", null)));
     };
     return CheckboxCellTemplate;
 }());

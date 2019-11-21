@@ -31,6 +31,8 @@ var CellSelectionBehavior = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     CellSelectionBehavior.prototype.handlePointerDown = function (event, location, state) {
+        if ((event.target.className === 'rg-viewport'))
+            return state;
         if (!state.disableRangeSelection && event.shiftKey && state.focusedLocation) {
             var range = state.cellMatrix.getRange(state.focusedLocation, location);
             if (event.ctrlKey && state.selectionMode === 'range') {
@@ -45,7 +47,7 @@ var CellSelectionBehavior = (function (_super) {
             var pointedRange = state.selectedRanges[pointedRangeIdx];
             if (pointedRange) {
                 state = focusLocation(state, location, false);
-                state = __assign({}, state, { activeSelectedRangeIdx: pointedRangeIdx });
+                state = __assign(__assign({}, state), { activeSelectedRangeIdx: pointedRangeIdx });
             }
             else {
                 var range = state.cellMatrix.getRange(location, location);

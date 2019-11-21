@@ -64,6 +64,9 @@ function getScrollLeft(state, location, dontChange) {
     var shouldScrollToLeft = function () { return column.left + (location.cellX ? location.cellX : 0) < scrollLeft + 1 && !isRightColFrozen; };
     var isColumnBelowRightPane = function () { return column.right > visibleScrollAreaWidth + scrollLeft; };
     var isColumnBelowLeftPane = function () { return column.left < scrollLeft && !isRightColFrozen; };
+    var isFocusedAndHasRightFrozens = function () { return state.focusedLocation && frozenRightRange.columns.length > 0; };
+    var isFocusOnRightFrozen = function () { return state.focusedLocation && state.focusedLocation.column.idx > frozenRightRange.columns[0].idx; };
+    var isFocusOnLeftFrozen = function () { return state.focusedLocation && state.focusedLocation.column.idx > frozenLeftRange.columns.length; };
     if (frozenRightRange.columns.length === 0 && shouldScrollToRight()) {
         if (location.cellX) {
             return cols[column.idx + 1] ? cols[column.idx + 1].right - visibleScrollAreaWidth + 1 : cols[column.idx].right - visibleScrollAreaWidth + 1;
@@ -72,7 +75,7 @@ function getScrollLeft(state, location, dontChange) {
             return column.right - visibleScrollAreaWidth + 1;
         }
     }
-    else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.columns.length > 0) && state.focusedLocation.column.idx < frozenRightRange.columns[0].idx) {
+    else if (isColumnBelowRightPane() && isFocusedAndHasRightFrozens() && !isFocusOnRightFrozen()) {
         return column.right - visibleScrollAreaWidth + 1;
     }
     else if (frozenLeftRange.columns.length === 0 && shouldScrollToLeft()) {
@@ -83,7 +86,7 @@ function getScrollLeft(state, location, dontChange) {
             return column.left - 1;
         }
     }
-    else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.column.idx > frozenLeftRange.columns.length) {
+    else if (isColumnBelowLeftPane() && !isFocusOnLeftFrozen()) {
         return column.left - 1;
     }
     else {

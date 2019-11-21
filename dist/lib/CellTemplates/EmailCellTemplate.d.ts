@@ -1,17 +1,18 @@
 import * as React from 'react';
-import { CellTemplate, Cell, CompatibleCell } from '../Model';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
 export interface EmailCell extends Cell {
     type: 'email';
     text: string;
-    isValid?: boolean | undefined;
+    validator?: (text: string) => boolean;
+    renderer?: (text: string) => React.ReactNode;
 }
 export declare class EmailCellTemplate implements CellTemplate<EmailCell> {
-    validate(cell: any): CompatibleCell<EmailCell>;
-    isEmailValid(email: string): boolean;
-    handleKeyDown(cell: EmailCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
-        cell: EmailCell;
+    getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+        cell: Compatible<EmailCell>;
         enableEditMode: boolean;
     };
-    update(cell: EmailCell, newCell: EmailCell | CompatibleCell): EmailCell;
-    render(cell: EmailCell, isInEditMode: boolean, onCellChanged: (cell: EmailCell, commit: boolean) => void): React.ReactNode;
+    update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell>;
+    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): "invalid" | "valid";
+    render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode;
 }

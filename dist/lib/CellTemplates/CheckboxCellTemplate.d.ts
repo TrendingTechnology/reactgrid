@@ -1,15 +1,18 @@
 import * as React from 'react';
-import { CellTemplate, Cell, CompatibleCell } from '../Model';
+import { CellTemplate, Compatible, Cell, Uncertain, UncertainCompatible } from '../Model';
 export interface CheckboxCell extends Cell {
     type: 'checkbox';
-    value: boolean;
+    checked: boolean;
+    checkedText?: string;
+    uncheckedText?: string;
 }
 export declare class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
-    validate(cell: any): CompatibleCell<CheckboxCell>;
-    handleKeyDown(cell: CheckboxCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
-        cell: CheckboxCell;
+    getCompatibleCell(uncertainCell: Uncertain<CheckboxCell>): Compatible<CheckboxCell>;
+    handleKeyDown(cell: Compatible<CheckboxCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+        cell: Compatible<CheckboxCell>;
         enableEditMode: boolean;
     };
-    update(cell: CheckboxCell, newCell: CheckboxCell | CompatibleCell): CheckboxCell;
-    render(cell: CheckboxCell, isInEditMode: boolean, onCellChanged: (cell: CheckboxCell, commit: boolean) => void): React.ReactNode;
+    private toggleCheckboxCell;
+    update(cell: Compatible<CheckboxCell>, cellToMerge: UncertainCompatible<CheckboxCell>): Compatible<CheckboxCell>;
+    render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): React.ReactNode;
 }

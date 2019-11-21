@@ -6,7 +6,7 @@ export interface ReactGridProps {
     readonly license: 'non-commercial' | string;
     readonly customCellTemplates?: CellTemplates;
     readonly focusLocation?: CellLocation;
-    readonly highlightLocations?: HighlightLocation[];
+    readonly highlights?: Highlight[];
     readonly frozenTopRows?: number;
     readonly frozenBottomRows?: number;
     readonly frozenLeftColumns?: number;
@@ -32,10 +32,11 @@ export interface CellLocation {
     readonly columnId: Id;
     readonly color?: string;
 }
-export interface HighlightLocation {
+export interface Highlight {
     readonly rowId: Id;
     readonly columnId: Id;
-    readonly color?: string;
+    readonly borderColor?: string;
+    readonly className?: string;
 }
 export interface CellChange<TCell extends Cell = Cell> {
     readonly rowId: Id;
@@ -44,15 +45,16 @@ export interface CellChange<TCell extends Cell = Cell> {
     readonly newCell: TCell;
 }
 export interface CellTemplate<TCell extends Cell = Cell> {
-    validate(cell: TCell): CompatibleCell<TCell>;
-    isFocusable?(cell: TCell): boolean;
-    update?(cell: TCell, newCell: TCell | CompatibleCell): TCell;
-    handleKeyDown?(cell: TCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
-        cell: TCell;
+    getCompatibleCell(uncertainCell: Uncertain<TCell>): Compatible<TCell>;
+    isFocusable?(cell: Compatible<TCell>): boolean;
+    update?(cell: Compatible<TCell>, cellToMerge: UncertainCompatible<TCell>): Compatible<TCell>;
+    handleKeyDown?(cell: Compatible<TCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+        cell: Compatible<TCell>;
         enableEditMode: boolean;
     };
-    getStyle?(cell: TCell, isInEditMode: boolean): CellStyle;
-    render(cell: TCell, isInEditMode: boolean, onCellChanged: (cell: TCell, commit: boolean) => void): React.ReactNode;
+    getStyle?(cell: Compatible<TCell>, isInEditMode: boolean): CellStyle;
+    getClassName?(cell: Compatible<TCell>, isInEditMode: boolean): string;
+    render(cell: Compatible<TCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TCell>, commit: boolean) => void): React.ReactNode;
 }
 export declare type Id = number | string;
 export declare type DropPosition = 'before' | 'on' | 'after';
@@ -65,15 +67,20 @@ export interface Column {
 export interface CellStyle {
     readonly color?: string;
     readonly background?: string;
-    readonly className?: string;
 }
 export interface Cell {
     type: string;
     style?: CellStyle;
+    className?: string;
 }
-export declare type CompatibleCell<TCell extends Cell = Cell> = TCell & {
+export declare type Uncertain<TCell extends Cell> = Partial<TCell> & Cell;
+export declare type Compatible<TCell extends Cell> = TCell & {
     text: string;
-    value?: number;
+    value: number;
+};
+export declare type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
+    text: string;
+    value: number;
 };
 export interface Row {
     readonly rowId: Id;

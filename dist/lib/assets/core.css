@@ -1,18 +1,21 @@
 /* CHECKBOX CELL TEMPLATE */
-.rg-checkbox-container {
-  margin-left: auto;
-  margin-right: auto;
+.rg-checkbox-cell {
+  align-items: center;
+  justify-content: center;
   padding: 0;
   border: 0;
   z-index: 1;
   background: transparent;
   pointer-events: auto; }
-  .rg-checkbox-container .rg-checkbox-cell-input {
+  .rg-checkbox-cell input {
     width: 20px;
     height: 20px; }
 
 /* DATE TEMPLATE */
-.rg-date-cell-template {
+.rg-date-cell {
+  justify-content: flex-end; }
+
+.rg-date-celleditor input {
   width: 100%;
   height: 100%;
   padding: 0;
@@ -22,7 +25,10 @@
   outline: none; }
 
 /* EMAIL TEMPLATE */
-.rg-email-cell-template {
+.rg-email-cell.invalid {
+  color: red; }
+
+.rg-email-celleditor input {
   width: 100%;
   height: 100%;
   padding: 0;
@@ -30,12 +36,9 @@
   background: transparent;
   font-size: 1em;
   outline: none; }
-  .rg-email-cell-template-invalid {
-    color: red; }
 
 /* GROUP HEADER TEMPLATE */
-.rg-group-header-cell-template-input {
-  position: inherit;
+.rg-group-celleditor input {
   width: 100%;
   height: 100%;
   padding: 0;
@@ -44,15 +47,16 @@
   font-size: 1em;
   outline: none; }
 
-.rg-group-header-cell-template-wrapper {
+.rg-group-cell .wrapper {
   display: flex;
   align-items: center;
   width: 100%; }
-  .rg-group-header-cell-template-wrapper-content {
+  .rg-group-cell .wrapper-content {
     display: flex;
-    align-items: center; }
+    align-items: center;
+    width: 100%; }
 
-.rg-group-header-cell-template-chevron-wrapper {
+.rg-group-cell .chevron {
   z-index: 1;
   pointer-events: auto;
   display: flex;
@@ -63,26 +67,21 @@
   cursor: pointer; }
 
 /* NUMBER TEMPLATE */
-.rg-number-cell-template {
+.rg-number-celleditor input {
   width: 100%;
   height: 100%;
   padding: 0;
   border: 0;
   background: transparent;
   font-size: 1em;
-  outline: none; }
-
-.number-is-valid {
-  width: 100%;
+  outline: none;
   text-align: right; }
 
-.number-is-un-valid {
-  width: 100%;
-  text-align: right; }
+.rg-number-cell {
+  justify-content: flex-end; }
 
 /* TEXT TEMPLATE */
-.rg-text-cell-template {
-  position: inherit;
+.rg-text-celleditor input {
   width: 100%;
   height: 100%;
   padding: 0;
@@ -93,7 +92,7 @@
   font-family: inherit; }
 
 /* TIME TEMPLATE */
-.rg-time-cell-template {
+.rg-time-celleditor input {
   width: 100%;
   height: 100%;
   padding: 0;
@@ -101,6 +100,9 @@
   background: transparent;
   font-size: 1em;
   outline: none; }
+
+.rg-time-cell {
+  justify-content: flex-end; }
 
 /* PANE ROW */
 .rg-pane-row {
@@ -223,8 +225,8 @@
   .reactgrid-legacy-browser .rg-pane {
     position: relative;
     height: 100%; }
-    .reactgrid .rg-pane .cell,
-    .reactgrid-legacy-browser .rg-pane .cell {
+    .reactgrid .rg-pane .rg-cell,
+    .reactgrid-legacy-browser .rg-pane .rg-cell {
       font-size: 1em;
       box-sizing: border-box;
       white-space: nowrap;

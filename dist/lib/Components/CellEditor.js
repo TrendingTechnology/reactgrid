@@ -5,7 +5,7 @@ export var CellEditor = function (props) {
     var _a = React.useState(calculatedEditorPosition(location, props.state)), position = _a[0], setPosition = _a[1];
     React.useEffect(function () { return setPosition(calculatedEditorPosition(location, props.state)); }, []);
     var cellTemplate = props.state.cellTemplates[props.state.currentlyEditedCell.type];
-    return (React.createElement("div", { className: "rg-celleditor", style: {
+    return (React.createElement("div", { className: "rg-celleditor rg-" + props.state.currentlyEditedCell.type + "-celleditor", style: {
             top: position.top - 1,
             left: position.left - 1,
             height: location.row.height + 1,

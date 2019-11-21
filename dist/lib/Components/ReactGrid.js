@@ -11,6 +11,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 import * as React from 'react';
 import { State } from '../Model';
 import { DefaultGridRenderer } from './DefaultGridRenderer';
@@ -40,10 +47,10 @@ var ReactGrid = (function (_super) {
         return React.createElement(grid, { state: this.state, eventHandlers: this.eventHandlers });
     };
     ReactGrid.prototype.handleStateUpdate = function (state) {
-        var changes = state.queuedCellChanges.slice();
+        var changes = __spreadArrays(state.queuedCellChanges);
         if (changes.length > 0) {
             if (this.props.onCellsChanged) {
-                this.props.onCellsChanged(changes.slice());
+                this.props.onCellsChanged(__spreadArrays(changes));
             }
             ;
             changes.forEach(function () { return state.queuedCellChanges.pop(); });

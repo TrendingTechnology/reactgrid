@@ -1,5 +1,5 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, CellChange } from '.';
-import { CellTemplates, Id, Cell, ReactGridProps, CellLocation } from './PublicModel';
+import { CellTemplates, Id, Cell, ReactGridProps, Compatible, Highlight } from './PublicModel';
 export declare type StateModifier = (state: State) => State;
 export declare type StateUpdater = (modifier: StateModifier) => void;
 export declare class State {
@@ -14,8 +14,8 @@ export declare class State {
     readonly viewportElement: HTMLDivElement;
     hiddenScrollableElement: HTMLDivElement;
     readonly queuedCellChanges: CellChange[];
-    currentlyEditedCell?: Cell;
-    readonly highlightLocations: CellLocation[];
+    currentlyEditedCell?: Compatible<Cell>;
+    readonly highlightLocations: Highlight[];
     readonly disableFillHandle: boolean;
     readonly disableRangeSelection: boolean;
     readonly enableColumnSelection: boolean;

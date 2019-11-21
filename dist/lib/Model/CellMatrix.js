@@ -26,7 +26,7 @@ var CellMatrix = (function () {
         this.rows = props.rows.reduce(function (rows, row, idx) {
             var top = idx === 0 || idx === props.frozenTopRows || idx === frozenBottomFirstIdx ? 0 : rows[idx - 1].top + rows[idx - 1].height;
             var height = row.height || DEFAULT_ROW_HEIGHT;
-            rows.push(__assign({}, row, { top: top, height: height, idx: idx, bottom: top + height }));
+            rows.push(__assign(__assign({}, row), { top: top, height: height, idx: idx, bottom: top + height }));
             totalHeight += height;
             _this.rowIndexLookup[row.rowId] = idx;
             return rows;
@@ -34,7 +34,7 @@ var CellMatrix = (function () {
         this.columns = props.columns.reduce(function (cols, column, idx) {
             var left = idx === 0 || idx === props.frozenLeftColumns || idx === frozenRightFirstIdx ? 0 : cols[idx - 1].left + cols[idx - 1].width;
             var width = column.width || DEFAULT_COLUMN_WIDTH;
-            cols.push(__assign({}, column, { idx: idx, left: left, width: width, right: left + width }));
+            cols.push(__assign(__assign({}, column), { idx: idx, left: left, width: width, right: left + width }));
             totalWidth += width;
             _this.columnIndexLookup[column.columnId] = idx;
             return cols;

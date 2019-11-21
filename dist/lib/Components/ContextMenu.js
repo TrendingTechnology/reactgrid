@@ -23,8 +23,8 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
-import { isBrowserIE, getDataToPasteInIE } from '../Functions';
+import { copySelectedRangeToClipboard } from '../Behaviors/DefaultBehavior';
+import { isBrowserIE } from '../Functions';
 var ContextMenu = (function (_super) {
     __extends(ContextMenu, _super);
     function ContextMenu() {
@@ -56,7 +56,7 @@ var ContextMenu = (function (_super) {
             } }, contextMenuOptions.map(function (el, idx) {
             React.createElement("div", { key: idx, className: "rg-context-menu-option", onPointerDown: function (e) { return e.stopPropagation(); }, onClick: function () {
                     el.handler();
-                    state.update(function (state) { return (__assign({}, state, { contextMenuPosition: [-1, -1] })); });
+                    state.update(function (state) { return (__assign(__assign({}, state), { contextMenuPosition: [-1, -1] })); });
                 } }, el.label);
         }))));
     };
@@ -80,10 +80,8 @@ function customContextMenuOptions(state) {
             label: 'Paste',
             handler: function () {
                 if (isBrowserIE()) {
-                    setTimeout(function () { return state.update(function (state) { return pasteData(state, getDataToPasteInIE()); }); });
                 }
                 else {
-                    navigator.clipboard.readText().then(function (e) { return state.update(function (state) { return pasteData(state, e.split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ text: t, data: t, type: 'text' }); }); })); }); });
                 }
             }
         }
