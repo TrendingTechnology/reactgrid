@@ -42,7 +42,7 @@ export const TestGrid: React.FunctionComponent = () => {
                         case 2: 
                             return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                         case 3: 
-                            return { type: 'number', format: myNumberFormat, value: 2.78, nanToZero: false, hideZero: false } as NumberCell
+                            return { type: 'number', format: myNumberFormat, value: 2.78, nanToZero: true, hideZero: false } as NumberCell
                         case 4: 
                             return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
                         case 5: 

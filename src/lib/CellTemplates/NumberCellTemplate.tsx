@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
-import { inNumericKey, isNavigationKey } from './keyCodeCheckings'
+import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedCharOnNumberTypingKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface NumberCell extends Cell {
@@ -18,21 +18,39 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         const value = getCellProperty(uncertainCell, 'value', 'number');
         const numberFormat = uncertainCell.format || new Intl.NumberFormat(window.navigator.language);
         const displayValue = (uncertainCell.nanToZero && Number.isNaN(value)) ? 0 : value;
-        const text = (Number.isNaN(displayValue)) ? '' : (uncertainCell.hideZero && displayValue === 0) ? '' : numberFormat.format(displayValue);
+        const text = (Number.isNaN(displayValue) || (uncertainCell.hideZero && displayValue === 0)) ? '' : numberFormat.format(displayValue); 
         return { ...uncertainCell, value: displayValue, text }
     }
 
     handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-        if (keyCode >= keyCodes.NUMPAD_0 && keyCode <= keyCodes.NUMPAD_9) keyCode -= 48;
+        if (isNumpadNumericKey(keyCode)) keyCode -= 48;
         const char = String.fromCharCode(keyCode);
         // console.log(keyCode, Number(char), char);
-        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD)))
-            return { cell: this.getCompatibleCell({ ...cell, value: Number(char) }), enableEditMode: true }
+        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedCharOnNumberTypingKey(keyCode))) {  
+            const value = Number(char);
+            if (Number.isNaN(value) && isAllowedCharOnNumberTypingKey(keyCode))
+                return { cell: {...this.getCompatibleCell({ ...cell, value }), text: char}, enableEditMode: true }
+            return { cell: this.getCompatibleCell({ ...cell, value}), enableEditMode: true }
+        }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
     update(cell: Compatible<NumberCell>, cellToMerge: UncertainCompatible<NumberCell>): Compatible<NumberCell> {
         return this.getCompatibleCell({ ...cell, value: cellToMerge.value });
+    }
+
+    getTextFromCharCode = (cellText: string): string => {
+        switch (cellText.charCodeAt(0)) {
+            case keyCodes.DASH:
+                return  '-';
+            case keyCodes.COMMA:
+                return ','
+            case keyCodes.PERIOD:
+            case keyCodes.DECIMAL:
+                return '.';
+            default:    
+                return cellText;
+        }
     }
 
     render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React.ReactNode {
@@ -51,13 +69,13 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={format.format(cell.value)}
+            defaultValue={ (!Number.isNaN(cell.value)) ? format.format(cell.value) : this.getTextFromCharCode(cell.text) }
             onChange={e => {
                 onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(',', '.')) }), false)
             }}
             onKeyDown={e => {
-                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD || e.keyCode === keyCodes.DASH )) e.stopPropagation();
-                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD && e.keyCode !== keyCodes.DASH )) e.preventDefault();
+                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedCharOnNumberTypingKey(e.keyCode)) e.stopPropagation();
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedCharOnNumberTypingKey(e.keyCode)) e.preventDefault();
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
