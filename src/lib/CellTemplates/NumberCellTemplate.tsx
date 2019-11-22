@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
-import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedCharOnNumberTypingKey } from './keyCodeCheckings';
+import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 
 export interface NumberCell extends Cell {
@@ -26,9 +26,9 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         if (isNumpadNumericKey(keyCode)) keyCode -= 48;
         const char = String.fromCharCode(keyCode);
         // console.log(keyCode, Number(char), char);
-        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedCharOnNumberTypingKey(keyCode))) {  
+        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {  
             const value = Number(char);
-            if (Number.isNaN(value) && isAllowedCharOnNumberTypingKey(keyCode))
+            if (Number.isNaN(value) && isAllowedOnNumberTypingKey(keyCode))
                 return { cell: {...this.getCompatibleCell({ ...cell, value }), text: char}, enableEditMode: true }
             return { cell: this.getCompatibleCell({ ...cell, value}), enableEditMode: true }
         }
@@ -69,13 +69,13 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={ (!Number.isNaN(cell.value)) ? format.format(cell.value) : this.getTextFromCharCode(cell.text) }
+            defaultValue={ (!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text) }
             onChange={e => {
-                onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(',', '.')) }), false)
+                onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false);
             }}
             onKeyDown={e => {
-                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedCharOnNumberTypingKey(e.keyCode)) e.stopPropagation();
-                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedCharOnNumberTypingKey(e.keyCode)) e.preventDefault();
+                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode)) e.stopPropagation();
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode)) e.preventDefault();
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

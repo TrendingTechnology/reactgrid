@@ -13,7 +13,7 @@ export const inNumericKey = (keyCode: number) =>
 export const isNumpadNumericKey = (keyCode: number) => (keyCode >= keyCodes.NUMPAD_0 && keyCode <= keyCodes.NUMPAD_9);
 
 // ... TODO find better name
-export const isAllowedCharOnNumberTypingKey = (keyCode: number) => 
+export const isAllowedOnNumberTypingKey = (keyCode: number) => 
     (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD || 
     keyCode === keyCodes.DECIMAL);
 

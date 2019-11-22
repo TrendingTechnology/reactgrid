@@ -3,7 +3,7 @@ import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
 import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings'
 import { getCellProperty } from '../Functions/getCellProperty';
-import { parse } from 'path';
+import { getTimestamp, getFormattedTimeUnit } from './timeUtils';
 
 export interface TimeCell extends Cell {
     type: 'time';
@@ -13,10 +13,13 @@ export interface TimeCell extends Cell {
 
 export class TimeCellTemplate implements CellTemplate<TimeCell> {
 
+    static dayInMillis: number = 86400000;
+    static defaultDate: string = '01-01-1970';
+
     getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell> {
         const time = uncertainCell.time ? getCellProperty(uncertainCell, 'time', 'object') : new Date(NaN);
         const timeFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
-        const value = time.getTime() % 86400000; // each day has 86400000 millis
+        const value = time.getTime() % TimeCellTemplate.dayInMillis; // each day has 86400000 millis
         const text = !Number.isNaN(value) ? timeFormat.format(time) : '';
         return { ...uncertainCell, time, value, text }
     }
@@ -28,12 +31,10 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
     }
 
     update(cell: Compatible<TimeCell>, cellToMerge: UncertainCompatible<TimeCell>): Compatible<TimeCell> {
-        const timestamp = Date.parse(`01-01-1970 ${cellToMerge.text}`);
-        if (cellToMerge.text !== '' && !Number.isNaN(timestamp)) {
+        const timestamp = getTimestamp(cellToMerge.text);
+        if (cellToMerge.text !== '' && !Number.isNaN(timestamp)) 
             return this.getCompatibleCell({ ...cell, time: new Date(timestamp) });
-        }
-        const time = new Date(  cellToMerge.value  );
-        return this.getCompatibleCell({ ...cell, time });
+        return this.getCompatibleCell({ ...cell, time: new Date(cellToMerge.value) });
     }
 
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode {
@@ -41,22 +42,18 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
         if (!isInEditMode) 
             return cell.text;
 
-        const hours = cell.time!.getHours().toString().padStart(2, '0');
-        const minutes = cell.time!.getMinutes().toString().padStart(2, '0');
-        const defaultTime = `${hours}:${minutes}`;
-        
+        const hours = getFormattedTimeUnit(cell.time!.getHours());
+        const minutes = getFormattedTimeUnit(cell.time!.getMinutes());
+
         return <input
             ref={input => {
                 if (input) input.focus();
             }}
             type="time"
-            defaultValue={defaultTime}
+            defaultValue={`${hours}:${minutes}`}
             onChange={e => {
-                const timestamp = Date.parse(`01-01-1970 ${e.currentTarget.value}`);
-                if (!Number.isNaN(timestamp)) {
-                    const time = new Date(timestamp);
-                    onCellChanged(this.getCompatibleCell({ ...cell, time }), false)
-                }
+                const timestamp = getTimestamp(e.currentTarget.value);
+                if (!Number.isNaN(timestamp)) onCellChanged(this.getCompatibleCell({ ...cell, time: new Date(timestamp) }), false)
             }}
             onKeyDown={e => {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
