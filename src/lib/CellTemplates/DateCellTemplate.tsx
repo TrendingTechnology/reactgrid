@@ -3,6 +3,7 @@ import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
 import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings'
 import { getCellProperty } from '../Functions/getCellProperty';
+import { getTimestamp, getFormattedTimeUnit } from './timeUtils';
 
 export interface DateCell extends Cell {
     type: 'date';
@@ -13,7 +14,7 @@ export interface DateCell extends Cell {
 export class DateCellTemplate implements CellTemplate<DateCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<DateCell>): Compatible<DateCell> {
-        const date = getCellProperty(uncertainCell, 'date', 'object');
+        const date = uncertainCell.date ? getCellProperty(uncertainCell, 'date', 'object') : new Date(NaN);
         const dateFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
         const value = date.getTime();
         const text = !Number.isNaN(value) ? dateFormat.format(date) : '';
@@ -35,20 +36,18 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         if (!isInEditMode) 
             return cell.text;
 
-        const year = cell.date!.getFullYear().toString().padStart(2, '0');
-        const month = (cell.date!.getMonth() + 1).toString().padStart(2, '0');
-        const day = cell.date!.getDate().toString().padStart(2, '0');
-
-        const defaultDate = `${year}-${month}-${day}`;
+        const year = getFormattedTimeUnit(cell.date!.getFullYear());
+        const month = getFormattedTimeUnit(cell.date!.getMonth() + 1);
+        const day = getFormattedTimeUnit(cell.date!.getDate());
         
         return <input
             ref={input => {
                 if (input) input.focus();
             }}
             type="date"
-            defaultValue={defaultDate}
+            defaultValue={`${year}-${month}-${day}`}
             onChange={e => {
-                const timestamp = Date.parse(e.currentTarget.value);
+                const timestamp = getTimestamp(e.currentTarget.value, '');
                 if (!Number.isNaN(timestamp)) {
                     const date = new Date(timestamp);
                     onCellChanged(this.getCompatibleCell({ ...cell, date }), false)
