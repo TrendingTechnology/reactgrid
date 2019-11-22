@@ -10,9 +10,19 @@ export interface NumberCell extends Cell {
 export declare class NumberCellTemplate implements CellTemplate<NumberCell> {
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell>;
     handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
-        cell: Compatible<NumberCell>;
+        cell: {
+            text: string;
+            type: "number";
+            value: number;
+            format?: Intl.NumberFormat | undefined;
+            nanToZero?: boolean | undefined;
+            hideZero?: boolean | undefined;
+            style?: import("../Model").CellStyle | undefined;
+            className?: string | undefined;
+        };
         enableEditMode: boolean;
     };
     update(cell: Compatible<NumberCell>, cellToMerge: UncertainCompatible<NumberCell>): Compatible<NumberCell>;
+    getTextFromCharCode: (cellText: string) => string;
     render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React.ReactNode;
 }

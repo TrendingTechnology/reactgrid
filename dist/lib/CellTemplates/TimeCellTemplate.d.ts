@@ -6,6 +6,8 @@ export interface TimeCell extends Cell {
     format?: Intl.DateTimeFormat;
 }
 export declare class TimeCellTemplate implements CellTemplate<TimeCell> {
+    static dayInMillis: number;
+    static defaultDate: string;
     getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell>;
     handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
         cell: Compatible<TimeCell>;

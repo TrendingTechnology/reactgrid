@@ -13,11 +13,12 @@ import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
 import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
+import { getTimestamp, getFormattedTimeUnit } from './timeUtils';
 var DateCellTemplate = (function () {
     function DateCellTemplate() {
     }
     DateCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
-        var date = getCellProperty(uncertainCell, 'date', 'object');
+        var date = uncertainCell.date ? getCellProperty(uncertainCell, 'date', 'object') : new Date(NaN);
         var dateFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
         var value = date.getTime();
         var text = !Number.isNaN(value) ? dateFormat.format(date) : '';
@@ -35,15 +36,14 @@ var DateCellTemplate = (function () {
         var _this = this;
         if (!isInEditMode)
             return cell.text;
-        var year = cell.date.getFullYear().toString().padStart(2, '0');
-        var month = (cell.date.getMonth() + 1).toString().padStart(2, '0');
-        var day = cell.date.getDate().toString().padStart(2, '0');
-        var defaultDate = year + "-" + month + "-" + day;
+        var year = getFormattedTimeUnit(cell.date.getFullYear());
+        var month = getFormattedTimeUnit(cell.date.getMonth() + 1);
+        var day = getFormattedTimeUnit(cell.date.getDate());
         return React.createElement("input", { ref: function (input) {
                 if (input)
                     input.focus();
-            }, type: "date", defaultValue: defaultDate, onChange: function (e) {
-                var timestamp = Date.parse(e.currentTarget.value);
+            }, type: "date", defaultValue: year + "-" + month + "-" + day, onChange: function (e) {
+                var timestamp = getTimestamp(e.currentTarget.value, '');
                 if (!Number.isNaN(timestamp)) {
                     var date = new Date(timestamp);
                     onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { date: date })), false);

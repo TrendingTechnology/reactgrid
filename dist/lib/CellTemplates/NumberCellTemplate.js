@@ -11,24 +11,41 @@ var __assign = (this && this.__assign) || function () {
 };
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
-import { inNumericKey, isNavigationKey } from './keyCodeCheckings';
+import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 var NumberCellTemplate = (function () {
     function NumberCellTemplate() {
+        this.getTextFromCharCode = function (cellText) {
+            switch (cellText.charCodeAt(0)) {
+                case keyCodes.DASH:
+                    return '-';
+                case keyCodes.COMMA:
+                    return ',';
+                case keyCodes.PERIOD:
+                case keyCodes.DECIMAL:
+                    return '.';
+                default:
+                    return cellText;
+            }
+        };
     }
     NumberCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var value = getCellProperty(uncertainCell, 'value', 'number');
         var numberFormat = uncertainCell.format || new Intl.NumberFormat(window.navigator.language);
         var displayValue = (uncertainCell.nanToZero && Number.isNaN(value)) ? 0 : value;
-        var text = (Number.isNaN(displayValue)) ? '' : (uncertainCell.hideZero && displayValue === 0) ? '' : numberFormat.format(displayValue);
+        var text = (Number.isNaN(displayValue) || (uncertainCell.hideZero && displayValue === 0)) ? '' : numberFormat.format(displayValue);
         return __assign(__assign({}, uncertainCell), { value: displayValue, text: text });
     };
     NumberCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
-        if (keyCode >= keyCodes.NUMPAD_0 && keyCode <= keyCodes.NUMPAD_9)
+        if (isNumpadNumericKey(keyCode))
             keyCode -= 48;
         var char = String.fromCharCode(keyCode);
-        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD)))
-            return { cell: this.getCompatibleCell(__assign(__assign({}, cell), { value: Number(char) })), enableEditMode: true };
+        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {
+            var value = Number(char);
+            if (Number.isNaN(value) && isAllowedOnNumberTypingKey(keyCode))
+                return { cell: __assign(__assign({}, this.getCompatibleCell(__assign(__assign({}, cell), { value: value }))), { text: char }), enableEditMode: true };
+            return { cell: this.getCompatibleCell(__assign(__assign({}, cell), { value: value })), enableEditMode: true };
+        }
         return { cell: cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     NumberCellTemplate.prototype.update = function (cell, cellToMerge) {
@@ -46,12 +63,12 @@ var NumberCellTemplate = (function () {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
-            }, defaultValue: format.format(cell.value), onChange: function (e) {
-                onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { value: parseFloat(e.currentTarget.value.replace(',', '.')) })), false);
+            }, defaultValue: (!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text), onChange: function (e) {
+                onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) })), false);
             }, onKeyDown: function (e) {
-                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD || e.keyCode === keyCodes.DASH))
+                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode))
                     e.stopPropagation();
-                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD && e.keyCode !== keyCodes.DASH))
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode))
                     e.preventDefault();
             }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); } });
     };
