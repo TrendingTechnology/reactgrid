@@ -20,7 +20,7 @@ var CheckboxCellTemplate = (function () {
         var text = checked ?
             uncertainCell.checkedText ? uncertainCell.checkedText : '1' :
             uncertainCell.uncheckedText ? uncertainCell.uncheckedText : '';
-        return __assign(__assign({}, uncertainCell), { checked: checked, value: checked ? 1 : NaN, text: text });
+        return __assign({}, uncertainCell, { checked: checked, value: checked ? 1 : NaN, text: text });
     };
     CheckboxCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
@@ -28,13 +28,11 @@ var CheckboxCellTemplate = (function () {
         return { cell: cell, enableEditMode: false };
     };
     CheckboxCellTemplate.prototype.toggleCheckboxCell = function (cell) {
-        return this.getCompatibleCell(__assign(__assign({}, cell), { checked: !cell.checked }));
+        return this.getCompatibleCell(__assign({}, cell, { checked: !cell.checked }));
     };
     CheckboxCellTemplate.prototype.update = function (cell, cellToMerge) {
-        var checked = cellToMerge.type === 'checkbox' ?
-            cellToMerge.checked :
-            cellToMerge.value ? true : false;
-        return this.getCompatibleCell(__assign(__assign({}, cell), { checked: checked }));
+        var checked = cellToMerge.type === 'checkbox' ? cellToMerge.checked : !!cellToMerge.value;
+        return this.getCompatibleCell(__assign({}, cell, { checked: checked }));
     };
     CheckboxCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;

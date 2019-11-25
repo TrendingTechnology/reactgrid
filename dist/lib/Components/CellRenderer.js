@@ -19,7 +19,7 @@ export var CellRenderer = function (props) {
     var location = props.location;
     var isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === props.location.column.idx && state.focusedLocation.row.idx === props.location.row.idx);
     var customClass = cellTemplate.getClassName ? cellTemplate.getClassName(cell, false) : '';
-    var style = __assign(__assign({}, (cellTemplate.getStyle && cellTemplate.getStyle(cell, false) || {})), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height, touchAction: isFocused || cell.type === 'header' ? 'none' : 'auto' });
+    var style = __assign({}, (cellTemplate.getStyle && cellTemplate.getStyle(cell, false) || {}), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height, touchAction: isFocused || cell.type === 'header' ? 'none' : 'auto' });
     return (React.createElement("div", { className: "rg-cell rg-" + cell.type + "-cell " + customClass, style: style },
         cellTemplate.render(cell, false, function (cell, commit) {
             if (!commit)

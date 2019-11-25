@@ -35,7 +35,7 @@ var RowRenderer = (function (_super) {
     RowRenderer.prototype.render = function () {
         var _this = this;
         var lastColIdx = this.props.columns[this.props.columns.length - 1].idx;
-        return this.props.columns.map(function (column) { return React.createElement(CellRenderer, { key: _this.props.row.idx + '-' + column.idx, borders: __assign(__assign({}, _this.props.borders), { left: _this.props.borders.left && column.left === 0, right: _this.props.borders.right && column.idx === lastColIdx }), state: _this.props.state, location: { row: _this.props.row, column: column } }); });
+        return this.props.columns.map(function (column) { return React.createElement(CellRenderer, { key: _this.props.row.idx + '-' + column.idx, borders: __assign({}, _this.props.borders, { left: _this.props.borders.left && column.left === 0, right: _this.props.borders.right && column.idx === lastColIdx }), state: _this.props.state, location: { row: _this.props.row, column: column } }); });
     };
     return RowRenderer;
 }(React.Component));

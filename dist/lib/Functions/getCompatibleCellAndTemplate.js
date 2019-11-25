@@ -17,7 +17,7 @@ export function getCompatibleCellAndTemplate(state, location) {
         var cellTemplate = state.cellTemplates[rawCell.type];
         if (!cellTemplate)
             throw "CellTemplate missing for type '" + rawCell.type + "'";
-        var cell = cellTemplate.getCompatibleCell(__assign(__assign({}, rawCell), { type: rawCell.type }));
+        var cell = cellTemplate.getCompatibleCell(__assign({}, rawCell, { type: rawCell.type }));
         if (!cell)
             throw 'Cell validation failed';
         return { cell: cell, cellTemplate: cellTemplate };

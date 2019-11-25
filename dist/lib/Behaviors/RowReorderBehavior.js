@@ -40,7 +40,7 @@ var RowReorderBehavior = (function (_super) {
         var upperRowsHeight = upperRows.reduce(function (sum, row) { return sum + row.height; }, 0);
         this.pointerOffset = upperRowsHeight + location.cellY;
         this.selectedIds = rows.map(function (r) { return r.rowId; });
-        return __assign(__assign({}, state), { lineOrientation: 'horizontal', shadowSize: rows.reduce(function (sum, col) { return sum + col.height; }, 0), shadowPosition: this.getShadowPosition(location, state) });
+        return __assign({}, state, { lineOrientation: 'horizontal', shadowSize: rows.reduce(function (sum, col) { return sum + col.height; }, 0), shadowPosition: this.getShadowPosition(location, state) });
     };
     RowReorderBehavior.prototype.handlePointerMove = function (event, location, state) {
         var shadowPosition = this.getShadowPosition(location, state);
@@ -82,7 +82,7 @@ var RowReorderBehavior = (function (_super) {
                 }
             }
         }
-        return __assign(__assign({}, state), { shadowPosition: shadowPosition,
+        return __assign({}, state, { shadowPosition: shadowPosition,
             linePosition: linePosition,
             shadowCursor: shadowCursor });
     };
@@ -108,7 +108,7 @@ var RowReorderBehavior = (function (_super) {
             state.props.onRowsReordered) {
             state.props.onRowsReordered(this.lastPossibleDropLocation.row.rowId, this.selectedIds, this.position);
         }
-        return __assign(__assign({}, state), { linePosition: -1, shadowPosition: -1, shadowCursor: 'default' });
+        return __assign({}, state, { linePosition: -1, shadowPosition: -1, shadowCursor: 'default' });
     };
     return RowReorderBehavior;
 }(Behavior));

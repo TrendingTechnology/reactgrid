@@ -22,7 +22,7 @@ var TimeCellTemplate = (function () {
         var timeFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
         var value = time.getTime() % TimeCellTemplate.dayInMillis;
         var text = !Number.isNaN(value) ? timeFormat.format(time) : '';
-        return __assign(__assign({}, uncertainCell), { time: time, value: value, text: text });
+        return __assign({}, uncertainCell, { time: time, value: value, text: text });
     };
     TimeCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
@@ -32,8 +32,8 @@ var TimeCellTemplate = (function () {
     TimeCellTemplate.prototype.update = function (cell, cellToMerge) {
         var timestamp = getTimestamp(cellToMerge.text);
         if (cellToMerge.text !== '' && !Number.isNaN(timestamp))
-            return this.getCompatibleCell(__assign(__assign({}, cell), { time: new Date(timestamp) }));
-        return this.getCompatibleCell(__assign(__assign({}, cell), { time: new Date(cellToMerge.value) }));
+            return this.getCompatibleCell(__assign({}, cell, { time: new Date(timestamp) }));
+        return this.getCompatibleCell(__assign({}, cell, { time: new Date(cellToMerge.value) }));
     };
     TimeCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
@@ -47,7 +47,7 @@ var TimeCellTemplate = (function () {
             }, type: "time", defaultValue: hours + ":" + minutes, onChange: function (e) {
                 var timestamp = getTimestamp(e.currentTarget.value);
                 if (!Number.isNaN(timestamp))
-                    onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { time: new Date(timestamp) })), false);
+                    onCellChanged(_this.getCompatibleCell(__assign({}, cell, { time: new Date(timestamp) })), false);
             }, onKeyDown: function (e) {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD))
                     e.stopPropagation();

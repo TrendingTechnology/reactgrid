@@ -39,10 +39,10 @@ var ColumnReorderBehavior = (function (_super) {
         var leftColumns = leftIndexes.map(function (i) { return state.cellMatrix.columns[i]; });
         var leftColumnsWidth = leftColumns.reduce(function (sum, col) { return sum + col.width; }, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        return __assign(__assign({}, state), { lineOrientation: 'vertical', shadowSize: columns.reduce(function (sum, col) { return sum + col.width; }, 0), shadowPosition: this.getShadowPosition(location, state) });
+        return __assign({}, state, { lineOrientation: 'vertical', shadowSize: columns.reduce(function (sum, col) { return sum + col.width; }, 0), shadowPosition: this.getShadowPosition(location, state) });
     };
     ColumnReorderBehavior.prototype.handlePointerMove = function (event, location, state) {
-        return __assign(__assign({}, state), { shadowPosition: this.getShadowPosition(location, state) });
+        return __assign({}, state, { shadowPosition: this.getShadowPosition(location, state) });
     };
     ColumnReorderBehavior.prototype.getShadowPosition = function (location, state) {
         var x = location.viewportX + state.viewportElement.scrollLeft - this.pointerOffset;
@@ -62,7 +62,7 @@ var ColumnReorderBehavior = (function (_super) {
         var drawRight = dropLocation.column.idx > this.initialColumnIdx;
         var linePosition = Math.min(dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.column.width : 0) + state.viewportElement.scrollLeft, state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft);
         this.lastPossibleDropLocation = dropLocation;
-        return __assign(__assign({}, state), { linePosition: linePosition });
+        return __assign({}, state, { linePosition: linePosition });
     };
     ColumnReorderBehavior.prototype.getLastPossibleDropLocation = function (currentLocation, state) {
         var position = currentLocation.column.idx <= this.initialColumnIdx ? 'before' : 'after';
@@ -76,7 +76,7 @@ var ColumnReorderBehavior = (function (_super) {
             var isBefore = this.lastPossibleDropLocation.column.idx <= this.initialColumnIdx;
             state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, this.selectedIdxs, isBefore ? 'before' : 'after');
         }
-        return __assign(__assign({}, state), { linePosition: -1, shadowPosition: -1 });
+        return __assign({}, state, { linePosition: -1, shadowPosition: -1 });
     };
     return ColumnReorderBehavior;
 }(Behavior));

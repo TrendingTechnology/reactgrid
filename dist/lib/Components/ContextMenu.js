@@ -56,7 +56,7 @@ var ContextMenu = (function (_super) {
             } }, contextMenuOptions.map(function (el, idx) {
             React.createElement("div", { key: idx, className: "rg-context-menu-option", onPointerDown: function (e) { return e.stopPropagation(); }, onClick: function () {
                     el.handler();
-                    state.update(function (state) { return (__assign(__assign({}, state), { contextMenuPosition: [-1, -1] })); });
+                    state.update(function (state) { return (__assign({}, state, { contextMenuPosition: [-1, -1] })); });
                 } }, el.label);
         }))));
     };

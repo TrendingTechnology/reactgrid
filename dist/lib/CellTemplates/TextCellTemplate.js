@@ -19,15 +19,15 @@ var TextCellTemplate = (function () {
     TextCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
         var value = parseFloat(text);
-        return __assign(__assign({}, uncertainCell), { text: text, value: value });
+        return __assign({}, uncertainCell, { text: text, value: value });
     };
     TextCellTemplate.prototype.update = function (cell, cellToMerge) {
-        return this.getCompatibleCell(__assign(__assign({}, cell), { text: cellToMerge.text }));
+        return this.getCompatibleCell(__assign({}, cell, { text: cellToMerge.text }));
     };
     TextCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         var char = String.fromCharCode(keyCode);
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
-            return { cell: this.getCompatibleCell(__assign(__assign({}, cell), { text: shift ? char : char.toLowerCase() })), enableEditMode: true };
+            return { cell: this.getCompatibleCell(__assign({}, cell, { text: shift ? char : char.toLowerCase() })), enableEditMode: true };
         return { cell: cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     TextCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
@@ -44,7 +44,7 @@ var TextCellTemplate = (function () {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }, defaultValue: cell.text, onChange: function (e) {
-                onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), false);
+                onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), false);
             }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode)))
                     e.stopPropagation();

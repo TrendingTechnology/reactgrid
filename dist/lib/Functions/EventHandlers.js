@@ -25,7 +25,7 @@ var EventHandlers = (function () {
         this.handleContextMenu = function (event) { return _this.updateState(function (state) { return state.currentBehavior.handleContextMenu(event, state); }); };
         this.windowResizeHandler = function () { return _this.updateState(recalcVisibleRange); };
         this.viewportElementRefHandler = function (viewportElement) { if (viewportElement)
-            _this.updateState(function (state) { return recalcVisibleRange(__assign(__assign({}, state), { viewportElement: viewportElement })); }); };
+            _this.updateState(function (state) { return recalcVisibleRange(__assign({}, state, { viewportElement: viewportElement })); }); };
         this.hiddenElementRefHandler = function (hiddenFocusElement) { return _this.updateState(function (state) { state.hiddenFocusElement = hiddenFocusElement; return state; }); };
         this.pasteCaptureHandler = function (event) {
             var htmlData = event.clipboardData.getData('text/html');

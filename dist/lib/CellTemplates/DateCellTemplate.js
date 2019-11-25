@@ -22,7 +22,7 @@ var DateCellTemplate = (function () {
         var dateFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
         var value = date.getTime();
         var text = !Number.isNaN(value) ? dateFormat.format(date) : '';
-        return __assign(__assign({}, uncertainCell), { date: date, value: value, text: text });
+        return __assign({}, uncertainCell, { date: date, value: value, text: text });
     };
     DateCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
@@ -30,7 +30,7 @@ var DateCellTemplate = (function () {
         return { cell: cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     DateCellTemplate.prototype.update = function (cell, cellToMerge) {
-        return this.getCompatibleCell(__assign(__assign({}, cell), { date: new Date(cellToMerge.value) }));
+        return this.getCompatibleCell(__assign({}, cell, { date: new Date(cellToMerge.value) }));
     };
     DateCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
@@ -46,7 +46,7 @@ var DateCellTemplate = (function () {
                 var timestamp = getTimestamp(e.currentTarget.value, '');
                 if (!Number.isNaN(timestamp)) {
                     var date = new Date(timestamp);
-                    onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { date: date })), false);
+                    onCellChanged(_this.getCompatibleCell(__assign({}, cell, { date: date })), false);
                 }
             }, onKeyDown: function (e) {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD))

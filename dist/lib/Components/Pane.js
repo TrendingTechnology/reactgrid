@@ -45,7 +45,7 @@ var GridContent = (function (_super) {
     GridContent.prototype.render = function () {
         var _this = this;
         return (React.createElement(React.Fragment, null,
-            this.props.range.rows.map(function (row) { return React.createElement(RowRenderer, { key: row.rowId, state: _this.props.state, row: row, columns: _this.props.range.columns, forceUpdate: true, borders: __assign(__assign({}, _this.props.borders), { top: _this.props.borders.top && row.top === 0, bottom: _this.props.borders.bottom && row.idx === _this.props.range.last.row.idx }) }); }),
+            this.props.range.rows.map(function (row) { return React.createElement(RowRenderer, { key: row.rowId, state: _this.props.state, row: row, columns: _this.props.range.columns, forceUpdate: true, borders: __assign({}, _this.props.borders, { top: _this.props.borders.top && row.top === 0, bottom: _this.props.borders.bottom && row.idx === _this.props.range.last.row.idx }) }); }),
             this.props.range.rows.map(function (row) { return React.createElement("div", { key: row.rowId, className: "rg-separator-line rg-separator-line-row", style: { top: row.top, height: row.height, } }); }),
             this.props.range.columns.map(function (col) { return React.createElement("div", { key: col.columnId, className: "rg-separator-line rg-separator-line-col", style: { left: col.left, width: col.width } }); })));
     };

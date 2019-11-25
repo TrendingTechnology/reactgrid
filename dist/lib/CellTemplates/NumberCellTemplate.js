@@ -34,7 +34,7 @@ var NumberCellTemplate = (function () {
         var numberFormat = uncertainCell.format || new Intl.NumberFormat(window.navigator.language);
         var displayValue = (uncertainCell.nanToZero && Number.isNaN(value)) ? 0 : value;
         var text = (Number.isNaN(displayValue) || (uncertainCell.hideZero && displayValue === 0)) ? '' : numberFormat.format(displayValue);
-        return __assign(__assign({}, uncertainCell), { value: displayValue, text: text });
+        return __assign({}, uncertainCell, { value: displayValue, text: text });
     };
     NumberCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         if (isNumpadNumericKey(keyCode))
@@ -43,13 +43,13 @@ var NumberCellTemplate = (function () {
         if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {
             var value = Number(char);
             if (Number.isNaN(value) && isAllowedOnNumberTypingKey(keyCode))
-                return { cell: __assign(__assign({}, this.getCompatibleCell(__assign(__assign({}, cell), { value: value }))), { text: char }), enableEditMode: true };
-            return { cell: this.getCompatibleCell(__assign(__assign({}, cell), { value: value })), enableEditMode: true };
+                return { cell: __assign({}, this.getCompatibleCell(__assign({}, cell, { value: value })), { text: char }), enableEditMode: true };
+            return { cell: this.getCompatibleCell(__assign({}, cell, { value: value })), enableEditMode: true };
         }
         return { cell: cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     NumberCellTemplate.prototype.update = function (cell, cellToMerge) {
-        return this.getCompatibleCell(__assign(__assign({}, cell), { value: cellToMerge.value }));
+        return this.getCompatibleCell(__assign({}, cell, { value: cellToMerge.value }));
     };
     NumberCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
@@ -64,7 +64,7 @@ var NumberCellTemplate = (function () {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }, defaultValue: (!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text), onChange: function (e) {
-                onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) })), false);
+                onCellChanged(_this.getCompatibleCell(__assign({}, cell, { value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) })), false);
             }, onKeyDown: function (e) {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode))
                     e.stopPropagation();

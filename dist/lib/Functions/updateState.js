@@ -9,13 +9,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 import { newLocation } from './newLocation';
 export function updateSelectedRows(state) {
     var firstCol = state.cellMatrix.first.column;
@@ -33,7 +26,7 @@ export function updateSelectedRows(state) {
             });
         });
     }
-    return __assign(__assign({}, state), { selectionMode: 'row', activeSelectedRangeIdx: activeSelectedRangeIdx, selectedRanges: __spreadArrays(ranges), selectedIndexes: updatedRows.map(function (row) { return row.idx; }), selectedIds: updatedRows.map(function (row) { return row.rowId; }) });
+    return __assign({}, state, { selectionMode: 'row', activeSelectedRangeIdx: activeSelectedRangeIdx, selectedRanges: ranges.slice(), selectedIndexes: updatedRows.map(function (row) { return row.idx; }), selectedIds: updatedRows.map(function (row) { return row.rowId; }) });
 }
 export function updateSelectedColumns(state) {
     var firstRow = state.cellMatrix.first.row;
@@ -51,7 +44,7 @@ export function updateSelectedColumns(state) {
             });
         });
     }
-    return __assign(__assign({}, state), { selectionMode: 'column', activeSelectedRangeIdx: activeSelectedRangeIdx, selectedRanges: __spreadArrays(ranges), selectedIndexes: updatedColumns.map(function (col) { return col.idx; }), selectedIds: updatedColumns.map(function (col) { return col.columnId; }) });
+    return __assign({}, state, { selectionMode: 'column', activeSelectedRangeIdx: activeSelectedRangeIdx, selectedRanges: ranges.slice(), selectedIndexes: updatedColumns.map(function (col) { return col.idx; }), selectedIds: updatedColumns.map(function (col) { return col.columnId; }) });
 }
 var groupedRows = function (array) {
     var grouped = [];

@@ -23,6 +23,6 @@ export function focusLocation(state, location, resetSelection) {
     if (!isFocusable)
         return state;
     if (resetSelection)
-        state = __assign(__assign({}, state), { activeSelectedRangeIdx: 0, selectedRanges: [state.cellMatrix.getRange(location, location)], selectedIndexes: [], selectedIds: [], selectionMode: 'range' });
-    return __assign(__assign({}, state), { contextMenuPosition: [-1, -1], focusedLocation: location, currentlyEditedCell: undefined });
+        state = __assign({}, state, { activeSelectedRangeIdx: 0, selectedRanges: [state.cellMatrix.getRange(location, location)], selectedIndexes: [], selectedIds: [], selectionMode: 'range' });
+    return __assign({}, state, { contextMenuPosition: [-1, -1], focusedLocation: location, currentlyEditedCell: undefined });
 }

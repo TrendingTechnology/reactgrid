@@ -19,10 +19,10 @@ var GroupCellTemplate = (function () {
     GroupCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
         var value = parseFloat(text);
-        return __assign(__assign({}, uncertainCell), { text: text, value: value });
+        return __assign({}, uncertainCell, { text: text, value: value });
     };
     GroupCellTemplate.prototype.update = function (cell, cellToMerge) {
-        return this.getCompatibleCell(__assign(__assign({}, cell), { text: cellToMerge.text }));
+        return this.getCompatibleCell(__assign({}, cell, { text: cellToMerge.text }));
     };
     GroupCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         var enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
@@ -52,7 +52,7 @@ var GroupCellTemplate = (function () {
                             input.focus();
                             input.setSelectionRange(input.value.length, input.value.length);
                         }
-                    }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), false); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
+                    }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), false); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
                         if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode)))
                             e.stopPropagation();
                     } }));
@@ -64,7 +64,7 @@ var Chevron = function (_a) {
     var cell = _a.cell, onCellChanged = _a.onCellChanged;
     return (React.createElement("div", { onPointerDown: function (e) {
             e.stopPropagation();
-            onCellChanged(__assign(__assign({}, cell), { isExpanded: !cell.isExpanded }), true);
+            onCellChanged(__assign({}, cell, { isExpanded: !cell.isExpanded }), true);
         }, className: "chevron" },
         React.createElement("div", { style: { transform: "" + (cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'), transition: '200ms all' } }, "\u276F")));
 };

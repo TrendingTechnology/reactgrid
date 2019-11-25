@@ -67,7 +67,7 @@ var PointerEventsController = (function () {
                     (currentLocation.row.idx > 0 && currentLocation.column.idx > 0)) {
                     state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
                 }
-                state = __assign(__assign({}, state), { currentBehavior: new DefaultBehavior() });
+                state = __assign({}, state, { currentBehavior: new DefaultBehavior() });
                 if (currentTimestamp - secondLastTimestamp < 500 &&
                     areLocationsEqual(currentLocation, _this.eventLocations[0]) &&
                     areLocationsEqual(currentLocation, _this.eventLocations[1])) {

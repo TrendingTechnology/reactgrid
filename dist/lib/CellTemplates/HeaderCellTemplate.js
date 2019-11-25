@@ -18,7 +18,7 @@ var HeaderCellTemplate = (function () {
     HeaderCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
         var value = parseFloat(text);
-        return __assign(__assign({}, uncertainCell), { text: text, value: value });
+        return __assign({}, uncertainCell, { text: text, value: value });
     };
     HeaderCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         return cell.text;

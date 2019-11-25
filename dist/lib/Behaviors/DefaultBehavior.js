@@ -42,7 +42,7 @@ var DefaultBehavior = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     DefaultBehavior.prototype.handlePointerDown = function (event, location, state) {
-        state = __assign(__assign({}, state), { currentBehavior: this.getNewBehavior(event, location, state) });
+        state = __assign({}, state, { currentBehavior: this.getNewBehavior(event, location, state) });
         return state.currentBehavior.handlePointerDown(event, location, state);
     };
     DefaultBehavior.prototype.getNewBehavior = function (event, location, state) {
@@ -93,7 +93,7 @@ var DefaultBehavior = (function (_super) {
         if (!state.selectedRanges.find(function (range) { return range.contains(focusedLocation); })) {
             state = focusLocation(state, focusedLocation);
         }
-        return __assign(__assign({}, state), { contextMenuPosition: contextMenuPosition });
+        return __assign({}, state, { contextMenuPosition: contextMenuPosition });
     };
     DefaultBehavior.prototype.handleDoubleClick = function (event, location, state) {
         if (areLocationsEqual(location, state.focusedLocation)) {
@@ -101,7 +101,7 @@ var DefaultBehavior = (function (_super) {
             if (cellTemplate.handleKeyDown) {
                 var _b = cellTemplate.handleKeyDown(cell, 1, event.ctrlKey, event.shiftKey, event.altKey), newCell = _b.cell, enableEditMode = _b.enableEditMode;
                 if (enableEditMode) {
-                    return __assign(__assign({}, state), { currentlyEditedCell: newCell });
+                    return __assign({}, state, { currentlyEditedCell: newCell });
                 }
             }
         }
@@ -178,7 +178,7 @@ export function pasteData(state, rows) {
                 }
             });
         });
-        return __assign(__assign({}, state), { selectedRanges: [cellMatrix_1.getRange(activeSelectedRange.first, lastLocation_1)], activeSelectedRangeIdx: 0 });
+        return __assign({}, state, { selectedRanges: [cellMatrix_1.getRange(activeSelectedRange.first, lastLocation_1)], activeSelectedRangeIdx: 0 });
     }
     return state;
 }

@@ -67,6 +67,7 @@ export interface Column {
 export interface CellStyle {
     readonly color?: string;
     readonly background?: string;
+    readonly overflow?: string;
 }
 export interface Cell {
     type: string;
