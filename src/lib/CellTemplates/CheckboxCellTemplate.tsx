@@ -31,9 +31,7 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
     }
 
     update(cell: Compatible<CheckboxCell>, cellToMerge: UncertainCompatible<CheckboxCell>): Compatible<CheckboxCell> {
-        const checked = cellToMerge.type === 'checkbox' ?
-            cellToMerge.checked :
-            cellToMerge.value ? true : false;
+        const checked = cellToMerge.type === 'checkbox' ? cellToMerge.checked : !!cellToMerge.value;
         return this.getCompatibleCell({ ...cell, checked });
     }
 
@@ -49,7 +47,5 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
             </>
         )
     }
-
-
 
 }
