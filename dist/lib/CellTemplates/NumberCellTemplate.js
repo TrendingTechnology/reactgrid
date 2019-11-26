@@ -51,6 +51,9 @@ var NumberCellTemplate = (function () {
     NumberCellTemplate.prototype.update = function (cell, cellToMerge) {
         return this.getCompatibleCell(__assign({}, cell, { value: cellToMerge.value }));
     };
+    NumberCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+        return cell.className ? cell.className : '';
+    };
     NumberCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         if (!isInEditMode) {

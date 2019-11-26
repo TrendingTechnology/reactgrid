@@ -12,5 +12,6 @@ export declare class DateCellTemplate implements CellTemplate<DateCell> {
         enableEditMode: boolean;
     };
     update(cell: Compatible<DateCell>, cellToMerge: UncertainCompatible<DateCell>): Compatible<DateCell>;
+    getClassName(cell: Compatible<DateCell>, isInEditMode: boolean): string;
     render(cell: Compatible<DateCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DateCell>, commit: boolean) => void): React.ReactNode;
 }

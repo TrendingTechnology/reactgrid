@@ -35,6 +35,9 @@ var TimeCellTemplate = (function () {
             return this.getCompatibleCell(__assign({}, cell, { time: new Date(timestamp) }));
         return this.getCompatibleCell(__assign({}, cell, { time: new Date(cellToMerge.value) }));
     };
+    TimeCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+        return cell.className ? cell.className : '';
+    };
     TimeCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         if (!isInEditMode)

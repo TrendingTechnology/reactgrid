@@ -37,6 +37,9 @@ var GroupCellTemplate = (function () {
         }
         return { cell: cellCopy, enableEditMode: enableEditMode };
     };
+    GroupCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+        return cell.className ? cell.className : '';
+    };
     GroupCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         var canBeExpanded = cell.isExpanded !== undefined;

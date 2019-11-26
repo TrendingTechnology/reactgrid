@@ -14,5 +14,6 @@ export declare class TimeCellTemplate implements CellTemplate<TimeCell> {
         enableEditMode: boolean;
     };
     update(cell: Compatible<TimeCell>, cellToMerge: UncertainCompatible<TimeCell>): Compatible<TimeCell>;
+    getClassName(cell: Compatible<TimeCell>, isInEditMode: boolean): string;
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode;
 }

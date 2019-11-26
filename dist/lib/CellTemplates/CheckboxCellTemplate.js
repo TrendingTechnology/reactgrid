@@ -34,6 +34,9 @@ var CheckboxCellTemplate = (function () {
         var checked = cellToMerge.type === 'checkbox' ? cellToMerge.checked : !!cellToMerge.value;
         return this.getCompatibleCell(__assign({}, cell, { checked: checked }));
     };
+    CheckboxCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+        return cell.className ? cell.className : '';
+    };
     CheckboxCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         return (React.createElement(React.Fragment, null,

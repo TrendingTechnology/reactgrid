@@ -24,5 +24,6 @@ export declare class NumberCellTemplate implements CellTemplate<NumberCell> {
     };
     update(cell: Compatible<NumberCell>, cellToMerge: UncertainCompatible<NumberCell>): Compatible<NumberCell>;
     getTextFromCharCode: (cellText: string) => string;
+    getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean): string;
     render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React.ReactNode;
 }

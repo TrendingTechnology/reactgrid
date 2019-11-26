@@ -13,6 +13,6 @@ export declare class TextCellTemplate implements CellTemplate<TextCell> {
         cell: Compatible<TextCell>;
         enableEditMode: boolean;
     };
-    getClassName(cell: Compatible<TextCell>, isInEditMode: boolean): "invalid" | "valid";
+    getClassName(cell: Compatible<TextCell>, isInEditMode: boolean): string;
     render(cell: Compatible<TextCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TextCell>, commit: boolean) => void): React.ReactNode;
 }

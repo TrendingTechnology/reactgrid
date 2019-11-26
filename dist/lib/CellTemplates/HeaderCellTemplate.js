@@ -23,6 +23,9 @@ var HeaderCellTemplate = (function () {
     HeaderCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         return cell.text;
     };
+    HeaderCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+        return cell.className ? cell.className : '';
+    };
     return HeaderCellTemplate;
 }());
 export { HeaderCellTemplate };

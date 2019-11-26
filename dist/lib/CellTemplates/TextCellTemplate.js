@@ -32,7 +32,8 @@ var TextCellTemplate = (function () {
     };
     TextCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
         var isValid = cell.validator ? cell.validator(cell.text) : true;
-        return isValid ? 'valid' : 'invalid';
+        var className = cell.className ? cell.className : "";
+        return (isValid ? "valid" : "invalid") + " " + className;
     };
     TextCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;

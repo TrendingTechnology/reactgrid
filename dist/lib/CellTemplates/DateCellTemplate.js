@@ -32,6 +32,9 @@ var DateCellTemplate = (function () {
     DateCellTemplate.prototype.update = function (cell, cellToMerge) {
         return this.getCompatibleCell(__assign({}, cell, { date: new Date(cellToMerge.value) }));
     };
+    DateCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+        return cell.className ? cell.className : '';
+    };
     DateCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         if (!isInEditMode)

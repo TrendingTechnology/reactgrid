@@ -14,5 +14,6 @@ export declare class CheckboxCellTemplate implements CellTemplate<CheckboxCell> 
     };
     private toggleCheckboxCell;
     update(cell: Compatible<CheckboxCell>, cellToMerge: UncertainCompatible<CheckboxCell>): Compatible<CheckboxCell>;
+    getClassName(cell: Compatible<CheckboxCell>, isInEditMode: boolean): string;
     render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): React.ReactNode;
 }

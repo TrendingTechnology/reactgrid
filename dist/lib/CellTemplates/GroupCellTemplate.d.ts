@@ -13,5 +13,6 @@ export declare class GroupCellTemplate implements CellTemplate<GroupCell> {
         cell: Compatible<GroupCell>;
         enableEditMode: boolean;
     };
+    getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean): string;
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode;
 }
