@@ -31,6 +31,10 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         return this.getCompatibleCell({ ...cell, date: new Date(cellToMerge.value) });
     }
 
+    getClassName(cell: Compatible<DateCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
+
     render(cell: Compatible<DateCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DateCell>, commit: boolean) => void): React.ReactNode {
 
         if (!isInEditMode) 

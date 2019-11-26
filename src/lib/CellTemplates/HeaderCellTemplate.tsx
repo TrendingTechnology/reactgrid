@@ -21,5 +21,9 @@ export class HeaderCellTemplate implements CellTemplate<HeaderCell> {
 
     isFocusable = () => false;
 
+    getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
+
     getStyle = (cell: Compatible<HeaderCell>) => ({ background: '#f3f3f3' })
 }

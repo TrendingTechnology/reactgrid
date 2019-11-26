@@ -36,6 +36,10 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         return { cell: cellCopy, enableEditMode };
     }
 
+    getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
+
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
         const canBeExpanded = cell.isExpanded !== undefined;
         const elementMarginMultiplier = cell.depth ? cell.depth : 0;
