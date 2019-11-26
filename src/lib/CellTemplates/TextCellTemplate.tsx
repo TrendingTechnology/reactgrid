@@ -32,10 +32,8 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
 
     getClassName(cell: Compatible<TextCell>, isInEditMode: boolean) {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
-    
-        // const className = cell.className ? cell.className : '';
-        // return isValid ? `valid` : `invalid`;
-        return `${isValid ? `valid` : `invalid`} ${cell.className ? cell.className : ``}`;
+        const className = cell.className ? cell.className : ``;
+        return `${isValid ? `valid` : `invalid`} ${className}`;
     }
 
     render(cell: Compatible<TextCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TextCell>, commit: boolean) => void): React.ReactNode {
