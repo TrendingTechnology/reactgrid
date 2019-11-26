@@ -53,6 +53,10 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         }
     }
 
+    getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
+
     render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React.ReactNode {
 
         if (!isInEditMode) {

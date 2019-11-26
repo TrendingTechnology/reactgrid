@@ -27,7 +27,6 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     }
 
     update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell> {
-        // TODO how to validate
         return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
     }
 

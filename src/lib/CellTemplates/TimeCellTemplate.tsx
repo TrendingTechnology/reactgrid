@@ -37,6 +37,10 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
         return this.getCompatibleCell({ ...cell, time: new Date(cellToMerge.value) });
     }
 
+    getClassName(cell: Compatible<TimeCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
+
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode {
 
         if (!isInEditMode) 

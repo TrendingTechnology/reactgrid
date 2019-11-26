@@ -35,6 +35,10 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
         return this.getCompatibleCell({ ...cell, checked });
     }
 
+    getClassName(cell: Compatible<CheckboxCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
+
     render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): React.ReactNode {
         return (
             <>
