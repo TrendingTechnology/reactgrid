@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions/keyCodes';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id } from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
+import { CellEditor } from '../Components/CellEditor';
 
-export interface GroupCell extends Cell { // rename GroupHeaderCell to GroupCell ?? 
+export interface GroupCell extends Cell {
     type: 'group';
     text: string;
     isExpanded?: boolean;
+    hasChilds?: boolean;
     depth?: number;
 }
 
@@ -15,12 +17,13 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
+        const isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value };
+        return { ...uncertainCell, text, value, isExpanded };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
-        return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
+        return this.getCompatibleCell({ ...cell, isExpanded: cellToMerge.isExpanded })
     }
 
     handleKeyDown(cell: Compatible<GroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<GroupCell>, enableEditMode: boolean } {
@@ -41,8 +44,9 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     }
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
-        const canBeExpanded = cell.isExpanded !== undefined;
+        const canBeExpanded = cell.hasChilds === true;
         const elementMarginMultiplier = cell.depth ? cell.depth : 0;
+
         return (
             !isInEditMode ?
                 <div
@@ -50,9 +54,17 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                     style={{ marginLeft: `calc( 1.2em * ${elementMarginMultiplier})` }}
                 >
                     {canBeExpanded &&
-                        <Chevron cell={cell} onCellChanged={onCellChanged} />
+                        <div
+                            className="chevron"
+                            onPointerDown={e => {
+                                e.stopPropagation();
+                                onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded}), true)}
+                            }
+                        >
+                            <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>❯</div>
+                        </div>
                     }
-                    <div className="wrapper-content">{cell.text}</div>
+                    <div className="content">{cell.text}</div>
                 </div>
                 :
                 <input
@@ -78,19 +90,23 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 }
 
 // class Chevron extends React.Component<IChevronProps> {
-const Chevron: React.FC<{ cell: Compatible<GroupCell>, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void }> = ({ cell, onCellChanged }) => {
-    return (
-        <div
-            onPointerDown={e => {
-                e.stopPropagation();
-                onCellChanged({ ...cell, isExpanded: !cell.isExpanded }, true);
-            }}
-            className="chevron"
-        >
-            <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>
-                ❯
-            </div>
-        </div>
-    )
-}
+// const Chevron: React.FC<{ 
+//     cell: Compatible<GroupCell>, 
+//     onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void, 
+//     getCompatibleCell: (uncertainCell: Uncertain<GroupCell>) => Compatible<GroupCell> }
+// > = ({ cell, onCellChanged, getCompatibleCell }) => {
+//     return (
+//         <div
+//             onPointerDown={e => {
+//                 e.stopPropagation();
+//                 onCellChanged(getCompatibleCell({ ...cell, isExpanded: false }), true);
+//             }}
+//             className="chevron"
+//         >
+//             <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>
+//                 ❯
+//             </div>
+//         </div>
+//     )
+// }
 
