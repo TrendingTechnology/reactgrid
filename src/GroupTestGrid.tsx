@@ -25,13 +25,29 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
+    const isGroupCell = (cell: Cell): boolean => {
+        return !!(cell.type === 'group')
+    }
+
     const filterRows = (rows: Row[]): Row[] => {
         return rows.filter((row, ri) => {
-            return row.cells.every((cell: Cell) => cell.type !== 'group' || (cell as GroupCell).isExpanded === true)
+            return row.cells.every((cell: Cell) => !isGroupCell(cell) || (cell as GroupCell).isExpanded === true)
         })
     }
 
-    const findRowChildrens = (row: Row): Row[] => {
+    const findRowChildrens = (rows: Row[], parentRow: Row, foundRows: Row[]): Row[] => {
+        if (rows.length === 0) return [];
+        
+        const childRows = rows.filter((row: Row) => {
+            const cell = row.cells.find((cell: Cell) => {
+                return isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId;
+            })
+            return !!cell;
+        });
+        const res = childRows.forEach((row: Row) => {
+            console.log(row);
+            findRowChildrens(childRows, row, childRows)
+        });
         return []
     }
 
@@ -41,6 +57,11 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     const handleRowToggle = (rowId: Id) => {
         console.log('handling row toggle: ', rowId, getClickedRow(state.rows, rowId));
+        const clickedRow = getClickedRow(state.rows, rowId);
+        if (clickedRow) {
+            const childRows = findRowChildrens(state.rows, clickedRow, []);
+            // console.log(childRows);
+        }
         const rows = filterRows(state.rows);
         let newState = { 
             ...state, 
@@ -48,22 +69,6 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         };
         setState(newState);
     }
-
-    // const findParent = (currentRow: Row): Row => {
-    //     const rows = [...state.rows];
-    //     if (!currentRow.cells.find((cell: any) => cell.parentId)) {
-    //         return currentRow;
-    //     }
-    //     const parentRow: Row | undefined = rows.find((row: Row) => {
-    //         if (row.rowId === (currentRow.cells.find(cell => cell.type === 'group') as GroupCell).parentId) {
-    //             return row;
-    //         }
-    //     });
-    //     if (parentRow !== undefined && parentRow.cells.find(cell => cell.type === 'group' && (cell as GroupCell).isExpanded)) {
-    //         return false;
-    //     }
-    //     return findParent(parentRow!);
-    // }
 
     const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
@@ -73,18 +78,19 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         let rows: any = new Array(rowCount).fill(0).map((_, ri) => {
             return {
                 rowId: ri, cells: columns.map((_, ci) =>  {
-                    if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
                     const now = new Date();
                     switch (ci) {
                         case 0:
+                            const rowId = ri;
+                            const parentId = rowId - (rowId % 2);
                             return {
                                 type: 'group',
-                                text: `${ri} - ${ci}`,
-                                parentRow: ri - 1,
-                                rowId: ri,
+                                text: `rId: ${ri}, pId: ${parentId}`,
+                                parentId,
+                                rowId,
                                 isExpanded: true,
-                                hasChilds: true,
-                                depth: ri, // remove depth
+                                hasChilds: true, // remove
+                                depth: rowId % 6, // remove
                                 onClick: handleRowToggle
                             } as GroupCell
                         case 1:

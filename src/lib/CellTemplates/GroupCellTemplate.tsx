@@ -55,7 +55,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
             !isInEditMode ?
                 <div
                     className="wrapper"
-                    style={{ marginLeft: `calc( 1.2em * ${elementMarginMultiplier})` }}
+                    style={{ marginLeft: `calc( 1.1em * ${elementMarginMultiplier})` }}
                 >
                     {canBeExpanded &&
                         <div
