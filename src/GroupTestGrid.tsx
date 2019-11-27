@@ -5,7 +5,7 @@ import { NumberCell } from './lib/CellTemplates/NumberCellTemplate';
 import { GroupCell, Cell } from './lib';
 
 const columnCount = 10;
-const rowCount = 200;
+const rowCount = 60;
 
 interface TestGridState {
     columns: Column[]
@@ -29,26 +29,45 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         return !!(cell.type === 'group')
     }
 
+    const isExpandedCell = (cell: Cell): boolean => {
+        return !!(cell as GroupCell).isExpanded
+    }
+
+    const getGroupCell = (row: Row): GroupCell | undefined => {
+        return row.cells.find((cell: Cell) => isGroupCell(cell)) as GroupCell
+    }
+
     const filterRows = (rows: Row[]): Row[] => {
         return rows.filter((row, ri) => {
-            return row.cells.every((cell: Cell) => !isGroupCell(cell) || (cell as GroupCell).isExpanded === true)
+            return row.cells.every((cell: Cell) => !isGroupCell(cell) || isExpandedCell(cell))
         })
     }
 
-    const findRowChildrens = (rows: Row[], parentRow: Row, foundRows: Row[]): Row[] => {
-        if (rows.length === 0) return [];
-        
-        const childRows = rows.filter((row: Row) => {
+    const createIndents = (rows: Row[]): Row[] => {
+        return rows.map((row: Row) => {
+            const groupCell: GroupCell | undefined = getGroupCell({...row});
+            // TODO COMPUTE INDENT
+            if (groupCell){
+                const computedIndent = 2;
+                groupCell.indent = groupCell.parentId === undefined ? 0 : computedIndent;}
+            return row;
+        });
+    }
+
+    const findRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[]): Row[] => {
+        const childRows = allRows.filter((row: Row) => {
             const cell = row.cells.find((cell: Cell) => {
                 return isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId;
             })
             return !!cell;
         });
-        const res = childRows.forEach((row: Row) => {
-            console.log(row);
-            findRowChildrens(childRows, row, childRows)
+        const mergedResults = [ ...foundRows, ...childRows ];
+        if (childRows.length === 0) return foundRows;
+        let rows: Row[] = [];
+        childRows.forEach((row: Row) => {
+            rows = findRowChildrens(allRows, row, mergedResults)
         });
-        return []
+        return rows;
     }
 
     const getClickedRow = (rows: Row[], rowId: Id): Row | undefined => {
@@ -60,7 +79,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         const clickedRow = getClickedRow(state.rows, rowId);
         if (clickedRow) {
             const childRows = findRowChildrens(state.rows, clickedRow, []);
-            // console.log(childRows);
+            console.log(childRows);
         }
         const rows = filterRows(state.rows);
         let newState = { 
@@ -72,7 +91,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
-            columnId: ci, resizable: true
+            columnId: ci, resizable: true, width: ci === 0 ? 250 : undefined
         } as Column));
 
         let rows: any = new Array(rowCount).fill(0).map((_, ri) => {
@@ -82,7 +101,9 @@ export const GroupTestGrid: React.FunctionComponent = () => {
                     switch (ci) {
                         case 0:
                             const rowId = ri;
-                            const parentId = rowId - (rowId % 2);
+                            const math = rowId - (rowId % 10);
+                            const a = (rowId % 2) === 0 ? 1 : 0;
+                            const parentId = (math === rowId) ? undefined : math + (rowId % 10) - a - 1;
                             return {
                                 type: 'group',
                                 text: `rId: ${ri}, pId: ${parentId}`,
@@ -90,7 +111,6 @@ export const GroupTestGrid: React.FunctionComponent = () => {
                                 rowId,
                                 isExpanded: true,
                                 hasChilds: true, // remove
-                                depth: rowId % 6, // remove
                                 onClick: handleRowToggle
                             } as GroupCell
                         case 1:
@@ -112,7 +132,9 @@ export const GroupTestGrid: React.FunctionComponent = () => {
             }
         });
 
-        rows = filterRows(rows);
+        rows = createIndents(rows);
+
+        // rows = filterRows(rows);
         return { rows, columns }
     })
 

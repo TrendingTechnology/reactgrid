@@ -12,7 +12,7 @@ export interface GroupCell extends Cell {
     hasChilds?: boolean;
     rowId: Id;
     parentId?: Id;
-    depth?: number;
+    indent?: number;
     onClick?: (rowId: Id) => void
 }
 
@@ -22,8 +22,14 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
         const isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
         const rowId = getCellProperty(uncertainCell, 'rowId', 'number');
+        let indent;
+        try {
+            indent = getCellProperty(uncertainCell, 'indent', 'number');
+        } catch {
+            indent = 0;
+        }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, rowId };
+        return { ...uncertainCell, text, value, isExpanded, rowId, indent };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
@@ -49,7 +55,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
         const canBeExpanded = cell.hasChilds === true;
-        const elementMarginMultiplier = cell.depth ? cell.depth : 0;
+        const elementMarginMultiplier = cell.indent ? cell.indent : 0;
 
         return (
             !isInEditMode ?
