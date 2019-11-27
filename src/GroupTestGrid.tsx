@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
 import './lib/assets/core.scss';
 import { NumberCell } from './lib/CellTemplates/NumberCellTemplate';
-import { GroupCell } from './lib';
+import { GroupCell, Cell } from './lib';
 
 const columnCount = 10;
-const rowCount = 150;
+const rowCount = 200;
 
 interface TestGridState {
     columns: Column[]
@@ -25,19 +25,68 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
+    const filterRows = (rows: Row[]): Row[] => {
+        return rows.filter((row, ri) => {
+            return row.cells.every((cell: Cell) => cell.type !== 'group' || (cell as GroupCell).isExpanded === true)
+        })
+    }
+
+    const findRowChildrens = (row: Row): Row[] => {
+        return []
+    }
+
+    const getClickedRow = (rows: Row[], rowId: Id): Row | undefined => {
+        return rows.find((row: Row) => row.rowId === rowId);
+    }
+
+    const handleRowToggle = (rowId: Id) => {
+        console.log('handling row toggle: ', rowId, getClickedRow(state.rows, rowId));
+        const rows = filterRows(state.rows);
+        let newState = { 
+            ...state, 
+            rows
+        };
+        setState(newState);
+    }
+
+    // const findParent = (currentRow: Row): Row => {
+    //     const rows = [...state.rows];
+    //     if (!currentRow.cells.find((cell: any) => cell.parentId)) {
+    //         return currentRow;
+    //     }
+    //     const parentRow: Row | undefined = rows.find((row: Row) => {
+    //         if (row.rowId === (currentRow.cells.find(cell => cell.type === 'group') as GroupCell).parentId) {
+    //             return row;
+    //         }
+    //     });
+    //     if (parentRow !== undefined && parentRow.cells.find(cell => cell.type === 'group' && (cell as GroupCell).isExpanded)) {
+    //         return false;
+    //     }
+    //     return findParent(parentRow!);
+    // }
+
     const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
             columnId: ci, resizable: true
         } as Column));
 
-        const rows = new Array(rowCount).fill(0).map((_, ri) => {
+        let rows: any = new Array(rowCount).fill(0).map((_, ri) => {
             return {
-                rowId: ri.toString(), cells: columns.map((_, ci) =>  {
+                rowId: ri, cells: columns.map((_, ci) =>  {
                     if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
                     const now = new Date();
                     switch (ci) {
                         case 0:
-                            return { type: 'group', text: `${ri} - ${ci}`, isExpanded: true, hasChilds: true, depth: ri } as GroupCell
+                            return {
+                                type: 'group',
+                                text: `${ri} - ${ci}`,
+                                parentRow: ri - 1,
+                                rowId: ri,
+                                isExpanded: true,
+                                hasChilds: true,
+                                depth: ri, // remove depth
+                                onClick: handleRowToggle
+                            } as GroupCell
                         case 1:
                             return { type: 'text', text: `${ri} - ${ci}` }
                         case 2: 
@@ -57,6 +106,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
             }
         });
 
+        rows = filterRows(rows);
         return { rows, columns }
     })
 

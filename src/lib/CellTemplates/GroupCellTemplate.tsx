@@ -8,9 +8,12 @@ import { CellEditor } from '../Components/CellEditor';
 export interface GroupCell extends Cell {
     type: 'group';
     text: string;
-    isExpanded?: boolean;
+    isExpanded: boolean;
     hasChilds?: boolean;
+    rowId: Id;
+    parentId?: Id;
     depth?: number;
+    onClick?: (rowId: Id) => void
 }
 
 export class GroupCellTemplate implements CellTemplate<GroupCell> {
@@ -18,8 +21,9 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
         const isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
+        const rowId = getCellProperty(uncertainCell, 'rowId', 'number');
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded };
+        return { ...uncertainCell, text, value, isExpanded, rowId };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
@@ -58,8 +62,9 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                             className="chevron"
                             onPointerDown={e => {
                                 e.stopPropagation();
-                                onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded}), true)}
-                            }
+                                onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded}), true)
+                                cell.onClick ? cell.onClick(cell.rowId) : null;
+                            }}
                         >
                             <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>❯</div>
                         </div>
