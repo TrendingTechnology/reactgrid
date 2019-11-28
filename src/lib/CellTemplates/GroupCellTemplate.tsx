@@ -8,8 +8,8 @@ import { CellEditor } from '../Components/CellEditor';
 export interface GroupCell extends Cell {
     type: 'group';
     text: string;
-    isExpanded: boolean;
-    hasChilds?: boolean;
+    isExpanded?: boolean;
+    hasChildrens?: boolean;
     isDisplayed: boolean;
     rowId: Id;
     parentId?: Id;
@@ -29,20 +29,20 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         } catch {
             indent = 0;
         }
-        let hasChilds;
+        let hasChildrens;
         try {
-            hasChilds = getCellProperty(uncertainCell, 'hasChilds', 'boolean');
+            hasChildrens = getCellProperty(uncertainCell, 'hasChildrens', 'boolean');
         } catch {
-            hasChilds = true;
+            hasChildrens = true;
         }
         let isDisplayed;
         try {
             isDisplayed = getCellProperty(uncertainCell, 'isDisplayed', 'boolean');
         } catch {
-            isDisplayed = true;
+            isDisplayed = false;
         }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, hasChilds, rowId, indent, isDisplayed };
+        return { ...uncertainCell, text, value, isExpanded, hasChildrens: hasChildrens, isDisplayed, rowId, indent };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
@@ -67,7 +67,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     }
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
-        const canBeExpanded = cell.hasChilds === true;
+        const canBeExpanded = cell.hasChildrens === true;
         const elementMarginMultiplier = cell.indent ? canBeExpanded ? cell.indent : cell.indent + 1 : 0;
 
         return (
