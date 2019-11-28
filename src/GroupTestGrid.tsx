@@ -71,7 +71,10 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         if (rowIds.length === 0) return rows;
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);
-            if (rowIds.includes(row.rowId)) groupCell.isDisplayed = newIsDisplayedValue;
+            if (rowIds.includes(row.rowId)) {
+                groupCell.isDisplayed = newIsDisplayedValue 
+                // groupCell.isExpanded = newIsDisplayedValue
+            };
             return row
         })
     }
