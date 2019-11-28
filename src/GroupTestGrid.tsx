@@ -25,42 +25,33 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
-    const isGroupCell = (cell: Cell): boolean => {
-        return !!(cell.type === 'group')
-    }
+    const isGroupCell = (cell: Cell): boolean => !!(cell.type === 'group');
 
-    const isExpandedCell = (cell: Cell): boolean => {
-        return !!(cell as GroupCell).isExpanded
-    }
+    const isExpandedCell = (cell: Cell): boolean => !!(cell as GroupCell).isExpanded;
 
-    const getGroupCell = (row: Row): GroupCell => {
-        return row.cells.find((cell: Cell) => isGroupCell(cell)) as GroupCell
-    }
+    const getGroupCell = (row: Row): GroupCell => row.cells.find((cell: Cell) => isGroupCell(cell)) as GroupCell;
 
-    const hasChildren = (rows: Row[], row: Row): boolean => {
-        return rows.some((r: Row) => {
-            const cell = getGroupCell(r);
-            return cell.parentId === row.rowId
-        });
-    }
+    const hasChildren = (rows: Row[], row: Row): boolean => rows.some((r: Row) => getGroupCell(r).parentId === row.rowId);
+
+    const getDisplayedRows = (rows: Row[]): Row[] => rows.filter(row => getGroupCell(row).isDisplayed)
 
     // TODO level in other function
     // TODO hasChilds in other function
-    const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], level?: number): Row[] => {
+    const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], level: number): Row[] => {
         const childRows = allRows.filter((row: Row) => {
-            const cell = row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId)
-            return !!cell;
+            return !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId);
         }).map((row: Row) => {
             const cell = getGroupCell(row);
-            if (level !== undefined) cell.indent = level;
+            cell.indent = level;
             cell.hasChildrens = hasChildren(allRows, row);
             return row;
         });
         const mergedResults = [ ...foundRows, ...childRows ];
         if (childRows.length === 0) return foundRows;
+        ++level;
         let rows: Row[] = [];
         childRows.forEach((row: Row) => {
-            rows = getRowChildrens(allRows, row, mergedResults, level!++);
+            rows = getRowChildrens(allRows, row, mergedResults, level);
         });
         return rows;
     }
@@ -76,17 +67,13 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         });
     }
 
-    const toggleDisplayAttr = (rows: Row[], rowIds: Id[]): Row[] => {
+    const toggleDisplayAttr = (rows: Row[], rowIds: Id[], newIsDisplayedValue: boolean): Row[] => {
         if (rowIds.length === 0) return rows;
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);
-            if (rowIds.includes(row.rowId)) groupCell.isDisplayed = false;
+            if (rowIds.includes(row.rowId)) groupCell.isDisplayed = newIsDisplayedValue;
             return row
         })
-    }
-
-    const getDisplayedRows = (rows: Row[]): Row[] => {
-        return rows.filter(row => getGroupCell(row).isDisplayed)
     }
 
     const getRowById = (rows: Row[], rowId: Id): Row | undefined => {
@@ -95,20 +82,18 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     const handleRowToggle = (rowId: Id) => {
         const clickedRow = getRowById(state.rows, rowId);
-        // console.log('handling row toggle: ', rowId, clickedRow);
+        console.log('handling row toggle: ', rowId, clickedRow);
         
         let childRows: Row[] = [];
         if (clickedRow) {
             
-            childRows = getRowChildrens(state.rows, clickedRow, []);
+            // TODO INDENT
+            childRows = getRowChildrens(state.rows, clickedRow, [], getGroupCell(clickedRow).indent! + 1 );
 
             let rows = state.rows;
-            console.log(childRows);
-            console.log('clicked cell', getGroupCell(clickedRow));
 
-            rows = toggleDisplayAttr(rows, childRows.map(row => row.rowId));
+            rows = toggleDisplayAttr(rows, childRows.map(row => row.rowId), isExpandedCell(getGroupCell(clickedRow)));
             rows = getDisplayedRows(rows);
-            // rows = createIndents(rows);
 
             let newState = { ...state, rows };
             
@@ -162,7 +147,6 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
         rows = createIndents(rows);
 
-        // rows = filterRows(rows);
         return { rows, columns }
     })
 

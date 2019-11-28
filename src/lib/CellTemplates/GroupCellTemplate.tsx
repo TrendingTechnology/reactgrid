@@ -68,7 +68,8 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
         const canBeExpanded = cell.hasChildrens === true;
-        const elementMarginMultiplier = cell.indent ? canBeExpanded ? cell.indent : cell.indent + 1 : 0;
+        // let  elementMarginMultiplier = cell.indent ? canBeExpanded ? cell.indent : cell.indent + 1 : 0;
+        const elementMarginMultiplier = cell.indent ? cell.indent : 0 ;
 
         return (
             !isInEditMode ?
