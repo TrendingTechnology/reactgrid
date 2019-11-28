@@ -10,10 +10,11 @@ export interface GroupCell extends Cell {
     text: string;
     isExpanded: boolean;
     hasChilds?: boolean;
+    isDisplayed: boolean;
     rowId: Id;
     parentId?: Id;
     indent?: number;
-    onClick?: (rowId: Id) => void
+    onClick?: (rowId: Id) => void;
 }
 
 export class GroupCellTemplate implements CellTemplate<GroupCell> {
@@ -28,8 +29,20 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         } catch {
             indent = 0;
         }
+        let hasChilds;
+        try {
+            hasChilds = getCellProperty(uncertainCell, 'hasChilds', 'boolean');
+        } catch {
+            hasChilds = true;
+        }
+        let isDisplayed;
+        try {
+            isDisplayed = getCellProperty(uncertainCell, 'isDisplayed', 'boolean');
+        } catch {
+            isDisplayed = true;
+        }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, rowId, indent };
+        return { ...uncertainCell, text, value, isExpanded, hasChilds, rowId, indent, isDisplayed };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
@@ -55,7 +68,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
         const canBeExpanded = cell.hasChilds === true;
-        const elementMarginMultiplier = cell.indent ? cell.indent : 0;
+        const elementMarginMultiplier = cell.indent ? canBeExpanded ? cell.indent : cell.indent + 1 : 0;
 
         return (
             !isInEditMode ?
