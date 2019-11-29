@@ -27,20 +27,22 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     const isGroupCell = (cell: Cell): boolean => !!(cell.type === 'group');
 
-    const isExpandedCell = (cell: Cell): boolean => !!(cell as GroupCell).isExpanded;
+    const isCellExpanded = (cell: Cell): boolean => !!(cell as GroupCell).isExpanded;
 
     const getGroupCell = (row: Row): GroupCell => row.cells.find((cell: Cell) => isGroupCell(cell)) as GroupCell;
 
     const hasChildren = (rows: Row[], row: Row): boolean => rows.some((r: Row) => getGroupCell(r).parentId === row.rowId);
 
-    const getDisplayedRows = (rows: Row[]): Row[] => rows.filter(row => getGroupCell(row).isDisplayed)
+    const getDisplayedRows = (rows: Row[]): Row[] => rows.filter(row => getGroupCell(row).isDisplayed);
+
+    const getRowById = (rows: Row[], rowId: Id): Row | undefined => rows.find((row: Row) => row.rowId === rowId);
+
+    const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter((row: Row) => !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId))
 
     // TODO level in other function
     // TODO hasChilds in other function
     const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], level: number): Row[] => {
-        const childRows = allRows.filter((row: Row) => {
-            return !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId);
-        }).map((row: Row) => {
+        const childRows = getDirectChildrenRows(allRows, parentRow).map((row: Row) => {
             const cell = getGroupCell(row);
             cell.indent = level;
             cell.hasChildrens = hasChildren(allRows, row);
@@ -73,34 +75,22 @@ export const GroupTestGrid: React.FunctionComponent = () => {
             const groupCell: GroupCell = getGroupCell(row);
             if (rowIds.includes(row.rowId)) {
                 groupCell.isDisplayed = newIsDisplayedValue 
-                // groupCell.isExpanded = newIsDisplayedValue
             };
             return row
         })
     }
 
-    const getRowById = (rows: Row[], rowId: Id): Row | undefined => {
-        return rows.find((row: Row) => row.rowId === rowId);
-    }
-
     const handleRowToggle = (rowId: Id) => {
-        const clickedRow = getRowById(state.rows, rowId);
-        console.log('handling row toggle: ', rowId, clickedRow);
-        
+        let rows = { ...state.rows };
+        const clickedRow = getRowById(rows, rowId);
         let childRows: Row[] = [];
         if (clickedRow) {
-            
-            // TODO INDENT
-            childRows = getRowChildrens(state.rows, clickedRow, [], getGroupCell(clickedRow).indent! + 1 );
+            childRows = getRowChildrens(rows, clickedRow, [], getGroupCell(clickedRow).indent! + 1 );
 
-            let rows = state.rows;
-
-            rows = toggleDisplayAttr(rows, childRows.map(row => row.rowId), isExpandedCell(getGroupCell(clickedRow)));
+            rows = toggleDisplayAttr(rows, childRows.map(row => row.rowId), isCellExpanded(getGroupCell(clickedRow)));
             rows = getDisplayedRows(rows);
-
-            let newState = { ...state, rows };
             
-            setState(newState);
+            setState({ ...state, rows });
         }
     }
 
