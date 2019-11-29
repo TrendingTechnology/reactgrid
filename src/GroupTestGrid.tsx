@@ -37,7 +37,13 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     const getRowById = (rows: Row[], rowId: Id): Row | undefined => rows.find((row: Row) => row.rowId === rowId);
 
-    const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter((row: Row) => !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId))
+    const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter((row: Row) => !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId));
+
+    const isParentRowExpanded = (rows: Row[], row: Row): boolean => {
+        const parentRow = getRowById(rows, getGroupCell(row).parentId!)
+        if (parentRow !== undefined) return isCellExpanded(getGroupCell(parentRow));
+        return false
+    };
 
     // TODO level in other function
     // TODO hasChilds in other function
@@ -74,14 +80,14 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);
             if (rowIds.includes(row.rowId)) {
-                groupCell.isDisplayed = newIsDisplayedValue 
+                groupCell.isDisplayed = newIsDisplayedValue && isParentRowExpanded(rows, row)
             };
             return row
         })
     }
 
     const handleRowToggle = (rowId: Id) => {
-        let rows = { ...state.rows };
+        let rows = state.rows;
         const clickedRow = getRowById(rows, rowId);
         let childRows: Row[] = [];
         if (clickedRow) {
