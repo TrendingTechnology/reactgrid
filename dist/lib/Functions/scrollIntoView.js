@@ -25,9 +25,9 @@ function getScrollTop(state, location, dontChange) {
     var shouldScrollToTop = function () { return row.top + (location.cellY ? location.cellY : 0) < scrollTop + 1 && !isBottomRowFrozen; };
     var isColumnBelowBottomPane = function () { return row.bottom > visibleScrollAreaHeight + scrollTop; };
     var isColumnBelowTopPane = function () { return row.top < scrollTop && !isBottomRowFrozen; };
-    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom()) {
+    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom() || isColumnBelowBottomPane()) {
         if (location.cellY) {
-            return rows[row.idx + 1] ? rows[row.idx + 1].bottom - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
+            return rows[row.idx + 1] ? rows[row.idx + 1].top - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
         }
         else {
             return row.bottom - visibleScrollAreaHeight + 1;
@@ -59,17 +59,17 @@ function getScrollLeft(state, location, dontChange) {
         return scrollLeft;
     var visibleContentWidth = Math.min(clientWidth, state.cellMatrix.width);
     var visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
-    var isRightColFrozen = frozenRightRange.columns.some(function (col) { return column.idx === col.idx; });
-    var shouldScrollToRight = function () { return (location.cellX ? column.left + location.cellX : column.right) > visibleScrollAreaWidth + scrollLeft - 1 || state.cellMatrix.last.column.idx === location.column.idx; };
-    var shouldScrollToLeft = function () { return column.left + (location.cellX ? location.cellX : 0) < scrollLeft + 1 && !isRightColFrozen; };
+    var isFocusOnRightColFrozen = frozenRightRange.columns.some(function (col) { return column.idx === col.idx; });
     var isColumnBelowRightPane = function () { return column.right > visibleScrollAreaWidth + scrollLeft; };
-    var isColumnBelowLeftPane = function () { return column.left < scrollLeft && !isRightColFrozen; };
+    var isColumnBelowLeftPane = function () { return column.left < scrollLeft && !isFocusOnRightColFrozen; };
+    var shouldScrollToRight = function () { return (location.cellX ? column.left + location.cellX : column.right) > visibleScrollAreaWidth + scrollLeft - 1 || state.cellMatrix.last.column.idx === column.idx || isColumnBelowRightPane(); };
+    var shouldScrollToLeft = function () { return (column.left + (location.cellX ? location.cellX : 0) < scrollLeft + 1) && !isFocusOnRightColFrozen; };
     var isFocusedAndHasRightFrozens = function () { return state.focusedLocation && frozenRightRange.columns.length > 0; };
-    var isFocusOnRightFrozen = function () { return state.focusedLocation && state.focusedLocation.column.idx > frozenRightRange.columns[0].idx; };
-    var isFocusOnLeftFrozen = function () { return state.focusedLocation && state.focusedLocation.column.idx > frozenLeftRange.columns.length; };
+    var isFocusOnRightFrozen = function () { return state.focusedLocation && frozenRightRange.columns.length > 0 && state.focusedLocation.column.idx > frozenRightRange.columns[0].idx; };
+    var isFocusOnLeftFrozen = function () { return state.focusedLocation && state.focusedLocation.column.idx >= frozenLeftRange.columns.length; };
     if (frozenRightRange.columns.length === 0 && shouldScrollToRight()) {
         if (location.cellX) {
-            return cols[column.idx + 1] ? cols[column.idx + 1].right - visibleScrollAreaWidth + 1 : cols[column.idx].right - visibleScrollAreaWidth + 1;
+            return cols[column.idx] ? cols[column.idx].right - visibleScrollAreaWidth + 1 : cols[column.idx].right - visibleScrollAreaWidth + 1;
         }
         else {
             return column.right - visibleScrollAreaWidth + 1;
@@ -86,7 +86,7 @@ function getScrollLeft(state, location, dontChange) {
             return column.left - 1;
         }
     }
-    else if (isColumnBelowLeftPane() && !isFocusOnLeftFrozen()) {
+    else if (isColumnBelowLeftPane() || isFocusOnLeftFrozen() && !isFocusOnLeftFrozen()) {
         return column.left - 1;
     }
     else {
