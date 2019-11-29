@@ -107,89 +107,64 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
         const data = [
             {
-                text: 'A',
+                name: 'aaaa',
+                hash: '543aaaa',
+                added: 500,
+                removed: 400,
                 childrens: [
                     {
-                        text: 'A B',
+                        name: 'aaaa',
+                        hash: '543aaaa',
+                        added: 500,
+                        removed: 400,
                         childrens: [
                             {
-                                text: 'A B E',
-                                childrens: []
-                            },
-                            {
-                                text: 'A B F',
-                                childrens: []
-                            },
-                        ]
-                    },
-                    {
-                        text: 'A C',
-                        childrens: [
-                            {
-                                text: 'A B G',
+                                name: 'aaaa',
+                                hash: '543aaaa',
+                                added: 500,
+                                removed: 400,
                                 childrens: [
                                     {
-                                        text: 'A B G 1',
-                                        childrens: []
-                                    },
-                                    {
-                                        text: 'A B G 2',
-                                        childrens: []
-                                    },
-                                    {
-                                        text: 'A B G 3',
-                                        childrens: []
+                                        name: 'aaaa',
+                                        hash: '543aaaa',
+                                        added: 500,
+                                        removed: 400,
+                                        childrens: [
+                                        ]
                                     },
                                 ]
                             },
-                            {
-                                text: 'A B H',
-                                childrens: []
-                            },
                         ]
                     },
                     {
-                        text: 'A D',
-                        childrens: []
+                        name: 'aaaa',
+                        hash: '543aaaa',
+                        added: 500,
+                        removed: 400,
+                        childrens: [
+                        ]
                     },
                 ]
             },
             {
-                text: '1',
+                name: 'aaaa',
+                hash: '543aaaa',
+                added: 500,
+                removed: 400,
                 childrens: [
-                    {
-                        text: '1 2',
-                        childrens: [
-                            {
-                                text: '1 2 3',
-                                childrens: []
-                            },
-                            {
-                                text: '1 2 4',
-                                childrens: []
-                            },
-                        ]
-                    },
-                    {
-                        text: '1 3',
-                        childrens: [
-                            {
-                                text: '1 3 1',
-                                childrens: []
-                            },
-                            {
-                                text: '1 3 2',
-                                childrens: []
-                            },
-                        ]
-                    },
-                    {
-                        text: '1 4',
-                        childrens: []
-                    },
+                ]
+            },
+            {
+                name: 'aaaa',
+                hash: '543aaaa',
+                added: 500,
+                removed: 400,
+                childrens: [
                 ]
             },
         ]
+
+        console.log([...data]);
 
         let rows: any = new Array(rowCount).fill(0).map((_, ri) => {
             return {
