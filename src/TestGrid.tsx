@@ -4,7 +4,7 @@ import './lib/assets/core.scss';
 import { NumberCell } from './lib/CellTemplates/NumberCellTemplate';
 
 const columnCount = 10;
-const rowCount = 150;
+const rowCount = 50;
 
 interface TestGridState {
     columns: Column[]
@@ -80,8 +80,10 @@ export const TestGrid: React.FunctionComponent = () => {
         license={'non-commercial'}
         onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
-        // frozenLeftColumns={1}
+        // frozenLeftColumns={2}
         // frozenRightColumns={2}
+        // frozenTopRows={2}
+        // frozenBottomRows={2}
         enableRowSelection
         enableColumnSelection
     />
