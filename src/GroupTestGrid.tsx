@@ -68,7 +68,6 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);
             if (groupCell.parentId === undefined) {
-                //  implement indent here
                 getRowChildrens(rows, row, [], 1);
             }
             return row;
@@ -80,7 +79,8 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);
             if (rowIds.includes(row.rowId)) {
-                groupCell.isDisplayed = newIsDisplayedValue && isParentRowExpanded(rows, row)
+                groupCell.isDisplayed = newIsDisplayedValue;
+                groupCell.isExpanded = newIsDisplayedValue
             };
             return row
         })
