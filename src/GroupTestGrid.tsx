@@ -105,6 +105,92 @@ export const GroupTestGrid: React.FunctionComponent = () => {
             columnId: ci, resizable: true, width: ci === 0 ? 250 : undefined
         } as Column));
 
+        const data = [
+            {
+                text: 'A',
+                childrens: [
+                    {
+                        text: 'A B',
+                        childrens: [
+                            {
+                                text: 'A B E',
+                                childrens: []
+                            },
+                            {
+                                text: 'A B F',
+                                childrens: []
+                            },
+                        ]
+                    },
+                    {
+                        text: 'A C',
+                        childrens: [
+                            {
+                                text: 'A B G',
+                                childrens: [
+                                    {
+                                        text: 'A B G 1',
+                                        childrens: []
+                                    },
+                                    {
+                                        text: 'A B G 2',
+                                        childrens: []
+                                    },
+                                    {
+                                        text: 'A B G 3',
+                                        childrens: []
+                                    },
+                                ]
+                            },
+                            {
+                                text: 'A B H',
+                                childrens: []
+                            },
+                        ]
+                    },
+                    {
+                        text: 'A D',
+                        childrens: []
+                    },
+                ]
+            },
+            {
+                text: '1',
+                childrens: [
+                    {
+                        text: '1 2',
+                        childrens: [
+                            {
+                                text: '1 2 3',
+                                childrens: []
+                            },
+                            {
+                                text: '1 2 4',
+                                childrens: []
+                            },
+                        ]
+                    },
+                    {
+                        text: '1 3',
+                        childrens: [
+                            {
+                                text: '1 3 1',
+                                childrens: []
+                            },
+                            {
+                                text: '1 3 2',
+                                childrens: []
+                            },
+                        ]
+                    },
+                    {
+                        text: '1 4',
+                        childrens: []
+                    },
+                ]
+            },
+        ]
+
         let rows: any = new Array(rowCount).fill(0).map((_, ri) => {
             return {
                 rowId: ri, cells: columns.map((_, ci) =>  {
@@ -121,7 +207,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
                                 text: `rId: ${ri}, pId: ${parentId}`,
                                 parentId,
                                 rowId,
-                                isExpanded: true, // optionaly 
+                                isExpanded: true, // optionaly
                                 isDisplayed: true, // optionaly
                                 onClick: handleRowToggle
                             } as GroupCell

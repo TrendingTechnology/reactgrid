@@ -10,7 +10,7 @@ export interface GroupCell extends Cell {
     text: string;
     isExpanded?: boolean;
     hasChildrens?: boolean;
-    isDisplayed: boolean;
+    isDisplayed?: boolean;
     rowId: Id;
     parentId?: Id;
     indent?: number;
@@ -35,14 +35,8 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         } catch {
             hasChildrens = true;
         }
-        let isDisplayed;
-        try {
-            isDisplayed = getCellProperty(uncertainCell, 'isDisplayed', 'boolean');
-        } catch {
-            isDisplayed = false;
-        }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, hasChildrens: hasChildrens, isDisplayed, rowId, indent };
+        return { ...uncertainCell, text, value, isExpanded, hasChildrens: hasChildrens, rowId, indent };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
