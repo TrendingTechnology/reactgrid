@@ -10,19 +10,23 @@ export interface GroupCell extends Cell {
     text: string;
     isExpanded?: boolean;
     hasChildrens?: boolean;
-    isDisplayed?: boolean;
     rowId: Id;
     parentId?: Id;
     indent?: number;
-    onClick?: (rowId: Id) => void;
 }
 
 export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
-        const isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
-        const rowId = getCellProperty(uncertainCell, 'rowId', 'number');
+        // const isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
+        const rowId = getCellProperty(uncertainCell, 'rowId', 'string');
+        let isExpanded;
+        try {
+            isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
+        } catch {
+            isExpanded = true;
+        }
         let indent;
         try {
             indent = getCellProperty(uncertainCell, 'indent', 'number');
@@ -36,7 +40,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
             hasChildrens = true;
         }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, hasChildrens: hasChildrens, rowId, indent };
+        return { ...uncertainCell, text, value, isExpanded, hasChildrens, rowId, indent };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
@@ -46,7 +50,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     handleKeyDown(cell: Compatible<GroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<GroupCell>, enableEditMode: boolean } {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
-        const char = String.fromCharCode(keyCode)
+        const char = String.fromCharCode(keyCode);
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
         } else if (!ctrl && !alt && isAlphaNumericKey(keyCode)) {
@@ -62,14 +66,14 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
         const canBeExpanded = cell.hasChildrens === true;
-        // let  elementMarginMultiplier = cell.indent ? canBeExpanded ? cell.indent : cell.indent + 1 : 0;
-        const elementMarginMultiplier = cell.indent ? cell.indent : 0 ;
+        const indent = cell.indent ? cell.indent : 0;
+        const elementMarginMultiplier = indent * 1.2;
 
         return (
             !isInEditMode ?
                 <div
                     className="wrapper"
-                    style={{ marginLeft: `calc( 1.3em * ${elementMarginMultiplier})` }}
+                    style={{ marginLeft: `${elementMarginMultiplier}em` }}
                 >
                     {canBeExpanded &&
                         <div
@@ -77,7 +81,6 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                             onPointerDown={e => {
                                 e.stopPropagation();
                                 onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded}), true)
-                                cell.onClick ? cell.onClick(cell.rowId) : null;
                             }}
                         >
                             <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>❯</div>
@@ -107,25 +110,4 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     }
 
 }
-
-// class Chevron extends React.Component<IChevronProps> {
-// const Chevron: React.FC<{ 
-//     cell: Compatible<GroupCell>, 
-//     onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void, 
-//     getCompatibleCell: (uncertainCell: Uncertain<GroupCell>) => Compatible<GroupCell> }
-// > = ({ cell, onCellChanged, getCompatibleCell }) => {
-//     return (
-//         <div
-//             onPointerDown={e => {
-//                 e.stopPropagation();
-//                 onCellChanged(getCompatibleCell({ ...cell, isExpanded: false }), true);
-//             }}
-//             className="chevron"
-//         >
-//             <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>
-//                 ❯
-//             </div>
-//         </div>
-//     )
-// }
 

@@ -1,29 +1,59 @@
-import React, { useState } from 'react';
-import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
+import React, {useState} from 'react';
+import {Cell, CellChange, Column, GroupCell, Id, ReactGrid, Row, TextCell} from './lib'
 import './lib/assets/core.scss';
-import { NumberCell } from './lib/CellTemplates/NumberCellTemplate';
-import { GroupCell, Cell } from './lib';
 
-const columnCount = 10;
-const rowCount = 60;
 
 interface GroupTestGridState {
     columns:    Column[]
     rows:       Row[]
 }
 
-const emailValidator = (email: string): boolean => {
-    const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (email_regex.test(email.replace(/\s+/g, '')))
-        return true;
-    return false;
-}
+const data: any[] = [
+    {
+        id: 'a',
+        label: 'a',
+        text: 'a',
+    },
+    {
+        id: 'b',
+        label: 'b',
+        text: 'b',
+        parent: 'a'
+    },
+    {
+        id: 'c',
+        label: 'c',
+        text: 'c',
+        parent: 'b'
+    },
+    {
+        id: 'd',
+        label: 'd',
+        text: 'd',
+        parent: 'a'
+    },
+    {
+        id: 'f',
+        label: 'f',
+        text: 'f',
+        parent: 'd'
+    },
+    {
+        id: 'g',
+        label: 'g',
+        text: 'g',
+        parent: 'f'
+    },
+    {
+        id: 'h',
+        label: 'g',
+        text: 'g',
+        parent: 'a'
+    },
+];
+
 
 export const GroupTestGrid: React.FunctionComponent = () => {
-
-    const myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
-    const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
-    const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
     const isGroupCell = (cell: Cell): boolean => !!(cell.type === 'group');
 
@@ -33,17 +63,25 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     const hasChildren = (rows: Row[], row: Row): boolean => rows.some((r: Row) => getGroupCell(r).parentId === row.rowId);
 
-    const getDisplayedRows = (rows: Row[]): Row[] => rows.filter(row => getGroupCell(row).isDisplayed);
+    const getExpandedRows = (rows: Row[]): Row[] => {
+        return rows.filter((row: Row) => {
+            let parentRow = getParentRow(rows, row);
+            print(row, parentRow);
+            return parentRow ? isCellExpanded(getGroupCell(parentRow)) : true;
+        });
+    };
+
+    const print = (row: Row, parentRow: Row | undefined): void => {
+        let spaces = '';
+        for (let i = 0; i < getGroupCell(row).indent!; i++, spaces += ' ');
+        console.log(`${spaces} row: ${getGroupCell(row).rowId}, parent: ${getGroupCell(row).parentId}, isParentExpanded: ${parentRow && getGroupCell(parentRow).isExpanded}`)
+    };
 
     const getRowById = (rows: Row[], rowId: Id): Row | undefined => rows.find((row: Row) => row.rowId === rowId);
 
     const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter((row: Row) => !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId));
 
-    const isParentRowExpanded = (rows: Row[], row: Row): boolean => {
-        const parentRow = getRowById(rows, getGroupCell(row).parentId!)
-        if (parentRow !== undefined) return isCellExpanded(getGroupCell(parentRow));
-        return false
-    };
+    const getParentRow = (rows: Row[], row: Row): Row | undefined => rows.find((r) => getGroupCell(r).rowId === getGroupCell(row).parentId);
 
     // TODO level in other function
     // TODO hasChilds in other function
@@ -72,163 +110,69 @@ export const GroupTestGrid: React.FunctionComponent = () => {
             }
             return row;
         });
-    }
+    };
 
-    const toggleDisplayAttr = (rows: Row[], rowIds: Id[], newIsDisplayedValue: boolean): Row[] => {
-        if (rowIds.length === 0) return rows;
-        return rows.map((row: Row) => {
-            const groupCell: GroupCell = getGroupCell(row);
-            if (rowIds.includes(row.rowId)) {
-                groupCell.isDisplayed = newIsDisplayedValue;
-                groupCell.isExpanded = newIsDisplayedValue
-            };
-            return row
-        })
-    }
-
-    const handleRowToggle = (rowId: Id) => {
-        let rows = state.rows;
-        const clickedRow = getRowById(rows, rowId);
-        let childRows: Row[] = [];
-        if (clickedRow) {
-            childRows = getRowChildrens(rows, clickedRow, [], getGroupCell(clickedRow).indent! + 1 );
-
-            rows = toggleDisplayAttr(rows, childRows.map(row => row.rowId), isCellExpanded(getGroupCell(clickedRow)));
-            rows = getDisplayedRows(rows);
-            
-            setState({ ...state, rows });
-        }
-    }
-
-    const [state, setState] = useState<GroupTestGridState>(() => {
-        const columns = new Array(columnCount).fill(0).map((_, ci) => ({
-            columnId: ci, resizable: true, width: ci === 0 ? 250 : undefined
-        } as Column));
-
-        const data = [
-            {
-                name: 'aaaa',
-                hash: '543aaaa',
-                added: 500,
-                removed: 400,
-                childrens: [
-                    {
-                        name: 'aaaa',
-                        hash: '543aaaa',
-                        added: 500,
-                        removed: 400,
-                        childrens: [
-                            {
-                                name: 'aaaa',
-                                hash: '543aaaa',
-                                added: 500,
-                                removed: 400,
-                                childrens: [
-                                    {
-                                        name: 'aaaa',
-                                        hash: '543aaaa',
-                                        added: 500,
-                                        removed: 400,
-                                        childrens: [
-                                        ]
-                                    },
-                                ]
-                            },
-                        ]
-                    },
-                    {
-                        name: 'aaaa',
-                        hash: '543aaaa',
-                        added: 500,
-                        removed: 400,
-                        childrens: [
-                        ]
-                    },
-                ]
-            },
-            {
-                name: 'aaaa',
-                hash: '543aaaa',
-                added: 500,
-                removed: 400,
-                childrens: [
-                ]
-            },
-            {
-                name: 'aaaa',
-                hash: '543aaaa',
-                added: 500,
-                removed: 400,
-                childrens: [
-                ]
-            },
-        ]
-
-        console.log([...data]);
-
-        let rows: any = new Array(rowCount).fill(0).map((_, ri) => {
+    const getReactgridRowsFromData = (data: any[]): Row[] => {
+        return data.map((dataRow): Row => {
             return {
-                rowId: ri, cells: columns.map((_, ci) =>  {
-                    const now = new Date();
-                    switch (ci) {
-                        case 0:
-                            const rowId = ri;
-                            const math = rowId - (rowId % 10);
-                            const a = (rowId % 3) === 0 ? 1 : 0;
-                            const p = math + (rowId % 10) - a - 1;
-                            const parentId = (math === rowId) ? undefined : p;
-                            return {
-                                type: 'group',
-                                text: `rId: ${ri}, pId: ${parentId}`,
-                                parentId,
-                                rowId,
-                                isExpanded: true, // optionaly
-                                isDisplayed: true, // optionaly
-                                onClick: handleRowToggle
-                            } as GroupCell
-                        case 1:
-                            return { type: 'text', text: `${ri} - ${ci}` }
-                        case 2: 
-                            return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
-                        case 3: 
-                            return { type: 'number', format: myNumberFormat, value: 2.78, nanToZero: false, hideZero: true } as NumberCell
-                        case 4: 
-                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
-                        case 5: 
-                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
-                        case 6: 
-                            return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono' , uncheckedText: false }
-                        default:
-                            return { type: 'text', text: `${ri} - ${ci}`, validator: () => {} }
-                    }
-                })
+                rowId: dataRow.id,
+                cells: [
+                    {
+                        type: 'group',
+                        text: `id: ${dataRow.id}, pId: ${dataRow.parent}`,
+                        parentId: dataRow.parent,
+                        rowId: dataRow.id,
+                        isExpanded: true, // optionaly
+                    } as GroupCell,
+                    { type: 'text', text: `${dataRow.text} ` }  as TextCell
+                ]
             }
         });
+    };
+
+    const [state, setState] = useState<GroupTestGridState>(() => {
+
+        const columns: Column[] = [
+            {
+                columnId: 0,
+                resizable: true,
+                width: 200
+            },
+            {
+                columnId: 1
+            }
+        ];
+
+        let rows: Row[] = getReactgridRowsFromData([ ...data ]);
 
         rows = createIndents(rows);
+        rows = getExpandedRows(rows);
 
         return { rows, columns }
-    })
+    });
 
     const handleColumnResize = (ci: Id, width: number) => {
         let newState = { ...state };
         const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
         const resizedColumn: Column = newState.columns[columnIndex];
-        const updateColumn: Column = { ...resizedColumn, width };
-        newState.columns[columnIndex] = updateColumn;
+        newState.columns[columnIndex] = { ...resizedColumn, width };
         setState(newState);
-    }
+    };
 
     const handleChanges = (changes: CellChange[]) => {
-        let newState = { ...state };
+        let newState = { ...state, rows: getReactgridRowsFromData(data) };
         changes.forEach((change: CellChange) => {
-          const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-          const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-          newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-        })
-        setState(newState);
+            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        });
+
+        let rows = createIndents(newState.rows);
+        rows = getExpandedRows(rows);
+
+        setState({ ...newState, rows});
         return true;
-      }
+      };
 
     return <ReactGrid
         rows={state.rows}
@@ -240,4 +184,4 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         enableRowSelection
         enableColumnSelection
     />
-}
+};
