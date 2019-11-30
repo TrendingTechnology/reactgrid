@@ -1,16 +1,15 @@
 import * as React from 'react';
-import { keyCodes } from '../Functions/keyCodes';
+import { keyCodes } from '../Functions';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id } from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
-import { CellEditor } from '../Components/CellEditor';
+import { getCellProperty } from '..';
 
 export interface GroupCell extends Cell {
     type: 'group';
     text: string;
     isExpanded?: boolean;
     hasChildrens?: boolean;
-    rowId: Id;
+    // rowId: Id;
     parentId?: Id;
     indent?: number;
 }
@@ -19,8 +18,6 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
-        // const isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
-        const rowId = getCellProperty(uncertainCell, 'rowId', 'string');
         let isExpanded;
         try {
             isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
@@ -40,7 +37,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
             hasChildrens = true;
         }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, hasChildrens, rowId, indent };
+        return { ...uncertainCell, text, value, isExpanded, hasChildrens, indent };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
