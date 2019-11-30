@@ -66,18 +66,14 @@ const data: any[] = [
 
 export const GroupTestGrid: React.FunctionComponent = () => {
 
-    const isGroupCell = (cell: Cell): boolean => !!(cell.type === 'group');
-
-    const isCellExpanded = (cell: Cell): boolean => !!(cell as GroupCell).isExpanded;
-
-    const getGroupCell = (row: Row): GroupCell => row.cells.find((cell: Cell) => isGroupCell(cell)) as GroupCell;
+    const getGroupCell = (row: Row): GroupCell => row.cells.find((cell: Cell) => cell.type === 'group') as GroupCell;
 
     const hasChildren = (rows: Row[], row: Row): boolean => rows.some((r: Row) => getGroupCell(r).parentId === row.rowId);
 
     const isRowFullyExpanded = (rows: Row[], row: Row): boolean => {
       const parentRow = getParentRow(rows, row);
       if (parentRow) {
-        if (!isCellExpanded(getGroupCell(parentRow))) return false;
+        if (!getGroupCell(parentRow).isExpanded) return false;
         return isRowFullyExpanded(rows, parentRow);
       }
       return true
@@ -86,31 +82,29 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     const getExpandedRows = (rows: Row[]): Row[] => {
         return rows.filter((row: Row) => {
             const areAllParentsExpanded = isRowFullyExpanded(rows, row);
-            return areAllParentsExpanded === undefined ? true : areAllParentsExpanded;
+            return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
         });
     };
 
-    const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter((row: Row) => !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId));
+    const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter((row: Row) => !!row.cells.find((cell: Cell) => cell.type === 'group' && (cell as GroupCell).parentId === parentRow.rowId));
 
-    const getParentRow = (rows: Row[], row: Row): Row | undefined => rows.find((r) => r.rowId === getGroupCell(row).parentId);
+    const getParentRow = (rows: Row[], row: Row): Row | undefined => rows.find((r: Row) => r.rowId === getGroupCell(row).parentId);
 
     // TODO level in other function
     // TODO hasChilds in other function
-    const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], indent: number): Row[] => {
+    const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], indent: number) => {
         const childRows = getDirectChildrenRows(allRows, parentRow).map((row: Row) => {
             const groupCell = getGroupCell(row);
             groupCell.indent = indent;
             groupCell.hasChildrens = hasChildren(allRows, row);
             return row;
         });
-        const mergedResults = [ ...foundRows, ...childRows ];
         if (childRows.length === 0) return foundRows;
+        const mergedResults = [ ...foundRows, ...childRows ];
         ++indent;
-        let rows: Row[] = [];
         childRows.forEach((row: Row) => {
-            rows = getRowChildrens(allRows, row, mergedResults, indent);
+            getRowChildrens(allRows, row, mergedResults, indent);
         });
-        return rows;
     };
 
     const createIndents = (rows: Row[]): Row[] => {
@@ -151,7 +145,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         rows = getExpandedRows(rows);
         return { columns, rows }
     });
-    const [rowsToRender, setRowsToRender] = useState<Row[]>([...state.rows]);
+    const [rowsToRender, setRowsToRender] = useState<Row[]>([ ...state.rows ]);
 
     const handleColumnResize = (ci: Id, width: number) => {
         let newState = { ...state };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id } from '../Model';
+import {CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle} from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '..';
 
@@ -9,7 +9,6 @@ export interface GroupCell extends Cell {
     text: string;
     isExpanded?: boolean;
     hasChildrens?: boolean;
-    // rowId: Id;
     parentId?: Id;
     indent?: number;
 }
@@ -58,21 +57,22 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     }
 
     getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean) {
-        return cell.className ? cell.className : '';
+        const isExpanded  = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
+        const className = cell.className ? cell.className : '';
+        return `${isExpanded} ${className}`;
+    }
+
+    getStyle(cell: Compatible<GroupCell>, isInEditMode: boolean): CellStyle {
+        const indent = cell.indent ? cell.indent : 0;
+        const elementMarginMultiplier = indent * 1.2;
+        return {paddingLeft: `${elementMarginMultiplier}em`};
     }
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
-        const canBeExpanded = cell.hasChildrens === true;
-        const indent = cell.indent ? cell.indent : 0;
-        const elementMarginMultiplier = indent * 1.2;
-
         return (
             !isInEditMode ?
-                <div
-                    className="wrapper"
-                    style={{ marginLeft: `${elementMarginMultiplier}em` }}
-                >
-                    {canBeExpanded &&
+                <>
+                    {cell.hasChildrens &&
                         <div
                             className="chevron"
                             onPointerDown={e => {
@@ -80,11 +80,11 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                                 onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded}), true)
                             }}
                         >
-                            <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>❯</div>
+                            <span className="icon">❯</span>
                         </div>
                     }
-                    <div className="content">{cell.text}</div>
-                </div>
+                    {cell.text}
+                </>
                 :
                 <input
                     ref={input => {
