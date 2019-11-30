@@ -34,7 +34,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         try {
             hasChildrens = getCellProperty(uncertainCell, 'hasChildrens', 'boolean');
         } catch {
-            hasChildrens = true;
+            hasChildrens = false;
         }
         const value = parseFloat(text);
         return { ...uncertainCell, text, value, isExpanded, hasChildrens, indent };

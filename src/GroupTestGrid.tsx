@@ -3,7 +3,7 @@ import {Cell, CellChange, Column, GroupCell, Id, ReactGrid, Row, TextCell} from 
 import './lib/assets/core.scss';
 
 
-interface GroupTestGridState {
+interface GroupTestGridStateData {
     columns:    Column[]
     rows:       Row[]
 }
@@ -52,9 +52,14 @@ const data: any[] = [
     },
     {
         id: 'h',
-        label: 'g',
-        text: 'g',
+        label: 'h',
+        text: 'h',
         parent: 'a'
+    },
+    {
+        id: 'i',
+        label: 'i',
+        text: 'i',
     },
 ];
 
@@ -81,19 +86,9 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     const getExpandedRows = (rows: Row[]): Row[] => {
         return rows.filter((row: Row) => {
             const areAllParentsExpanded = isRowFullyExpanded(rows, row);
-            // let parentRow = getParentRow(rows, row);
-            // print(row, parentRow);
             return areAllParentsExpanded === undefined ? true : areAllParentsExpanded;
         });
     };
-
-    // const print = (row: Row, parentRow: Row | undefined): void => {
-    //     let spaces = '';
-    //     for (let i = 0; i < getGroupCell(row).indent!; i++) { spaces += ' '; }
-    //     console.log(`${spaces} row: ${row.rowId}, parent: ${getGroupCell(row).parentId}, isParentExpanded: ${parentRow && getGroupCell(parentRow).isExpanded}`)
-    // };
-
-    const getRowById = (rows: Row[], rowId: Id): Row | undefined => rows.find((row: Row) => row.rowId === rowId);
 
     const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter((row: Row) => !!row.cells.find((cell: Cell) => isGroupCell(cell) && (cell as GroupCell).parentId === parentRow.rowId));
 
@@ -101,19 +96,19 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     // TODO level in other function
     // TODO hasChilds in other function
-    const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], level: number): Row[] => {
+    const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], indent: number): Row[] => {
         const childRows = getDirectChildrenRows(allRows, parentRow).map((row: Row) => {
-            const cell = getGroupCell(row);
-            cell.indent = level;
-            cell.hasChildrens = hasChildren(allRows, row);
+            const groupCell = getGroupCell(row);
+            groupCell.indent = indent;
+            groupCell.hasChildrens = hasChildren(allRows, row);
             return row;
         });
         const mergedResults = [ ...foundRows, ...childRows ];
         if (childRows.length === 0) return foundRows;
-        ++level;
+        ++indent;
         let rows: Row[] = [];
         childRows.forEach((row: Row) => {
-            rows = getRowChildrens(allRows, row, mergedResults, level);
+            rows = getRowChildrens(allRows, row, mergedResults, indent);
         });
         return rows;
     };
@@ -121,6 +116,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     const createIndents = (rows: Row[]): Row[] => {
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);
+            groupCell.hasChildrens = hasChildren(rows, row);
             if (groupCell.parentId === undefined) {
                 getRowChildrens(rows, row, [], 1);
             }
@@ -128,14 +124,8 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         });
     };
 
-    const getReactgridRowsFromData = (currentRows?: Row[]): Row[] => {
+    const getReactgridRowsFromData = (): Row[] => {
         return [ ...data ].map((dataRow: any): Row => {
-            let isExpanded = true;
-            if (currentRows) {
-                const row = getRowById(currentRows, dataRow.id);
-                if (row)
-                    isExpanded = isCellExpanded(getGroupCell(row));
-            }
             return {
                 rowId: dataRow.id,
                 cells: [
@@ -143,28 +133,25 @@ export const GroupTestGrid: React.FunctionComponent = () => {
                         type: 'group',
                         text: `id: ${dataRow.id}, pId: ${dataRow.parent}`,
                         parentId: dataRow.parent,
-                        isExpanded,
+                        isExpanded: true,
                     } as GroupCell,
-                    { type: 'text', text: `${dataRow.text} ` } as TextCell
+                    { type: 'text', text: `${dataRow.text} ` } as TextCell,
                 ]
             }
         });
     };
 
-    const [state, setState] = useState<GroupTestGridState>(() => {
-
+    const [state, setState] = useState<GroupTestGridStateData>(() => {
         const columns: Column[] = [
             { columnId: 0, width: 200, resizable: true },
             { columnId: 1 },
         ];
-
         let rows: Row[] = getReactgridRowsFromData();
-
         rows = createIndents(rows);
         rows = getExpandedRows(rows);
-
-        return { rows, columns }
+        return { columns, rows }
     });
+    const [rowsToRender, setRowsToRender] = useState<Row[]>([...state.rows]);
 
     const handleColumnResize = (ci: Id, width: number) => {
         let newState = { ...state };
@@ -175,25 +162,20 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     };
 
     const handleChanges = (changes: CellChange[]) => {
-        let newState = {
-          ...state,
-          rows: getReactgridRowsFromData(state.rows)
-        };
+        const newState = { ...state };
         changes.forEach((change: CellChange) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
 
-        let rows = createIndents(newState.rows);
-        rows = getExpandedRows(rows);
-
-        setState({ ...state, rows });
+        setState({ ...state, rows: createIndents(newState.rows) });
+        setRowsToRender(getExpandedRows(newState.rows));
         return true;
     };
 
     return <ReactGrid
-        rows={state.rows}
+        rows={rowsToRender}
         columns={state.columns}
         license={'non-commercial'}
         onCellsChanged={handleChanges}
