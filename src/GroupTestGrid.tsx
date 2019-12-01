@@ -90,35 +90,31 @@ export const GroupTestGrid: React.FunctionComponent = () => {
 
     const getParentRow = (rows: Row[], row: Row): Row | undefined => rows.find((r: Row) => r.rowId === getGroupCell(row).parentId);
 
-    // TODO level in other function
-    // TODO hasChilds in other function
-    const getRowChildrens = (allRows: Row[], parentRow: Row, foundRows: Row[], indent: number) => {
-        const childRows = getDirectChildrenRows(allRows, parentRow).map((row: Row) => {
+    const assignIndentAndHasChildrens = (allRows: Row[], parentRow: Row, indent: number) => {
+        ++indent;
+        getDirectChildrenRows(allRows, parentRow).forEach((row: Row) => {
             const groupCell = getGroupCell(row);
             groupCell.indent = indent;
-            groupCell.hasChildrens = hasChildren(allRows, row);
-            return row;
+            const hasRowChildrens = hasChildren(allRows, row);
+            groupCell.hasChildrens = hasRowChildrens;
+            if (hasRowChildrens) assignIndentAndHasChildrens(allRows, row, indent);
         });
-        if (childRows.length === 0) return foundRows;
-        const mergedResults = [ ...foundRows, ...childRows ];
-        ++indent;
-        childRows.forEach((row: Row) => {
-            getRowChildrens(allRows, row, mergedResults, indent);
-        });
+        console.log('a')
     };
 
     const createIndents = (rows: Row[]): Row[] => {
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);
-            groupCell.hasChildrens = hasChildren(rows, row);
             if (groupCell.parentId === undefined) {
-                getRowChildrens(rows, row, [], 1);
+                const hasRowChildrens = hasChildren(rows, row);
+                groupCell.hasChildrens = hasRowChildrens;
+                if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
             }
             return row;
         });
     };
 
-    const getReactgridRowsFromData = (): Row[] => {
+    const getRowsFromData = (): Row[] => {
         return [ ...data ].map((dataRow: any): Row => {
             return {
                 rowId: dataRow.id,
@@ -129,7 +125,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
                         parentId: dataRow.parent,
                         isExpanded: true,
                     } as GroupCell,
-                    { type: 'text', text: `${dataRow.text} ` } as TextCell,
+                    { type: 'text', text: `${dataRow.text}` } as TextCell,
                 ]
             }
         });
@@ -140,7 +136,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
             { columnId: 0, width: 200, resizable: true },
             { columnId: 1 },
         ];
-        let rows: Row[] = getReactgridRowsFromData();
+        let rows: Row[] = getRowsFromData();
         rows = createIndents(rows);
         rows = getExpandedRows(rows);
         return { columns, rows }
