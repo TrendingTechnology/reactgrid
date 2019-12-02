@@ -1,32 +1,52 @@
 import * as React from 'react';
-import { keyCodes } from '../Functions/keyCodes';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { keyCodes } from '../Functions';
+import {CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle} from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
+import { getCellProperty } from '..';
 
-export interface GroupCell extends Cell { // rename GroupHeaderCell to GroupCell ?? 
+export interface GroupCell extends Cell {
     type: 'group';
     text: string;
     isExpanded?: boolean;
-    depth?: number;
+    hasChildrens?: boolean;
+    parentId?: Id;
+    indent?: number;
 }
 
 export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
+        let isExpanded;
+        try {
+            isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
+        } catch {
+            isExpanded = true;
+        }
+        let indent;
+        try {
+            indent = getCellProperty(uncertainCell, 'indent', 'number');
+        } catch {
+            indent = 0;
+        }
+        let hasChildrens;
+        try {
+            hasChildrens = getCellProperty(uncertainCell, 'hasChildrens', 'boolean');
+        } catch {
+            hasChildrens = false;
+        }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value };
+        return { ...uncertainCell, text, value, isExpanded, hasChildrens, indent };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
-        return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
+        return this.getCompatibleCell({ ...cell, isExpanded: cellToMerge.isExpanded })
     }
 
     handleKeyDown(cell: Compatible<GroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<GroupCell>, enableEditMode: boolean } {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
-        const char = String.fromCharCode(keyCode)
+        const char = String.fromCharCode(keyCode);
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
         } else if (!ctrl && !alt && isAlphaNumericKey(keyCode)) {
@@ -37,23 +57,34 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     }
 
     getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean) {
-        return cell.className ? cell.className : '';
+        const isExpanded  = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
+        const className = cell.className ? cell.className : '';
+        return `${isExpanded} ${className}`;
+    }
+
+    getStyle(cell: Compatible<GroupCell>, isInEditMode: boolean): CellStyle {
+        const indent = cell.indent ? cell.indent : 0;
+        const elementMarginMultiplier = indent * 1.4;
+        return {paddingLeft: `${elementMarginMultiplier}em`};
     }
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
-        const canBeExpanded = cell.isExpanded !== undefined;
-        const elementMarginMultiplier = cell.depth ? cell.depth : 0;
         return (
             !isInEditMode ?
-                <div
-                    className="wrapper"
-                    style={{ marginLeft: `calc( 1.2em * ${elementMarginMultiplier})` }}
-                >
-                    {canBeExpanded &&
-                        <Chevron cell={cell} onCellChanged={onCellChanged} />
+                <>
+                    {cell.hasChildrens &&
+                        <div
+                            className="chevron"
+                            onPointerDown={e => {
+                                e.stopPropagation();
+                                onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded}), true)
+                            }}
+                        >
+                            <span className="icon">❯</span>
+                        </div>
                     }
-                    <div className="wrapper-content">{cell.text}</div>
-                </div>
+                    {cell.text}
+                </>
                 :
                 <input
                     ref={input => {
@@ -75,22 +106,5 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         );
     }
 
-}
-
-// class Chevron extends React.Component<IChevronProps> {
-const Chevron: React.FC<{ cell: Compatible<GroupCell>, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void }> = ({ cell, onCellChanged }) => {
-    return (
-        <div
-            onPointerDown={e => {
-                e.stopPropagation();
-                onCellChanged({ ...cell, isExpanded: !cell.isExpanded }, true);
-            }}
-            className="chevron"
-        >
-            <div style={{ transform: `${cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`, transition: '200ms all' }}>
-                ❯
-            </div>
-        </div>
-    )
 }
 

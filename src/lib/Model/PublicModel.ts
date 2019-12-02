@@ -109,6 +109,7 @@ export interface CellStyle {
     readonly color?: string;
     readonly background?: string;
     readonly overflow?: string;
+    readonly paddingLeft?: string;
     // TODO
     //readonly borderLeft
     //readonly borderRight

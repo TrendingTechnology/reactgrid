@@ -29,7 +29,6 @@
 }
 
 /* EMAIL TEMPLATE */
-
 .rg-email-cell.invalid {
     color: $template-content-invalid;
 }
@@ -56,17 +55,10 @@
 }
 
 .rg-group-cell {
-    .wrapper {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        &-content {
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-    }
-    
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-direction: row;
     .chevron {
         z-index: $template-z-index;
         pointer-events: auto;
@@ -76,7 +68,16 @@
         width: $template-font-size * 1.4;
         font-weight: bold;
         cursor: pointer;
-    }   
+        .icon {
+            transition: 200ms all ease-in-out;
+        }
+    }
+    &.expanded .icon {
+        transform: rotate(90deg);
+    }
+    &.collapsed .icon {
+        transform: rotate(0deg);
+    }
 }
 
 /* NUMBER TEMPLATE */

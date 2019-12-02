@@ -61,18 +61,23 @@ export const TestGrid: React.FunctionComponent = () => {
 
     const handleColumnResize = (ci: Id, width: number) => {
         let newState = { ...state };
-        newState.columns[ci].width = width;
+        const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
+        const resizedColumn: Column = newState.columns[columnIndex];
+        const updateColumn: Column = { ...resizedColumn, width };
+        newState.columns[columnIndex] = updateColumn;
         setState(newState);
     }
 
     const handleChanges = (changes: CellChange[]) => {
         let newState = { ...state };
-        changes.forEach(change => {
-            newState.rows[change.rowId].cells[change.columnId] = change.newCell;
+        changes.forEach((change: CellChange) => {
+          const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+          const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+          newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         })
         setState(newState);
         return true;
-    }
+      }
 
     return <ReactGrid
         rows={state.rows}

@@ -10,7 +10,7 @@ export const getCellProperty = <TCell extends Cell, TKey extends keyof TCell>(
         throw `Cell is missing property '${propName}'`;
 
     if (typeof prop !== expectedType)
-        throw `Property expected to be of type '${expectedType}' but is '${typeof prop}'`
+        throw `Property '${propName}' expected to be of type '${expectedType}' but is '${typeof prop}'`;
 
     return prop!;
 }
