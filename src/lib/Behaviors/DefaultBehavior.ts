@@ -16,7 +16,7 @@ import { areLocationsEqual } from '../Functions/areLocationsEqual';
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        state = { ...state, currentBehavior: this.getNewBehavior(event, location, state) }
+        state = { ...state, currentBehavior: this.getNewBehavior(event, location, state), contextMenuPosition: {top: -1, left: -1} }
         return state.currentBehavior.handlePointerDown(event, location, state);
     }
 
@@ -49,10 +49,10 @@ export class DefaultBehavior extends Behavior {
         const bottom = !top;
         const left = !right;
         let contextMenuPosition = state.contextMenuPosition;
-        if (top) { contextMenuPosition[0] = clickY; }
-        if (right) { contextMenuPosition[1] = clickX + 5; }
-        if (bottom) { contextMenuPosition[0] = clickY - 25 - 5; }
-        if (left) { contextMenuPosition[1] = clickX - 120 - 5; }
+        if (top) { contextMenuPosition.top = clickY; }
+        if (right) { contextMenuPosition.left = clickX + 5; }
+        if (bottom) { contextMenuPosition.top = clickY - 25 - 5; }
+        if (left) { contextMenuPosition.left = clickX - 120 - 5; }
         const focusedLocation = getLocationFromClient(state, clickX, clickY);
         if (!state.selectedRanges.find(range => range.contains(focusedLocation))) {
             state = focusLocation(state, focusedLocation)

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ReactGrid, Column, Row, CellChange, Id } from './reactgrid'
+import { ReactGrid, Column, Row, CellChange, Id, MenuOption, SelectionMode } from './reactgrid'
 import './lib/assets/core.scss';
 import { NumberCell } from './lib/CellTemplates/NumberCellTemplate';
+import { GroupCell } from './lib';
 
 const columnCount = 10;
 const rowCount = 50;
@@ -36,7 +37,7 @@ export const TestGrid: React.FunctionComponent = () => {
                     const now = new Date();
                     switch (ci) {
                         case 0:
-                            return { type: 'group', text: `${ri} - ${ci}`, isExpanded: ri % 4 && undefined, depth: ri % 4 }
+                            return { type: 'group', text: `${ri} - ${ci}`, parentId: ri,  isExpanded: ri % 4 && undefined } as GroupCell
                         case 1:
                             return { type: 'text', text: `${ri} - ${ci}` }
                         case 2: 
@@ -77,7 +78,26 @@ export const TestGrid: React.FunctionComponent = () => {
         })
         setState(newState);
         return true;
-      }
+    }
+
+    const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+        if (selectionMode === 'row') {
+            menuOptions = [
+                ...menuOptions, 
+                { id: 'rowOption', label: 'Custom menu row option', handler: () => {} },
+            ]
+        }
+        if (selectionMode === 'column') {
+            menuOptions = [
+                ...menuOptions, 
+                { id: 'columnOption', label: 'Custom menu column option', handler: () => {} },
+            ]
+        }
+        return [
+            ...menuOptions, 
+            { id: 'all', label: 'Custom menu option', handler: () => {} },
+        ];
+    }
 
     return <ReactGrid
         rows={state.rows}
@@ -89,6 +109,7 @@ export const TestGrid: React.FunctionComponent = () => {
         // frozenRightColumns={2}
         // frozenTopRows={2}
         // frozenBottomRows={2}
+        onContextMenu={handleContextMenu}
         enableRowSelection
         enableColumnSelection
     />

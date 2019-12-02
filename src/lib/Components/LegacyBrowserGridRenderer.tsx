@@ -251,7 +251,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         />
                         <Line linePosition={state.linePosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} />
                         <Shadow shadowPosition={state.shadowPosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} shadowSize={state.shadowSize} cursor={state.shadowCursor} />
-                        <ContextMenu state={state} onRowContextMenu={(menuOptions: MenuOption[]) => (props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : [])} onColumnContextMenu={(menuOptions: MenuOption[]) => (props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : [])} onRangeContextMenu={(menuOptions: MenuOption[]) => (props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : [])} contextMenuPosition={state.contextMenuPosition} />
+                        {/* <ContextMenu state={state} onRowContextMenu={(menuOptions: MenuOption[]) => (props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : [])} onColumnContextMenu={(menuOptions: MenuOption[]) => (props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : [])} onRangeContextMenu={(menuOptions: MenuOption[]) => (props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : [])} contextMenuPosition={state.contextMenuPosition} /> */}
                     </div>
                 </div>
                 {state.currentlyEditedCell && <CellEditor state={state} />}

@@ -4,56 +4,43 @@ import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBeh
 import { isBrowserIE, getDataToPasteInIE } from '../Functions';
 
 interface ContextMenuProps {
-    contextMenuPosition: number[];
+    contextMenuPosition: {top: number, left: number};
     focusedLocation?: Location;
     state: State;
-    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
+    onContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
 export class ContextMenu extends React.Component<ContextMenuProps> {
     render() {
-        const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
+        const { contextMenuPosition, onContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
         let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
-        const rowOptions = onRowContextMenu && onRowContextMenu(customContextMenuOptions(state));
-        const colOptions = onColumnContextMenu && onColumnContextMenu(customContextMenuOptions(state));
-        const rangeOptions = onRangeContextMenu && onRangeContextMenu(customContextMenuOptions(state));
-
-        if (focusedLocation) {
-            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.rowId) && rowOptions) {
-                contextMenuOptions = rowOptions;
-            } else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.column.columnId) && colOptions) {
-                contextMenuOptions = colOptions;
-            } else if (state.selectionMode == 'range' && rangeOptions) {
-                contextMenuOptions = rangeOptions;
-            }
+        const options = onContextMenu ? onContextMenu(customContextMenuOptions(state)) : [];
+        if (focusedLocation && options.length > 0) {
+            contextMenuOptions = options;
         }
-        return (
-            contextMenuPosition[0] !== -1 &&
-            contextMenuPosition[1] !== -1 &&
-            contextMenuOptions.length > 0 && (
+        return (contextMenuOptions.length > 0 && 
+            (
                 <div
                     className="rg-context-menu"
                     style={{
-                        top: contextMenuPosition[0] + 'px',
-                        left: contextMenuPosition[1] + 'px',
+                        top: contextMenuPosition.top + 'px',
+                        left: contextMenuPosition.left + 'px',
                     }}
                 >
-                    {contextMenuOptions.map((el, idx) => {
+                    {contextMenuOptions.map((el, idx) => (
                         <div
                             key={idx}
                             className="rg-context-menu-option"
                             onPointerDown={e => e.stopPropagation()}
                             onClick={() => {
                                 el.handler();
-                                state.update((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }))
+                                state.update((state: State) => ({ ...state, contextMenuPosition: {top: -1, left: -1} }))
                             }}
                         >
                             {el.label}
                         </div>
-                    })}
+                    ))}
                 </div>
             )
         );

@@ -127,6 +127,9 @@
                 .rg-context-menu-option {
                     padding: $context-menu-option-padding;
                     cursor: pointer;
+                    &:hover {
+                        background-color: darken($main-bg-color, 5);
+                    }
                 }
             }
 
