@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useRef, useLayoutEffect, useState } from 'react';
 import { Location, State } from '../Model';
 import { FillHandleBehavior } from '../Behaviors/FillHandleBehavior';
 
@@ -8,10 +8,9 @@ interface FillHandleProps {
 }
 
 export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) => {
-    const targetRef: any = React.useRef();
-    const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
-
-    React.useLayoutEffect(() => {
+    const targetRef: any = useRef();
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    useLayoutEffect(() => {
         if (targetRef.current) {
             setDimensions({
                 width: targetRef.current.offsetWidth,

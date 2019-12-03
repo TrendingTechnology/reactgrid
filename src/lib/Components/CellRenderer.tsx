@@ -3,6 +3,7 @@ import { State, Borders, Location } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { ResizeHandle } from './ResizeHandle';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
+import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 
 export interface CellRendererProps {
     state: State;
@@ -25,8 +26,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         width: location.column.width,
         height: location.row.height,
         // TODO when to prevent scrolling?
-        touchAction: isFocused || cell.type === 'header' ? 'none' : 'auto' // prevent scrolling
-
+        touchAction: (isFocused || cell.type === 'header') ? 'none' : 'auto' // prevent scrolling
     };
 
     return (
@@ -37,7 +37,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
                     props.state.update(state => tryAppendChange(state, location, cell));
                 })
             }
-            {location.row.idx === 0 && location.column.resizable && <ResizeHandle />}
+            {location.row.idx === 0 && location.column.resizable && !(state.currentBehavior instanceof ColumnSelectionBehavior) && <ResizeHandle />}
         </div >
     );
 };

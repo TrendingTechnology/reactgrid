@@ -18,19 +18,18 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         const value = getCellProperty(uncertainCell, 'value', 'number');
         const numberFormat = uncertainCell.format || new Intl.NumberFormat(window.navigator.language);
         const displayValue = (uncertainCell.nanToZero && Number.isNaN(value)) ? 0 : value;
-        const text = (Number.isNaN(displayValue) || (uncertainCell.hideZero && displayValue === 0)) ? '' : numberFormat.format(displayValue); 
+        const text = (Number.isNaN(displayValue) || (uncertainCell.hideZero && displayValue === 0)) ? '' : numberFormat.format(displayValue);
         return { ...uncertainCell, value: displayValue, text }
     }
 
     handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (isNumpadNumericKey(keyCode)) keyCode -= 48;
         const char = String.fromCharCode(keyCode);
-        // console.log(keyCode, Number(char), char);
-        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {  
+        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {
             const value = Number(char);
             if (Number.isNaN(value) && isAllowedOnNumberTypingKey(keyCode))
-                return { cell: {...this.getCompatibleCell({ ...cell, value }), text: char}, enableEditMode: true }
-            return { cell: this.getCompatibleCell({ ...cell, value}), enableEditMode: true }
+                return { cell: { ...this.getCompatibleCell({ ...cell, value }), text: char }, enableEditMode: true }
+            return { cell: this.getCompatibleCell({ ...cell, value }), enableEditMode: true }
         }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
@@ -42,13 +41,13 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     getTextFromCharCode = (cellText: string): string => {
         switch (cellText.charCodeAt(0)) {
             case keyCodes.DASH:
-                return  '-';
+                return '-';
             case keyCodes.COMMA:
                 return ','
             case keyCodes.PERIOD:
             case keyCodes.DECIMAL:
                 return '.';
-            default:    
+            default:
                 return cellText;
         }
     }
@@ -73,7 +72,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={ (!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text) }
+            defaultValue={(!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text)}
             onChange={e => {
                 onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false);
             }}

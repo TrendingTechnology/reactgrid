@@ -162,7 +162,6 @@ export function pasteData(state: State, rows: Compatible<Cell>[][]): State {
 }
 
 export function copySelectedRangeToClipboard(state: State, removeValues = false) {
-    console.log(state)
     const activeSelectedRange = getActiveSelectedRange(state)
     if (!activeSelectedRange)
         return
