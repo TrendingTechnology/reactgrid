@@ -47,24 +47,26 @@
   font-size: 1em;
   outline: none; }
 
-.rg-group-cell .wrapper {
+.rg-group-cell {
   display: flex;
   align-items: center;
-  width: 100%; }
-  .rg-group-cell .wrapper-content {
+  width: 100%;
+  flex-direction: row; }
+  .rg-group-cell .chevron {
+    z-index: 1;
+    pointer-events: auto;
     display: flex;
-    align-items: center;
-    width: 100%; }
-
-.rg-group-cell .chevron {
-  z-index: 1;
-  pointer-events: auto;
-  display: flex;
-  justify-content: center;
-  height: 1.4em;
-  width: 1.4em;
-  font-weight: bold;
-  cursor: pointer; }
+    justify-content: center;
+    height: 1.4em;
+    width: 1.4em;
+    font-weight: bold;
+    cursor: pointer; }
+    .rg-group-cell .chevron .icon {
+      transition: 200ms all ease-in-out; }
+  .rg-group-cell.expanded .icon {
+    transform: rotate(90deg); }
+  .rg-group-cell.collapsed .icon {
+    transform: rotate(0deg); }
 
 /* NUMBER TEMPLATE */
 .rg-number-celleditor input {
@@ -205,11 +207,14 @@
         z-index: 1000;
         background-color: #ffffff;
         font-size: 1em;
-        box-shadow: 8px 20px 8px 15px rgba(0, 0, 0, 0.2); }
+        box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.2); }
         .reactgrid .rg-viewport .rg-content .rg-context-menu .rg-context-menu-option,
         .reactgrid-legacy-browser .rg-viewport .rg-content .rg-context-menu .rg-context-menu-option {
           padding: 8px 20px 8px 15px;
           cursor: pointer; }
+          .reactgrid .rg-viewport .rg-content .rg-context-menu .rg-context-menu-option:hover,
+          .reactgrid-legacy-browser .rg-viewport .rg-content .rg-context-menu .rg-context-menu-option:hover {
+            background-color: #f2f2f2; }
       .reactgrid .rg-viewport .rg-content .rg-shadow,
       .reactgrid-legacy-browser .rg-viewport .rg-content .rg-shadow {
         position: absolute;
@@ -221,6 +226,14 @@
         position: absolute;
         background-color: #74b9ff;
         z-index: 3; }
+        .reactgrid .rg-viewport .rg-content .rg-line-horizontal,
+        .reactgrid-legacy-browser .rg-viewport .rg-content .rg-line-horizontal {
+          left: 0;
+          height: 2px; }
+        .reactgrid .rg-viewport .rg-content .rg-line-vertical,
+        .reactgrid-legacy-browser .rg-viewport .rg-content .rg-line-vertical {
+          top: 0;
+          width: 2px; }
   .reactgrid .rg-pane,
   .reactgrid-legacy-browser .rg-pane {
     position: relative;

@@ -9,12 +9,12 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import * as React from 'react';
+import React, { useRef, useLayoutEffect, useState } from 'react';
 import { FillHandleBehavior } from '../Behaviors/FillHandleBehavior';
 export var FillHandle = function (props) {
-    var targetRef = React.useRef();
-    var _a = React.useState({ width: 0, height: 0 }), dimensions = _a[0], setDimensions = _a[1];
-    React.useLayoutEffect(function () {
+    var targetRef = useRef();
+    var _a = useState({ width: 0, height: 0 }), dimensions = _a[0], setDimensions = _a[1];
+    useLayoutEffect(function () {
         if (targetRef.current) {
             setDimensions({
                 width: targetRef.current.offsetWidth,

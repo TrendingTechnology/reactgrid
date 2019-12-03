@@ -42,7 +42,7 @@ var DefaultBehavior = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     DefaultBehavior.prototype.handlePointerDown = function (event, location, state) {
-        state = __assign({}, state, { currentBehavior: this.getNewBehavior(event, location, state) });
+        state = __assign({}, state, { currentBehavior: this.getNewBehavior(event, location, state), contextMenuPosition: { top: -1, left: -1 } });
         return state.currentBehavior.handlePointerDown(event, location, state);
     };
     DefaultBehavior.prototype.getNewBehavior = function (event, location, state) {
@@ -78,16 +78,16 @@ var DefaultBehavior = (function (_super) {
         var left = !right;
         var contextMenuPosition = state.contextMenuPosition;
         if (top) {
-            contextMenuPosition[0] = clickY;
+            contextMenuPosition.top = clickY;
         }
         if (right) {
-            contextMenuPosition[1] = clickX + 5;
+            contextMenuPosition.left = clickX + 5;
         }
         if (bottom) {
-            contextMenuPosition[0] = clickY - 25 - 5;
+            contextMenuPosition.top = clickY - 25 - 5;
         }
         if (left) {
-            contextMenuPosition[1] = clickX - 120 - 5;
+            contextMenuPosition.left = clickX - 120 - 5;
         }
         var focusedLocation = getLocationFromClient(state, clickX, clickY);
         if (!state.selectedRanges.find(function (range) { return range.contains(focusedLocation); })) {
@@ -184,7 +184,6 @@ export function pasteData(state, rows) {
 }
 export function copySelectedRangeToClipboard(state, removeValues) {
     if (removeValues === void 0) { removeValues = false; }
-    console.log(state);
     var activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange)
         return;

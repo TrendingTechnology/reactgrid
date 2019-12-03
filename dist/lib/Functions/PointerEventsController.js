@@ -20,10 +20,12 @@ var PointerEventsController = (function () {
         this.eventLocations = [undefined, undefined];
         this.currentIndex = 0;
         this.handlePointerDown = function (event, state) {
+            window.addEventListener('contextmenu', _this.handleContextMenu);
             if (event.button !== 0 && event.button !== undefined) {
                 return state;
             }
             window.addEventListener('pointermove', _this.handlePointerMove);
+            window.addEventListener('pointerup', _this.handlePointerUp);
             window.addEventListener('pointerup', _this.handlePointerUp);
             var previousLocation = _this.eventLocations[_this.currentIndex];
             var currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
@@ -35,6 +37,18 @@ var PointerEventsController = (function () {
                 state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }
             return state;
+        };
+        this.handleContextMenu = function (event) {
+            _this.updateState(function (state) {
+                window.removeEventListener('pointerup', _this.handlePointerUp);
+                window.removeEventListener('pointermove', _this.handlePointerMove);
+                window.removeEventListener('contextmenu', _this.handleContextMenu);
+                var currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
+                state = state.currentBehavior.handlePointerUp(event, currentLocation, state);
+                state = state.currentBehavior.handleContextMenu(event, state);
+                state.hiddenFocusElement.focus();
+                return state;
+            });
         };
         this.handlePointerMove = function (event) {
             _this.updateState(function (state) {
@@ -56,6 +70,7 @@ var PointerEventsController = (function () {
             _this.updateState(function (state) {
                 window.removeEventListener('pointerup', _this.handlePointerUp);
                 window.removeEventListener('pointermove', _this.handlePointerMove);
+                window.removeEventListener('contextmenu', _this.handleContextMenu);
                 var currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
                 var currentTimestamp = new Date().valueOf();
                 var secondLastTimestamp = _this.eventTimestamps[1 - _this.currentIndex];
@@ -77,7 +92,6 @@ var PointerEventsController = (function () {
                     currentTimestamp - _this.eventTimestamps[_this.currentIndex] >= 500 &&
                     areLocationsEqual(currentLocation, _this.eventLocations[0]) &&
                     areLocationsEqual(currentLocation, _this.eventLocations[1])) {
-                    state = state.currentBehavior.handleContextMenu(event, state);
                 }
                 state.hiddenFocusElement.focus();
                 return state;

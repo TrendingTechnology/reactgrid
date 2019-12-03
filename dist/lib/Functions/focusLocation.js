@@ -22,7 +22,8 @@ export function focusLocation(state, location, resetSelection) {
     var isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(cell);
     if (!isFocusable)
         return state;
+    state.props.onFocusLocationChanged && state.props.onFocusLocationChanged({ rowId: location.row.rowId, columnId: location.column.columnId });
     if (resetSelection)
         state = __assign({}, state, { activeSelectedRangeIdx: 0, selectedRanges: [state.cellMatrix.getRange(location, location)], selectedIndexes: [], selectedIds: [], selectionMode: 'range' });
-    return __assign({}, state, { contextMenuPosition: [-1, -1], focusedLocation: location, currentlyEditedCell: undefined });
+    return __assign({}, state, { contextMenuPosition: { top: -1, left: -1 }, focusedLocation: location, currentlyEditedCell: undefined });
 }

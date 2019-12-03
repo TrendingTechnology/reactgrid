@@ -3,6 +3,7 @@ import { PaneRow } from './PaneRow';
 import { Line } from './Line';
 import { Shadow } from './Shadow';
 import { CellEditor } from './CellEditor';
+import { ContextMenu } from './ContextMenu';
 export var DefaultGridRenderer = function (props) {
     return React.createElement("div", { className: "reactgrid", onKeyDown: props.eventHandlers.keyDownHandler, onKeyUp: props.eventHandlers.keyUpHandler, onPointerDown: props.eventHandlers.pointerDownHandler, onPasteCapture: props.eventHandlers.pasteCaptureHandler, onPaste: props.eventHandlers.pasteHandler, onCopy: props.eventHandlers.copyHandler, onCut: props.eventHandlers.cutHandler, style: { width: '100%', height: '100%', minWidth: 510, minHeight: 150 } },
         React.createElement("div", { className: "rg-viewport", ref: props.eventHandlers.viewportElementRefHandler, onScroll: props.eventHandlers.scrollHandler },
@@ -17,6 +18,10 @@ export var DefaultGridRenderer = function (props) {
                     React.createElement(PaneRow, { id: 'B', class: "rg-pane-row-b", state: props.state, style: {}, range: props.state.cellMatrix.frozenBottomRange, borders: { top: true }, zIndex: 3 }),
                 React.createElement("input", { className: "rg-hidden-element", readOnly: true, ref: props.eventHandlers.hiddenElementRefHandler }),
                 React.createElement(Line, { linePosition: props.state.linePosition, orientation: props.state.lineOrientation, cellMatrix: props.state.cellMatrix }),
-                React.createElement(Shadow, { shadowPosition: props.state.shadowPosition, orientation: props.state.lineOrientation, cellMatrix: props.state.cellMatrix, shadowSize: props.state.shadowSize, cursor: props.state.shadowCursor }))),
+                React.createElement(Shadow, { shadowPosition: props.state.shadowPosition, orientation: props.state.lineOrientation, cellMatrix: props.state.cellMatrix, shadowSize: props.state.shadowSize, cursor: props.state.shadowCursor }),
+                props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
+                    React.createElement(ContextMenu, { state: props.state, onContextMenu: function (menuOptions) { return props.state.props.onContextMenu
+                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIndexes : [], (props.state.selectionMode === 'column') ? props.state.selectedIndexes : [], props.state.selectionMode, menuOptions)
+                            : []; }, contextMenuPosition: props.state.contextMenuPosition }))),
         props.state.currentlyEditedCell && React.createElement(CellEditor, { state: props.state }));
 };

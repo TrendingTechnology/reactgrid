@@ -7,5 +7,5 @@ export function isBrowserIE() {
 }
 export function getDataToPasteInIE() {
     var data = window.clipboardData.getData('text');
-    return data.split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ text: t, data: t, type: 'text' }); }); });
+    return data.split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ type: 'text', text: t, value: parseFloat(t) }); }); });
 }

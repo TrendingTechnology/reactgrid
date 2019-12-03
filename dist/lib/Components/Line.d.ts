@@ -5,7 +5,5 @@ interface LineProps {
     orientation: Orientation;
     cellMatrix: CellMatrix;
 }
-export declare class Line extends React.Component<LineProps> {
-    render(): false | JSX.Element;
-}
+export declare const Line: React.FunctionComponent<LineProps>;
 export {};

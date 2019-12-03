@@ -23,42 +23,29 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { copySelectedRangeToClipboard } from '../Behaviors/DefaultBehavior';
-import { isBrowserIE } from '../Functions';
+import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
+import { isBrowserIE, getDataToPasteInIE } from '../Functions';
 var ContextMenu = (function (_super) {
     __extends(ContextMenu, _super);
     function ContextMenu() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     ContextMenu.prototype.render = function () {
-        var _a = this.props, contextMenuPosition = _a.contextMenuPosition, onRowContextMenu = _a.onRowContextMenu, onColumnContextMenu = _a.onColumnContextMenu, onRangeContextMenu = _a.onRangeContextMenu, state = _a.state;
+        var _a = this.props, contextMenuPosition = _a.contextMenuPosition, onContextMenu = _a.onContextMenu, state = _a.state;
         var focusedLocation = state.focusedLocation;
         var contextMenuOptions = customContextMenuOptions(state);
-        var rowOptions = onRowContextMenu && onRowContextMenu(customContextMenuOptions(state));
-        var colOptions = onColumnContextMenu && onColumnContextMenu(customContextMenuOptions(state));
-        var rangeOptions = onRangeContextMenu && onRangeContextMenu(customContextMenuOptions(state));
-        if (focusedLocation) {
-            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.rowId) && rowOptions) {
-                contextMenuOptions = rowOptions;
-            }
-            else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.column.columnId) && colOptions) {
-                contextMenuOptions = colOptions;
-            }
-            else if (state.selectionMode == 'range' && rangeOptions) {
-                contextMenuOptions = rangeOptions;
-            }
+        var options = onContextMenu ? onContextMenu(customContextMenuOptions(state)) : [];
+        if (focusedLocation && options.length > 0) {
+            contextMenuOptions = options;
         }
-        return (contextMenuPosition[0] !== -1 &&
-            contextMenuPosition[1] !== -1 &&
-            contextMenuOptions.length > 0 && (React.createElement("div", { className: "rg-context-menu", style: {
-                top: contextMenuPosition[0] + 'px',
-                left: contextMenuPosition[1] + 'px',
-            } }, contextMenuOptions.map(function (el, idx) {
-            React.createElement("div", { key: idx, className: "rg-context-menu-option", onPointerDown: function (e) { return e.stopPropagation(); }, onClick: function () {
+        return (contextMenuOptions.length > 0 &&
+            (React.createElement("div", { className: "rg-context-menu", style: {
+                    top: contextMenuPosition.top + 'px',
+                    left: contextMenuPosition.left + 'px',
+                } }, contextMenuOptions.map(function (el, idx) { return (React.createElement("div", { key: idx, className: "rg-context-menu-option", onPointerDown: function (e) { return e.stopPropagation(); }, onClick: function () {
                     el.handler();
-                    state.update(function (state) { return (__assign({}, state, { contextMenuPosition: [-1, -1] })); });
-                } }, el.label);
-        }))));
+                    state.update(function (state) { return (__assign({}, state, { contextMenuPosition: { top: -1, left: -1 } })); });
+                } }, el.label)); }))));
     };
     return ContextMenu;
 }(React.Component));
@@ -80,8 +67,10 @@ function customContextMenuOptions(state) {
             label: 'Paste',
             handler: function () {
                 if (isBrowserIE()) {
+                    setTimeout(function () { return state.update(function (state) { return pasteData(state, getDataToPasteInIE()); }); });
                 }
                 else {
+                    navigator.clipboard.readText().then(function (e) { return state.update(function (state) { return pasteData(state, e.split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ type: 'text', text: t, value: parseFloat(t) }); }); })); }); });
                 }
             }
         }

@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle } from '../Model';
 export interface GroupCell extends Cell {
     type: 'group';
     text: string;
     isExpanded?: boolean;
-    depth?: number;
+    hasChildrens?: boolean;
+    parentId?: Id;
+    indent?: number;
 }
 export declare class GroupCellTemplate implements CellTemplate<GroupCell> {
     getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell>;
@@ -14,5 +16,6 @@ export declare class GroupCellTemplate implements CellTemplate<GroupCell> {
         enableEditMode: boolean;
     };
     getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean): string;
+    getStyle(cell: Compatible<GroupCell>, isInEditMode: boolean): CellStyle;
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode;
 }

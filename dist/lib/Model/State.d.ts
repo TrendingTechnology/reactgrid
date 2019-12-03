@@ -20,7 +20,10 @@ export declare class State {
     readonly disableRangeSelection: boolean;
     readonly enableColumnSelection: boolean;
     readonly enableRowSelection: boolean;
-    readonly contextMenuPosition: number[];
+    readonly contextMenuPosition: {
+        top: number;
+        left: number;
+    };
     readonly lineOrientation: Orientation;
     readonly linePosition: number;
     readonly shadowSize: number;

@@ -8,6 +8,7 @@ export declare class PointerEventsController {
     private currentIndex;
     private pointerDownLocation?;
     handlePointerDown: (event: import("react").PointerEvent<HTMLDivElement>, state: State) => State;
+    private handleContextMenu;
     private handlePointerMove;
     private handlePointerUp;
 }

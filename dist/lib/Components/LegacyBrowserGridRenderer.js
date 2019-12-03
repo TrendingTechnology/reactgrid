@@ -129,7 +129,10 @@ var LegacyBrowserGridRenderer = (function (_super) {
                         }, value: "\u00A0", onChange: function () { } }),
                     React.createElement(Line, { linePosition: state.linePosition, orientation: state.lineOrientation, cellMatrix: state.cellMatrix }),
                     React.createElement(Shadow, { shadowPosition: state.shadowPosition, orientation: state.lineOrientation, cellMatrix: state.cellMatrix, shadowSize: state.shadowSize, cursor: state.shadowCursor }),
-                    React.createElement(ContextMenu, { state: state, onRowContextMenu: function (menuOptions) { return (props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []); }, onColumnContextMenu: function (menuOptions) { return (props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []); }, onRangeContextMenu: function (menuOptions) { return (props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []); }, contextMenuPosition: state.contextMenuPosition }))),
+                    props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
+                        React.createElement(ContextMenu, { state: props.state, onContextMenu: function (menuOptions) { return props.state.props.onContextMenu
+                                ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIndexes : [], (props.state.selectionMode === 'column') ? props.state.selectedIndexes : [], props.state.selectionMode, menuOptions)
+                                : []; }, contextMenuPosition: props.state.contextMenuPosition }))),
             state.currentlyEditedCell && React.createElement(CellEditor, { state: state })));
     };
     LegacyBrowserGridRenderer.prototype.hiddenScrollableElementRefHandler = function (state, hiddenScrollableElement) {

@@ -10,19 +10,40 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { keyCodes } from '../Functions/keyCodes';
+import { keyCodes } from '../Functions';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
+import { getCellProperty } from '..';
 var GroupCellTemplate = (function () {
     function GroupCellTemplate() {
     }
     GroupCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
+        var isExpanded;
+        try {
+            isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
+        }
+        catch (_a) {
+            isExpanded = true;
+        }
+        var indent;
+        try {
+            indent = getCellProperty(uncertainCell, 'indent', 'number');
+        }
+        catch (_b) {
+            indent = 0;
+        }
+        var hasChildrens;
+        try {
+            hasChildrens = getCellProperty(uncertainCell, 'hasChildrens', 'boolean');
+        }
+        catch (_c) {
+            hasChildrens = false;
+        }
         var value = parseFloat(text);
-        return __assign({}, uncertainCell, { text: text, value: value });
+        return __assign({}, uncertainCell, { text: text, value: value, isExpanded: isExpanded, hasChildrens: hasChildrens, indent: indent });
     };
     GroupCellTemplate.prototype.update = function (cell, cellToMerge) {
-        return this.getCompatibleCell(__assign({}, cell, { text: cellToMerge.text }));
+        return this.getCompatibleCell(__assign({}, cell, { isExpanded: cellToMerge.isExpanded }));
     };
     GroupCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         var enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
@@ -38,17 +59,26 @@ var GroupCellTemplate = (function () {
         return { cell: cellCopy, enableEditMode: enableEditMode };
     };
     GroupCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
-        return cell.className ? cell.className : '';
+        var isExpanded = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
+        var className = cell.className ? cell.className : '';
+        return isExpanded + " " + className;
+    };
+    GroupCellTemplate.prototype.getStyle = function (cell, isInEditMode) {
+        var indent = cell.indent ? cell.indent : 0;
+        var elementMarginMultiplier = indent * 1.4;
+        return { paddingLeft: elementMarginMultiplier + "em" };
     };
     GroupCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
-        var canBeExpanded = cell.isExpanded !== undefined;
-        var elementMarginMultiplier = cell.depth ? cell.depth : 0;
         return (!isInEditMode ?
-            React.createElement("div", { className: "wrapper", style: { marginLeft: "calc( 1.2em * " + elementMarginMultiplier + ")" } },
-                canBeExpanded &&
-                    React.createElement(Chevron, { cell: cell, onCellChanged: onCellChanged }),
-                React.createElement("div", { className: "wrapper-content" }, cell.text))
+            React.createElement(React.Fragment, null,
+                cell.hasChildrens &&
+                    React.createElement("div", { className: "chevron", onPointerDown: function (e) {
+                            e.stopPropagation();
+                            onCellChanged(_this.getCompatibleCell(__assign({}, cell, { isExpanded: !cell.isExpanded })), true);
+                        } },
+                        React.createElement("span", { className: "icon" }, "\u276F")),
+                cell.text)
             :
                 React.createElement("input", { ref: function (input) {
                         if (input) {
@@ -63,11 +93,3 @@ var GroupCellTemplate = (function () {
     return GroupCellTemplate;
 }());
 export { GroupCellTemplate };
-var Chevron = function (_a) {
-    var cell = _a.cell, onCellChanged = _a.onCellChanged;
-    return (React.createElement("div", { onPointerDown: function (e) {
-            e.stopPropagation();
-            onCellChanged(__assign({}, cell, { isExpanded: !cell.isExpanded }), true);
-        }, className: "chevron" },
-        React.createElement("div", { style: { transform: "" + (cell.isExpanded ? 'rotate(90deg)' : 'rotate(0)'), transition: '200ms all' } }, "\u276F")));
-};
