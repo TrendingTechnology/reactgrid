@@ -75,9 +75,9 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
                 {props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
                     <ContextMenu
                         state={props.state}
-                        onContextMenu={(menuOptions: MenuOption[]) => props.state.props.onContextMenu 
-                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIndexes : [], 
-                            (props.state.selectionMode === 'column') ? props.state.selectedIndexes : [], props.state.selectionMode, menuOptions) 
+                        onContextMenu={(menuOptions: MenuOption[]) => props.state.props.onContextMenu
+                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIndexes : [],
+                                (props.state.selectionMode === 'column') ? props.state.selectedIndexes : [], props.state.selectionMode, menuOptions)
                             : []}
                         contextMenuPosition={props.state.contextMenuPosition}
                     />

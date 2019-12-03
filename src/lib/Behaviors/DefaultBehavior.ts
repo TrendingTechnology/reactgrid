@@ -16,7 +16,7 @@ import { areLocationsEqual } from '../Functions/areLocationsEqual';
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        state = { ...state, currentBehavior: this.getNewBehavior(event, location, state), contextMenuPosition: {top: -1, left: -1} }
+        state = { ...state, currentBehavior: this.getNewBehavior(event, location, state), contextMenuPosition: { top: -1, left: -1 } }
         return state.currentBehavior.handlePointerDown(event, location, state);
     }
 

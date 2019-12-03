@@ -31,7 +31,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
 
     return {
         ...state,
-        contextMenuPosition: {top: -1, left: -1}, // TODO disable in derived state from props
+        contextMenuPosition: { top: -1, left: -1 }, // TODO disable in derived state from props
         focusedLocation: location,
         currentlyEditedCell: undefined // TODO disable in derived state from props
     };

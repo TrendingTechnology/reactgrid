@@ -64,11 +64,10 @@ function customContextMenuOptions(state: State): MenuOption[] {
             id: 'paste',
             label: 'Paste',
             handler: () => {
-                // TODO 
                 if (isBrowserIE()) {
-                    //setTimeout(() => state.update((state: State) => pasteData(state, getDataToPasteInIE())));
+                    setTimeout(() => state.update((state: State) => pasteData(state, getDataToPasteInIE())));
                 } else {
-                    //navigator.clipboard.readText().then(e => state.update((state: State) => pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' }))))));
+                    navigator.clipboard.readText().then(e => state.update((state: State) => pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ type: 'text', text: t, value: parseFloat(t) }))))));
                 }
             }
         }
