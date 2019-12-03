@@ -27,7 +27,7 @@ export const TestGrid: React.FunctionComponent = () => {
 
     const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
-            columnId: ci, reorderable: true, resizable: true
+            columnId: ci,
         } as Column));
 
         const rows = new Array(rowCount).fill(0).map((_, ri) => {

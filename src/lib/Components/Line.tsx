@@ -9,17 +9,15 @@ interface LineProps {
 export class Line extends React.Component<LineProps> {
     render() {
         const { cellMatrix, linePosition } = this.props;
-        const isVertical = this.props.orientation == 'vertical' ? true : false;
+        const isVertical = !!(this.props.orientation === 'vertical');
+        const lineStyles = Object.assign({}, isVertical
+            ? { left: this.props.linePosition, height: cellMatrix.height }
+            : { top: this.props.linePosition, width: cellMatrix.width });
         return (
             linePosition !== -1 &&
             <div
-                className="rg-line"
-                style={{
-                    top: isVertical ? 0 : this.props.linePosition,
-                    left: isVertical ? this.props.linePosition : 0,
-                    width: isVertical ? 2 : cellMatrix.width,
-                    height: isVertical ? cellMatrix.height : 2,
-                }}
+                className={`rg-line ${isVertical ? 'rg-line-vertical' : 'rg-line-horizontal'}`}
+                style={lineStyles}
             />
         )
     }

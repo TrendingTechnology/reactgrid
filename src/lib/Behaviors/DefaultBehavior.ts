@@ -64,11 +64,6 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
-        // TODO remove if it works without
-        // if (state.currentlyEditedCell) {
-        //     event.preventDefault();
-        //     event.stopPropagation();
-        // } else 
         if (areLocationsEqual(location, state.focusedLocation)) {
             const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
             //const cellTemplate = state.cellTemplates[location.cell.type];
