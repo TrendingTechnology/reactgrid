@@ -14,10 +14,12 @@ export class PointerEventsController {
     // TODO Handle PointerCancel
     public handlePointerDown = (event: PointerEvent, state: State): State => {
         // TODO open context menu (long hold tap)
+        window.addEventListener('contextmenu', this.handleContextMenu as any);
         if (event.button !== 0 && event.button !== undefined) {
             return state;
         }
         window.addEventListener('pointermove', this.handlePointerMove as any);
+        window.addEventListener('pointerup', this.handlePointerUp as any);
         window.addEventListener('pointerup', this.handlePointerUp as any);
         const previousLocation = this.eventLocations[this.currentIndex];
         const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
@@ -30,6 +32,19 @@ export class PointerEventsController {
             state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
         }
         return state;
+    };
+
+    private handleContextMenu = (event: PointerEvent): void => {
+        this.updateState(state => {
+            window.removeEventListener('pointerup', this.handlePointerUp as any);
+            window.removeEventListener('pointermove', this.handlePointerMove as any);
+            window.removeEventListener('contextmenu', this.handleContextMenu as any);
+            const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
+            state = state.currentBehavior.handlePointerUp(event, currentLocation, state);
+            state = state.currentBehavior.handleContextMenu(event, state);
+            state.hiddenFocusElement.focus();
+            return state;
+        });
     };
 
     private handlePointerMove = (event: PointerEvent): void => {
@@ -53,6 +68,7 @@ export class PointerEventsController {
         this.updateState(state => {
             window.removeEventListener('pointerup', this.handlePointerUp as any);
             window.removeEventListener('pointermove', this.handlePointerMove as any);
+            window.removeEventListener('contextmenu', this.handleContextMenu as any);
             const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
             const currentTimestamp = new Date().valueOf();
             const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
@@ -77,8 +93,6 @@ export class PointerEventsController {
                 currentTimestamp - this.eventTimestamps[this.currentIndex] >= 500 &&
                 areLocationsEqual(currentLocation, this.eventLocations[0]) &&
                 areLocationsEqual(currentLocation, this.eventLocations[1])) {
-                // TODO is this correct?
-                state = state.currentBehavior.handleContextMenu(event, state);
             }
             state.hiddenFocusElement.focus();
             return state;

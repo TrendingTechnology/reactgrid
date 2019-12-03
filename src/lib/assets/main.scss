@@ -127,6 +127,9 @@
                 .rg-context-menu-option {
                     padding: $context-menu-option-padding;
                     cursor: pointer;
+                    &:hover {
+                        background-color: darken($main-bg-color, 5);
+                    }
                 }
             }
 
@@ -141,6 +144,14 @@
                 position: absolute;
                 background-color: $resize-line-color;
                 z-index: 3;
+                &-horizontal {
+                    left: 0;
+                    height: $line-size-horizontal;
+                }
+                &-vertical {
+                    top: 0;
+                    width: $line-size-vertical;
+                }
             }
         }
     }

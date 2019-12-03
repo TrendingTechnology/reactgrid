@@ -1,6 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, CellChange } from '.';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
-import { CellTemplates, Id, Cell, ReactGridProps, CellLocation, Compatible, Highlight } from './PublicModel';
+import { CellTemplates, Id, Cell, ReactGridProps, Compatible, Highlight } from './PublicModel';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
 
 export type StateModifier = (state: State) => State;
@@ -33,8 +33,7 @@ export class State {
     readonly enableRowSelection: boolean = false;
 
     // CONTEXT MENU
-    // TODO { top, left }
-    readonly contextMenuPosition: number[] = [-1, -1]; // [top, left]
+    readonly contextMenuPosition: {top: number, left: number} = {top: -1, left: -1}; // [top, left]
 
     // LINE AND SHADOW
     readonly lineOrientation: Orientation = 'horizontal';
