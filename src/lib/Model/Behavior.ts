@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PointerLocation, State, Direction } from '.';
-import { KeyboardEvent, ClipboardEvent, PointerEvent } from '../Functions/domEvents';
+import { KeyboardEvent, ClipboardEvent, PointerEvent, FocusEvent } from '../Functions/domEvents';
 import { Range } from './Range';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -40,6 +40,9 @@ export abstract class Behavior {
     }
     renderPanePart(state: State, pane: Range): React.ReactNode {
         return undefined;
+    }
+    handleBlur(event: FocusEvent, state: State): State {
+        return state;
     }
     autoScrollDirection: Direction = 'both';
 }

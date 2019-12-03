@@ -6,7 +6,7 @@ import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { RowSelectionBehavior } from "./RowSelectionBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
-import { keyCodes, tryAppendChange, emptyCell } from "../Functions";
+import { keyCodes, tryAppendChange, emptyCell, FocusEvent } from "../Functions";
 import { FillHandleBehavior } from "./FillHandleBehavior";
 import { getLocationFromClient, focusLocation } from "../Functions";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
@@ -129,6 +129,14 @@ export class DefaultBehavior extends Behavior {
         event.preventDefault()
         return { ...state };
     }
+
+    handleBlur(event: FocusEvent, state: State): State {
+        return {
+            ...state,
+            ...((event.target !== state.hiddenFocusElement) && { currentlyEditedCell: undefined })
+        }
+    }
+
 }
 
 export function pasteData(state: State, rows: Compatible<Cell>[][]): State {
