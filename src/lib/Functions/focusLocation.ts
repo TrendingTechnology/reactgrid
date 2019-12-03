@@ -6,7 +6,6 @@ import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 export function focusLocation(state: State, location: Location, resetSelection = true): State {
     // TODO scroll into view after changing state !?
     scrollIntoView(state, location);
-    // cell.onFocusChanged(location);
     // TODO external event needed?
     // TODO move resetSelection out to an other function
     if (state.focusedLocation && state.currentlyEditedCell) {
@@ -18,6 +17,8 @@ export function focusLocation(state: State, location: Location, resetSelection =
 
     if (!isFocusable)
         return state;
+
+    state.props.onFocusLocationChanged && state.props.onFocusLocationChanged({ rowId: location.row.rowId, columnId: location.column.columnId });
 
     if (resetSelection)
         state = {
@@ -31,7 +32,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
 
     return {
         ...state,
-        contextMenuPosition: [-1, -1], // TODO disable in derived state from props
+        contextMenuPosition: { top: -1, left: -1 }, // TODO disable in derived state from props
         focusedLocation: location,
         currentlyEditedCell: undefined // TODO disable in derived state from props
     };

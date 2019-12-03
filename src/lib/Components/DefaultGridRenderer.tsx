@@ -2,8 +2,9 @@ import * as React from 'react';
 import { PaneRow } from './PaneRow';
 import { Line } from './Line';
 import { Shadow } from './Shadow';
-import { GridRendererProps } from '../Model';
+import { GridRendererProps, MenuOption } from '../Model';
 import { CellEditor } from './CellEditor';
+import { ContextMenu } from './ContextMenu'
 
 
 export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = props =>
@@ -71,13 +72,16 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
                     shadowSize={props.state.shadowSize}
                     cursor={props.state.shadowCursor}
                 />
-                {/* <ContextMenu
-                    state={props.state}
-                    onRowContextMenu={(menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []}
-                    onColumnContextMenu={(menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []}
-                    onRangeContextMenu={(menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []}
-                    contextMenuPosition={props.state.contextMenuPosition}
-                /> */}
+                {props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
+                    <ContextMenu
+                        state={props.state}
+                        onContextMenu={(menuOptions: MenuOption[]) => props.state.props.onContextMenu
+                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIndexes : [],
+                                (props.state.selectionMode === 'column') ? props.state.selectedIndexes : [], props.state.selectionMode, menuOptions)
+                            : []}
+                        contextMenuPosition={props.state.contextMenuPosition}
+                    />
+                }
             </div>
         </div>
         {props.state.currentlyEditedCell && <CellEditor state={props.state} />}
