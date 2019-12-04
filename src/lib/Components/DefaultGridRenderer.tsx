@@ -18,7 +18,7 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
         onCopy={props.eventHandlers.copyHandler}
         onCut={props.eventHandlers.cutHandler}
         onBlur={props.eventHandlers.blurHandler}
-        style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150, position: 'relative' }}
+        style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150 }}
     >
         <div
             className="rg-viewport"
