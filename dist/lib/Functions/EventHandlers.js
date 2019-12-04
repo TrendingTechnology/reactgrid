@@ -27,6 +27,7 @@ var EventHandlers = (function () {
         this.viewportElementRefHandler = function (viewportElement) { if (viewportElement)
             _this.updateState(function (state) { return recalcVisibleRange(__assign({}, state, { viewportElement: viewportElement })); }); };
         this.hiddenElementRefHandler = function (hiddenFocusElement) { return _this.updateState(function (state) { state.hiddenFocusElement = hiddenFocusElement; return state; }); };
+        this.blurHandler = function (event) { return _this.updateState(function (state) { return state.currentBehavior.handleBlur(event, state); }); };
         this.pasteCaptureHandler = function (event) {
             var htmlData = event.clipboardData.getData('text/html');
             var parsedData = new DOMParser().parseFromString(htmlData, 'text/html');

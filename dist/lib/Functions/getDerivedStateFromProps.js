@@ -33,10 +33,6 @@ export function getDerivedStateFromProps(props, state) {
     }
     if (state.cellMatrix.columns.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
         state = __assign({}, state, { focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) });
-        setTimeout(function () {
-            if (document.activeElement !== state.hiddenFocusElement)
-                state.hiddenFocusElement.focus();
-        });
     }
     if (state.visibleRange && dataHasChanged) {
         state = recalcVisibleRange(state);

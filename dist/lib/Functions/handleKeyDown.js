@@ -15,6 +15,7 @@ import { areLocationsEqual } from './areLocationsEqual';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 export function handleKeyDown(state, event) {
     var newState = handleKeyDownInternal(state, event);
+    state.hiddenFocusElement.focus();
     if (newState !== state) {
         event.stopPropagation();
         event.preventDefault();

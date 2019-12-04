@@ -14,6 +14,7 @@ export declare class EventHandlers {
     windowResizeHandler: () => void;
     viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
     hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
+    blurHandler: (event: import("react").FocusEvent<HTMLDivElement>) => void;
     pasteCaptureHandler: (event: import("react").ClipboardEvent<HTMLDivElement>) => void;
     scrollHandler: () => void;
 }

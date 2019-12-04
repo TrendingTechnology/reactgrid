@@ -51,6 +51,10 @@ var TimeCellTemplate = (function () {
                 var timestamp = getTimestamp(e.currentTarget.value);
                 if (!Number.isNaN(timestamp))
                     onCellChanged(_this.getCompatibleCell(__assign({}, cell, { time: new Date(timestamp) })), false);
+            }, onBlur: function (e) {
+                var timestamp = getTimestamp(e.currentTarget.value);
+                if (!Number.isNaN(timestamp))
+                    onCellChanged(_this.getCompatibleCell(__assign({}, cell, { time: new Date(timestamp) })), true);
             }, onKeyDown: function (e) {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD))
                     e.stopPropagation();

@@ -5,7 +5,7 @@ import { Shadow } from './Shadow';
 import { CellEditor } from './CellEditor';
 import { ContextMenu } from './ContextMenu';
 export var DefaultGridRenderer = function (props) {
-    return React.createElement("div", { className: "reactgrid", onKeyDown: props.eventHandlers.keyDownHandler, onKeyUp: props.eventHandlers.keyUpHandler, onPointerDown: props.eventHandlers.pointerDownHandler, onPasteCapture: props.eventHandlers.pasteCaptureHandler, onPaste: props.eventHandlers.pasteHandler, onCopy: props.eventHandlers.copyHandler, onCut: props.eventHandlers.cutHandler, style: { width: '100%', height: '100%', minWidth: 510, minHeight: 150 } },
+    return React.createElement("div", { className: "reactgrid", onKeyDown: props.eventHandlers.keyDownHandler, onKeyUp: props.eventHandlers.keyUpHandler, onPointerDown: props.eventHandlers.pointerDownHandler, onPasteCapture: props.eventHandlers.pasteCaptureHandler, onPaste: props.eventHandlers.pasteHandler, onCopy: props.eventHandlers.copyHandler, onCut: props.eventHandlers.cutHandler, onBlur: props.eventHandlers.blurHandler, style: { width: '100%', height: '100%', minWidth: 510, minHeight: 150 } },
         React.createElement("div", { className: "rg-viewport", ref: props.eventHandlers.viewportElementRefHandler, onScroll: props.eventHandlers.scrollHandler },
             React.createElement("div", { "data-cy": "reactgrid", className: "rg-content", style: {
                     width: props.state.cellMatrix.width, height: props.state.cellMatrix.height

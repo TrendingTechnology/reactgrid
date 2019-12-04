@@ -53,7 +53,7 @@ var LegacyBrowserGridRenderer = (function (_super) {
         var state = props.state;
         var cellMatrix = state.cellMatrix;
         var hiddenScrollableElement = state.hiddenScrollableElement;
-        return (React.createElement("div", { className: "reactgrid-legacy-browser", onCopy: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e); }, onCut: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e); }, onKeyDown: props.onKeyDown, onKeyUp: props.onKeyUp, onPointerDown: props.onPointerDown, onContextMenu: props.onContextMenu },
+        return (React.createElement("div", { className: "reactgrid-legacy-browser", onCopy: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e); }, onCut: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e); }, onBlur: props.onBlur, onKeyDown: props.onKeyDown, onKeyUp: props.onKeyUp, onPointerDown: props.onPointerDown, onContextMenu: props.onContextMenu },
             React.createElement("div", { ref: function (hiddenScrollableElement) { return hiddenScrollableElement && _this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement); }, className: "rg-hidden-scrollable-element", style: {
                     overflowX: this.isHorizontalScrollbarVisible() ? 'scroll' : 'auto',
                     overflowY: this.isVerticalScrollbarVisible() ? 'scroll' : 'auto',

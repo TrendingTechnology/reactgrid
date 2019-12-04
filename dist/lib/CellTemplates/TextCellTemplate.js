@@ -32,8 +32,8 @@ var TextCellTemplate = (function () {
     };
     TextCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
         var isValid = cell.validator ? cell.validator(cell.text) : true;
-        var className = cell.className ? cell.className : "";
-        return (isValid ? "valid" : "invalid") + " " + className;
+        var className = cell.className ? cell.className : '';
+        return (isValid ? 'valid' : 'invalid') + " " + className;
     };
     TextCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
@@ -44,9 +44,7 @@ var TextCellTemplate = (function () {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
-            }, defaultValue: cell.text, onChange: function (e) {
-                onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), false);
-            }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
+            }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), false); }, onBlur: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), true); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode)))
                     e.stopPropagation();
             } });

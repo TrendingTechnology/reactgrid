@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuOption, State, PointerEvent, KeyboardEvent, ClipboardEvent } from '../Model';
+import { MenuOption, State, PointerEvent, KeyboardEvent, ClipboardEvent, FocusEvent } from '../Model';
 interface LegacyBrowserGridRendererProps {
     state: State;
     viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
@@ -11,6 +11,7 @@ interface LegacyBrowserGridRendererProps {
     onPaste: (event: ClipboardEvent) => void;
     onPointerDown: (event: PointerEvent) => void;
     onContextMenu: (event: PointerEvent) => void;
+    onBlur: (event: FocusEvent) => void;
     onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
     onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
     onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];

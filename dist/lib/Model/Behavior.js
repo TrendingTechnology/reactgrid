@@ -38,6 +38,9 @@ var Behavior = (function () {
     Behavior.prototype.renderPanePart = function (state, pane) {
         return undefined;
     };
+    Behavior.prototype.handleBlur = function (event, state) {
+        return state;
+    };
     return Behavior;
 }());
 export { Behavior };

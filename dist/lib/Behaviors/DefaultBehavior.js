@@ -153,6 +153,9 @@ var DefaultBehavior = (function (_super) {
         event.preventDefault();
         return __assign({}, state);
     };
+    DefaultBehavior.prototype.handleBlur = function (event, state) {
+        return __assign({}, state, ((event.target !== state.hiddenFocusElement) && { currentlyEditedCell: undefined }));
+    };
     return DefaultBehavior;
 }(Behavior));
 export { DefaultBehavior };

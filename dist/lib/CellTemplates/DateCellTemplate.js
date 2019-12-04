@@ -51,6 +51,12 @@ var DateCellTemplate = (function () {
                     var date = new Date(timestamp);
                     onCellChanged(_this.getCompatibleCell(__assign({}, cell, { date: date })), false);
                 }
+            }, onBlur: function (e) {
+                var timestamp = getTimestamp(e.currentTarget.value, '');
+                if (!Number.isNaN(timestamp)) {
+                    var date = new Date(timestamp);
+                    onCellChanged(_this.getCompatibleCell(__assign({}, cell, { date: date })), true);
+                }
             }, onKeyDown: function (e) {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD))
                     e.stopPropagation();

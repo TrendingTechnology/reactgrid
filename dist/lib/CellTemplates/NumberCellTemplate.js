@@ -66,9 +66,7 @@ var NumberCellTemplate = (function () {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
-            }, defaultValue: (!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text), onChange: function (e) {
-                onCellChanged(_this.getCompatibleCell(__assign({}, cell, { value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) })), false);
-            }, onKeyDown: function (e) {
+            }, defaultValue: (!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text), onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) })), false); }, onBlur: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) })), true); }, onKeyDown: function (e) {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode))
                     e.stopPropagation();
                 if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode))

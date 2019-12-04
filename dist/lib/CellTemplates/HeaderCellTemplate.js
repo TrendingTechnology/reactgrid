@@ -13,7 +13,7 @@ import { getCellProperty } from '../Functions/getCellProperty';
 var HeaderCellTemplate = (function () {
     function HeaderCellTemplate() {
         this.isFocusable = function () { return false; };
-        this.getStyle = function (cell) { return ({ background: '#f3f3f3' }); };
+        this.getStyle = function (cell) { return ({ background: 'rgba(0, 0, 0, 0.20)' }); };
     }
     HeaderCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');

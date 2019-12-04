@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PointerLocation, State, Direction } from '.';
-import { KeyboardEvent, ClipboardEvent, PointerEvent } from '../Functions/domEvents';
+import { KeyboardEvent, ClipboardEvent, PointerEvent, FocusEvent } from '../Functions/domEvents';
 import { Range } from './Range';
 export declare abstract class Behavior {
     handleKeyDown(event: KeyboardEvent, state: State): State;
@@ -15,5 +15,6 @@ export declare abstract class Behavior {
     handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State;
     handleContextMenu(event: PointerEvent, state: State): State;
     renderPanePart(state: State, pane: Range): React.ReactNode;
+    handleBlur(event: FocusEvent, state: State): State;
     autoScrollDirection: Direction;
 }

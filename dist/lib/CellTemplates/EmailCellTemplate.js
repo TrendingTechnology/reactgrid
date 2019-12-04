@@ -41,7 +41,7 @@ var EmailCellTemplate = (function () {
         return React.createElement("input", { ref: function (input) {
                 if (input)
                     input.focus();
-            }, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), false); }, onKeyDown: function (e) {
+            }, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), false); }, onBlur: function (e) { return onCellChanged(_this.getCompatibleCell(__assign({}, cell, { text: e.currentTarget.value })), true); }, onKeyDown: function (e) {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode)))
                     e.stopPropagation();
             }, defaultValue: cell.text, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); } });

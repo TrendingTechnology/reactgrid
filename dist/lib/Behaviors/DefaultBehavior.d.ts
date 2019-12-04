@@ -1,4 +1,5 @@
 import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation, Compatible, Cell } from "../Model";
+import { FocusEvent } from "../Functions";
 export declare class DefaultBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
     private getNewBehavior;
@@ -9,6 +10,7 @@ export declare class DefaultBehavior extends Behavior {
     handleCopy(event: ClipboardEvent, state: State): State;
     handlePaste(event: ClipboardEvent, state: State): State;
     handleCut(event: ClipboardEvent, state: State): State;
+    handleBlur(event: FocusEvent, state: State): State;
 }
 export declare function pasteData(state: State, rows: Compatible<Cell>[][]): State;
 export declare function copySelectedRangeToClipboard(state: State, removeValues?: boolean): void;
