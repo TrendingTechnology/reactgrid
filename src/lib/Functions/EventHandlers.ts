@@ -1,4 +1,4 @@
-import { StateUpdater, PointerEvent, ClipboardEvent, KeyboardEvent } from '../Model';
+import { StateUpdater, PointerEvent, ClipboardEvent, KeyboardEvent, FocusEvent } from '../Model';
 import { PointerEventsController } from './PointerEventsController';
 import { recalcVisibleRange } from '.';
 
@@ -17,6 +17,7 @@ export class EventHandlers {
     windowResizeHandler = () => this.updateState(recalcVisibleRange);
     viewportElementRefHandler = (viewportElement: HTMLDivElement) => { if (viewportElement) this.updateState(state => recalcVisibleRange({ ...state, viewportElement })) };
     hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => this.updateState(state => { state.hiddenFocusElement = hiddenFocusElement; return state });
+    blurHandler = (event: FocusEvent) => this.updateState(state => state.currentBehavior.handleBlur(event, state));
 
     pasteCaptureHandler = (event: ClipboardEvent) => {
         const htmlData = event.clipboardData!.getData('text/html');

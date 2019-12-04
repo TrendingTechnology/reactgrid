@@ -6,6 +6,7 @@ import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const newState = handleKeyDownInternal(state, event);
+    state.hiddenFocusElement.focus(); // TODO create test case with losing focus on grid
     if (newState !== state) { event.stopPropagation(); event.preventDefault(); }
     return newState;
 }
@@ -123,7 +124,6 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
         }
     }
-
     return state;
 
 }

@@ -25,5 +25,5 @@ export class HeaderCellTemplate implements CellTemplate<HeaderCell> {
         return cell.className ? cell.className : '';
     }
 
-    getStyle = (cell: Compatible<HeaderCell>) => ({ background: '#f3f3f3' })
+    getStyle = (cell: Compatible<HeaderCell>) => ({ background: 'rgba(0, 0, 0, 0.20)' })
 }

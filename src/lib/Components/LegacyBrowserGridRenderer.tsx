@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Line } from './Line';
 import { Shadow } from './Shadow';
 import { ContextMenu } from './ContextMenu';
-import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent } from '../Model';
+import { MenuOption, State, PointerEvent, KeyboardEvent, ClipboardEvent, FocusEvent } from '../Model';
 import { CellEditor } from './CellEditor';
 import { Pane } from './Pane';
 import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from '../Functions';
@@ -19,6 +19,7 @@ interface LegacyBrowserGridRendererProps {
     onPaste: (event: ClipboardEvent) => void;
     onPointerDown: (event: PointerEvent) => void;
     onContextMenu: (event: PointerEvent) => void;
+    onBlur: (event: FocusEvent) => void;
     onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
     onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
     onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
@@ -42,6 +43,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
                 // TODO
                 //onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.update((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
+                onBlur={props.onBlur}
                 onKeyDown={props.onKeyDown}
                 onKeyUp={props.onKeyUp}
                 onPointerDown={props.onPointerDown}
