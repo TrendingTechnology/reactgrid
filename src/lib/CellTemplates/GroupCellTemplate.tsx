@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { keyCodes } from '../Functions';
-import {CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle} from '../Model';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle } from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '..';
 
@@ -57,7 +57,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     }
 
     getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean) {
-        const isExpanded  = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
+        const isExpanded = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         const className = cell.className ? cell.className : '';
         return `${isExpanded} ${className}`;
     }
@@ -65,7 +65,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     getStyle(cell: Compatible<GroupCell>, isInEditMode: boolean): CellStyle {
         const indent = cell.indent ? cell.indent : 0;
         const elementMarginMultiplier = indent * 1.4;
-        return {paddingLeft: `${elementMarginMultiplier}em`};
+        return { paddingLeft: `${elementMarginMultiplier}em` };
     }
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
@@ -77,7 +77,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                             className="chevron"
                             onPointerDown={e => {
                                 e.stopPropagation();
-                                onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded}), true)
+                                onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded }), true)
                             }}
                         >
                             <span className="icon">❯</span>
@@ -95,6 +95,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
                     }}
                     defaultValue={cell.text}
                     onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
+                    onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), true)}
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}
