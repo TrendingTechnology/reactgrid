@@ -37,13 +37,13 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
 
     render(cell: Compatible<DateCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DateCell>, commit: boolean) => void): React.ReactNode {
 
-        if (!isInEditMode) 
+        if (!isInEditMode)
             return cell.text;
 
         const year = getFormattedTimeUnit(cell.date!.getFullYear());
         const month = getFormattedTimeUnit(cell.date!.getMonth() + 1);
         const day = getFormattedTimeUnit(cell.date!.getDate());
-        
+
         return <input
             ref={input => {
                 if (input) input.focus();
@@ -55,6 +55,13 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
                 if (!Number.isNaN(timestamp)) {
                     const date = new Date(timestamp);
                     onCellChanged(this.getCompatibleCell({ ...cell, date }), false)
+                }
+            }}
+            onBlur={e => {
+                const timestamp = getTimestamp(e.currentTarget.value, '');
+                if (!Number.isNaN(timestamp)) {
+                    const date = new Date(timestamp);
+                    onCellChanged(this.getCompatibleCell({ ...cell, date }), true)
                 }
             }}
             onKeyDown={e => {

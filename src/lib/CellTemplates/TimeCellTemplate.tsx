@@ -32,7 +32,7 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
 
     update(cell: Compatible<TimeCell>, cellToMerge: UncertainCompatible<TimeCell>): Compatible<TimeCell> {
         const timestamp = getTimestamp(cellToMerge.text);
-        if (cellToMerge.text !== '' && !Number.isNaN(timestamp)) 
+        if (cellToMerge.text !== '' && !Number.isNaN(timestamp))
             return this.getCompatibleCell({ ...cell, time: new Date(timestamp) });
         return this.getCompatibleCell({ ...cell, time: new Date(cellToMerge.value) });
     }
@@ -43,7 +43,7 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
 
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode {
 
-        if (!isInEditMode) 
+        if (!isInEditMode)
             return cell.text;
 
         const hours = getFormattedTimeUnit(cell.time!.getHours());
@@ -58,6 +58,10 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
             onChange={e => {
                 const timestamp = getTimestamp(e.currentTarget.value);
                 if (!Number.isNaN(timestamp)) onCellChanged(this.getCompatibleCell({ ...cell, time: new Date(timestamp) }), false)
+            }}
+            onBlur={e => {
+                const timestamp = getTimestamp(e.currentTarget.value);
+                if (!Number.isNaN(timestamp)) onCellChanged(this.getCompatibleCell({ ...cell, time: new Date(timestamp) }), true)
             }}
             onKeyDown={e => {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
