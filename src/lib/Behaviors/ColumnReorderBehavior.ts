@@ -58,7 +58,8 @@ export class ColumnReorderBehavior extends Behavior {
 
     getLastPossibleDropLocation(currentLocation: PointerLocation, state: State): PointerLocation | undefined {
         const position = currentLocation.column.idx <= this.initialColumnIdx ? 'before' : 'after';
-        if (!state.props.canReorderColumns || state.props.canReorderColumns(currentLocation.column.columnId, this.selectedIdxs, position)) {
+        const columnIds = this.selectedIdxs.map(i => state.cellMatrix.columns[i].columnId);
+        if (!state.props.canReorderColumns || state.props.canReorderColumns(currentLocation.column.columnId, columnIds, position)) {
             return currentLocation;
         }
         return this.lastPossibleDropLocation;
@@ -67,7 +68,8 @@ export class ColumnReorderBehavior extends Behavior {
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
         if (this.initialColumnIdx !== location.column.idx && this.lastPossibleDropLocation && state.props.onColumnsReordered) {
             const isBefore = this.lastPossibleDropLocation.column.idx <= this.initialColumnIdx;
-            state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, this.selectedIdxs, isBefore ? 'before' : 'after');
+            const columnIds = this.selectedIdxs.map(i => state.cellMatrix.columns[i].columnId);
+            state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, columnIds, isBefore ? 'before' : 'after');
         }
         return {
             ...state,
