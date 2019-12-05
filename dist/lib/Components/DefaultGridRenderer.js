@@ -21,7 +21,7 @@ export var DefaultGridRenderer = function (props) {
                 React.createElement(Shadow, { shadowPosition: props.state.shadowPosition, orientation: props.state.lineOrientation, cellMatrix: props.state.cellMatrix, shadowSize: props.state.shadowSize, cursor: props.state.shadowCursor }),
                 props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
                     React.createElement(ContextMenu, { state: props.state, onContextMenu: function (menuOptions) { return props.state.props.onContextMenu
-                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIndexes : [], (props.state.selectionMode === 'column') ? props.state.selectedIndexes : [], props.state.selectionMode, menuOptions)
+                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIds : [], (props.state.selectionMode === 'column') ? props.state.selectedIds : [], props.state.selectionMode, menuOptions)
                             : []; }, contextMenuPosition: props.state.contextMenuPosition }))),
         props.state.currentlyEditedCell && React.createElement(CellEditor, { state: props.state }));
 };
