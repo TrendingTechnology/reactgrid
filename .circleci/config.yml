@@ -37,6 +37,15 @@ jobs:
                   command: git pull --tags origin build
 
             - run:
+                  name: Install Dependencies
+                  command: npm install
+
+            - save_cache:
+                  paths:
+                      - node_modules
+                  key: v1-npm-deps-{{ checksum "package.json" }}
+
+            - run:
                   name: Run predeploy
                   command: npm run pre-deploy
 
