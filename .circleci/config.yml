@@ -5,7 +5,7 @@ defaults: &defaults
 version: 2
 jobs:
     upgrade-rc-version:
-        <<: *defaults
+        <: *defaults
 
         steps:
             - checkout
@@ -33,8 +33,12 @@ jobs:
                   command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
 
             - run:
-                  name: Add changes
-                  command: git add .
+                  name: Pull changes
+                  command: git pull --tags origin build
+
+            - run:
+                  name: Run predeploy
+                  command: npm run pre-deploy
 
             - run:
                   name: Commit updated package version
@@ -42,7 +46,7 @@ jobs:
 
             - run:
                   name: Push upgraded version
-                  command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
+                  command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git build
 
     upgrade-version-and-publish:
         <<: *defaults
