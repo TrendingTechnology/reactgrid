@@ -32,12 +32,10 @@ var ContextMenu = (function (_super) {
     }
     ContextMenu.prototype.render = function () {
         var _a = this.props, contextMenuPosition = _a.contextMenuPosition, onContextMenu = _a.onContextMenu, state = _a.state;
-        var focusedLocation = state.focusedLocation;
         var contextMenuOptions = customContextMenuOptions(state);
         var options = onContextMenu ? onContextMenu(customContextMenuOptions(state)) : [];
-        if (focusedLocation && options.length > 0) {
+        if (options.length > 0)
             contextMenuOptions = options;
-        }
         return (contextMenuOptions.length > 0 &&
             (React.createElement("div", { className: "rg-context-menu", style: {
                     top: contextMenuPosition.top + 'px',

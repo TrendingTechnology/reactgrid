@@ -20,7 +20,7 @@ var PointerEventsController = (function () {
         this.eventLocations = [undefined, undefined];
         this.currentIndex = 0;
         this.handlePointerDown = function (event, state) {
-            window.addEventListener('contextmenu', _this.handleContextMenu);
+            state.props.onContextMenu && window.addEventListener('contextmenu', _this.handleContextMenu);
             if (event.button !== 0 && event.button !== undefined) {
                 return state;
             }
@@ -42,7 +42,7 @@ var PointerEventsController = (function () {
             _this.updateState(function (state) {
                 window.removeEventListener('pointerup', _this.handlePointerUp);
                 window.removeEventListener('pointermove', _this.handlePointerMove);
-                window.removeEventListener('contextmenu', _this.handleContextMenu);
+                state.props.onContextMenu && window.removeEventListener('contextmenu', _this.handleContextMenu);
                 var currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
                 state = state.currentBehavior.handlePointerUp(event, currentLocation, state);
                 state = state.currentBehavior.handleContextMenu(event, state);
@@ -70,7 +70,7 @@ var PointerEventsController = (function () {
             _this.updateState(function (state) {
                 window.removeEventListener('pointerup', _this.handlePointerUp);
                 window.removeEventListener('pointermove', _this.handlePointerMove);
-                window.removeEventListener('contextmenu', _this.handleContextMenu);
+                state.props.onContextMenu && window.removeEventListener('contextmenu', _this.handleContextMenu);
                 var currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
                 var currentTimestamp = new Date().valueOf();
                 var secondLastTimestamp = _this.eventTimestamps[1 - _this.currentIndex];

@@ -12,7 +12,7 @@ export var DefaultGridRenderer = function (props) {
                 } },
                 props.state.cellMatrix.frozenTopRange.height > 0 &&
                     React.createElement(PaneRow, { id: 'T', class: "rg-pane-row-t", state: props.state, style: {}, range: props.state.cellMatrix.frozenTopRange, borders: { bottom: true }, zIndex: 3 }),
-                props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange &&
+                props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange && props.state.visibleRange.height > 0 &&
                     React.createElement(PaneRow, { id: 'M', state: props.state, style: { height: props.state.cellMatrix.scrollableRange.height }, range: props.state.cellMatrix.scrollableRange.slice(props.state.visibleRange, 'rows'), borders: {}, zIndex: 0 }),
                 props.state.cellMatrix.frozenBottomRange.height > 0 && props.state.cellMatrix.rows.length > 1 &&
                     React.createElement(PaneRow, { id: 'B', class: "rg-pane-row-b", state: props.state, style: {}, range: props.state.cellMatrix.frozenBottomRange, borders: { top: true }, zIndex: 3 }),

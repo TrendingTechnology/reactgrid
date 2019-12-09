@@ -14,6 +14,7 @@ import { tryAppendChange } from '../Functions';
 import { ResizeHandle } from './ResizeHandle';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
+import { CellSelectionBehavior } from '../Behaviors/CellSelectionBehavior';
 export var CellRenderer = function (props) {
     var _a = getCompatibleCellAndTemplate(props.state, props.location), cell = _a.cell, cellTemplate = _a.cellTemplate;
     var state = __assign({}, props.state);
@@ -27,5 +28,5 @@ export var CellRenderer = function (props) {
                 throw 'commit should be set to true in this case.';
             props.state.update(function (state) { return tryAppendChange(state, location, cell); });
         }),
-        location.row.idx === 0 && location.column.resizable && !(state.currentBehavior instanceof ColumnSelectionBehavior) && React.createElement(ResizeHandle, null)));
+        location.row.idx === 0 && location.column.resizable && !(state.currentBehavior instanceof ColumnSelectionBehavior) && !(state.currentBehavior instanceof CellSelectionBehavior) && React.createElement(ResizeHandle, null)));
 };

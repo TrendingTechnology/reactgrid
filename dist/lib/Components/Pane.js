@@ -52,8 +52,7 @@ var GridContent = (function (_super) {
     return GridContent;
 }(React.Component));
 function renderHighlights(props) {
-    var highlightLocations = props.state.highlightLocations.filter(function (value) { return Object.keys(value).length !== 0; });
-    return highlightLocations.map(function (highlight, id) {
+    return props.state.highlightLocations.map(function (highlight, id) {
         var location = props.state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
         return location && props.range.contains(location) && React.createElement(CellFocus, { key: id, location: location, color: highlight.borderColor });
     });

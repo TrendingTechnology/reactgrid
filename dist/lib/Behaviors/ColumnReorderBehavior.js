@@ -66,7 +66,8 @@ var ColumnReorderBehavior = (function (_super) {
     };
     ColumnReorderBehavior.prototype.getLastPossibleDropLocation = function (currentLocation, state) {
         var position = currentLocation.column.idx <= this.initialColumnIdx ? 'before' : 'after';
-        if (!state.props.canReorderColumns || state.props.canReorderColumns(currentLocation.column.columnId, this.selectedIdxs, position)) {
+        var columnIds = this.selectedIdxs.map(function (i) { return state.cellMatrix.columns[i].columnId; });
+        if (!state.props.canReorderColumns || state.props.canReorderColumns(currentLocation.column.columnId, columnIds, position)) {
             return currentLocation;
         }
         return this.lastPossibleDropLocation;
@@ -74,7 +75,8 @@ var ColumnReorderBehavior = (function (_super) {
     ColumnReorderBehavior.prototype.handlePointerUp = function (event, location, state) {
         if (this.initialColumnIdx !== location.column.idx && this.lastPossibleDropLocation && state.props.onColumnsReordered) {
             var isBefore = this.lastPossibleDropLocation.column.idx <= this.initialColumnIdx;
-            state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, this.selectedIdxs, isBefore ? 'before' : 'after');
+            var columnIds = this.selectedIdxs.map(function (i) { return state.cellMatrix.columns[i].columnId; });
+            state.props.onColumnsReordered(this.lastPossibleDropLocation.column.columnId, columnIds, isBefore ? 'before' : 'after');
         }
         return __assign({}, state, { linePosition: -1, shadowPosition: -1 });
     };
