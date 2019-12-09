@@ -1,5 +1,6 @@
-import { State } from "../Common";
+import { State } from '../Model';
 
+// TODO
 export function print(state: State, title: string) {
     // let printIframe = document.createElement('iframe');
     // const printTable = generatePrintTable(state);
@@ -15,7 +16,7 @@ export function print(state: State, title: string) {
     //     printIframe.style.display = 'none';
     //     printIframe.contentWindow.print();
     // }
-};
+}
 
 function generatePrintTable(state: State) {
     // const cellMatrix = state.cellMatrix;

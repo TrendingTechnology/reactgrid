@@ -1,8 +1,10 @@
-import { State, Column, Row, Location } from "../Common";
+import { State, Location, GridRow, GridColumn } from '../Model';
+import { newLocation } from './newLocation';
 
+// TODO cleanup
 // export function updateFocusedLocation(state: State): State {
 //     if (state.focusedLocation) {
-//         // TODO REMOVE FIND 
+//         // TODO REMOVE FIND
 //         const newFocusedCol = state.cellMatrix.cols.find(c => c.id === state.focusedLocation!.col.id)
 //         const newFocusedRow = state.cellMatrix.rows.find(r => r.id === state.focusedLocation!.row.id)
 //         const selectedRanges = state.selectedRanges
@@ -29,21 +31,21 @@ import { State, Column, Row, Location } from "../Common";
 // }
 
 export function updateSelectedRows(state: State): State {
-    const firstCol = state.cellMatrix.first.col;
-    const lastCol = state.cellMatrix.last.col;
+    const firstCol = state.cellMatrix.first.column;
+    const lastCol = state.cellMatrix.last.column;
     // TODO this filter is very inefficient for big tables
-    const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
+    const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.rowId)).sort((a, b) => a.idx - b.idx);
     const rows = groupedRows(updatedRows);
-    const ranges = rows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
+    const ranges = rows.map(row => state.cellMatrix.getRange(newLocation(row[0], firstCol), newLocation(row[row.length - 1], lastCol)));
     let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
     if (state.focusedLocation) {
         ranges.forEach((range, idx) => {
             range.rows.forEach(row => {
-                if (state.focusedLocation!.row.id === row.id) {
+                if (state.focusedLocation!.row.rowId === row.rowId) {
                     activeSelectedRangeIdx = idx;
                 }
-            })
+            });
         });
     }
 
@@ -53,26 +55,26 @@ export function updateSelectedRows(state: State): State {
         activeSelectedRangeIdx,
         selectedRanges: [...ranges],
         selectedIndexes: updatedRows.map(row => row.idx),
-        selectedIds: updatedRows.map(row => row.id)
-    }
+        selectedIds: updatedRows.map(row => row.rowId)
+    };
 }
 
 export function updateSelectedColumns(state: State): State {
     const firstRow = state.cellMatrix.first.row;
     const lastRow = state.cellMatrix.last.row;
     // TODO this filter is very inefficient for big tables
-    const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
-    const columns = groupedColumns(updatedColumns)
-    const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
+    const updatedColumns = state.cellMatrix.columns.filter(r => state.selectedIds.includes(r.columnId)).sort((a, b) => a.idx - b.idx);
+    const columns = groupedColumns(updatedColumns);
+    const ranges = columns.map(arr => state.cellMatrix.getRange(newLocation(firstRow, arr[0]), newLocation(lastRow, arr[arr.length - 1])));
     let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
     if (state.focusedLocation) {
         ranges.forEach((range, idx) => {
-            range.cols.forEach(col => {
-                if (state.focusedLocation!.col.id === col.id) {
+            range.columns.forEach(col => {
+                if (state.focusedLocation!.column.columnId === col.columnId) {
                     activeSelectedRangeIdx = idx;
                 }
-            })
+            });
         });
     }
 
@@ -82,10 +84,11 @@ export function updateSelectedColumns(state: State): State {
         activeSelectedRangeIdx,
         selectedRanges: [...ranges],
         selectedIndexes: updatedColumns.map(col => col.idx),
-        selectedIds: updatedColumns.map(col => col.id)
-    }
+        selectedIds: updatedColumns.map(col => col.columnId)
+    };
 }
 
+// TODO cleanup
 // export function updateSelectedRanges(state: State): State {
 //     const newSelectedRanges: Range[] = [];
 //     state.selectedRanges.forEach(range => {
@@ -98,7 +101,7 @@ export function updateSelectedColumns(state: State): State {
 
 //         columns.forEach(c => {
 //             rows.forEach(r => {
-//                 newSelectedRanges.push(state.cellMatrix.getRange(new Location(r[0], c[0]), new Location(r[r.length - 1], c[c.length - 1])))
+//                 newSelectedRanges.push(state.cellMatrix.getRange(newLocation(r[0], c[0]), newLocation(r[r.length - 1], c[c.length - 1])))
 //             })
 //         })
 //     })
@@ -106,10 +109,10 @@ export function updateSelectedColumns(state: State): State {
 //     let activeSelectedRangeIdx = 0;
 
 //     if (state.focusedLocation && newSelectedRanges.length == 0) {
-//         const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
+//         const location = newLocation(state.focusedLocation.row, state.focusedLocation.col)
 //         newSelectedRanges.push(state.cellMatrix.getRange(location, location))
 //     } else if (state.focusedLocation) {
-//         const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
+//         const location = newLocation(state.focusedLocation.row, state.focusedLocation.col)
 //         const index = newSelectedRanges.findIndex(r => r.contains(location))
 //         if (index !== -1) {
 //             activeSelectedRangeIdx = index
@@ -123,48 +126,48 @@ export function updateSelectedColumns(state: State): State {
 //     }
 // }
 
-const groupedRows = (array: Row[]) => {
-    const grouped: Row[][] = [];
+const groupedRows = (array: GridRow[]) => {
+    const grouped: GridRow[][] = [];
     let sortIndex = 0;
-    array.forEach((current: Row, index) => {
+    array.forEach((current: GridRow, index) => {
         if (!array[index - 1]) {
-            grouped.push([current])
-            return
+            grouped.push([current]);
+            return;
         }
-        const prev: Row = array[index - 1]
+        const prev: GridRow = array[index - 1];
         if (current.idx - prev.idx == 1) {
             if (!grouped[sortIndex]) {
-                grouped.push([prev, current])
+                grouped.push([prev, current]);
             } else {
-                grouped[sortIndex].push(current)
+                grouped[sortIndex].push(current);
             }
         } else {
-            grouped.push([current])
-            sortIndex += 1
+            grouped.push([current]);
+            sortIndex += 1;
         }
-    })
-    return grouped
-}
+    });
+    return grouped;
+};
 
-const groupedColumns = (array: Column[]) => {
-    const grouped: Column[][] = [];
+const groupedColumns = (array: GridColumn[]) => {
+    const grouped: GridColumn[][] = [];
     let sortIndex = 0;
-    array.forEach((current: Column, index) => {
+    array.forEach((current: GridColumn, index) => {
         if (!array[index - 1]) {
-            grouped.push([current])
-            return
+            grouped.push([current]);
+            return;
         }
-        const prev: Column = array[index - 1]
+        const prev: GridColumn = array[index - 1];
         if (current.idx - prev.idx == 1) {
             if (!grouped[sortIndex]) {
-                grouped.push([prev, current])
+                grouped.push([prev, current]);
             } else {
-                grouped[sortIndex].push(current)
+                grouped[sortIndex].push(current);
             }
         } else {
-            grouped.push([current])
-            sortIndex += 1
+            grouped.push([current]);
+            sortIndex += 1;
         }
-    })
-    return grouped
-}
+    });
+    return grouped;
+};

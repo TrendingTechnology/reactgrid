@@ -1,17 +1,16 @@
-import * as React from "react";
-import { Location, State } from "../Common";
-import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
+import React, { useRef, useLayoutEffect, useState } from 'react';
+import { Location, State } from '../Model';
+import { FillHandleBehavior } from '../Behaviors/FillHandleBehavior';
 
 interface FillHandleProps {
-    state: State,
-    location: Location
+    state: State;
+    location: Location;
 }
 
 export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) => {
-    const targetRef: any = React.useRef();
-    const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
-
-    React.useLayoutEffect(() => {
+    const targetRef: any = useRef();
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    useLayoutEffect(() => {
         if (targetRef.current) {
             setDimensions({
                 width: targetRef.current.offsetWidth,
@@ -25,12 +24,12 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) => {
             ref={targetRef}
             style={{
                 top: props.location.row.bottom - (dimensions.width / 2),
-                left: props.location.col.right - (dimensions.height / 2),
+                left: props.location.column.right - (dimensions.height / 2),
             }}
             data-cy="rg-touch-fill-handle"
             onPointerDown={event => {
                 if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined (disabled this event for cypress tests)
-                    props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
+                    props.state.update(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
                 }
             }}
         >

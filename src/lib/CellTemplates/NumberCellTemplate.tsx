@@ -1,46 +1,83 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate } from '../Common';
-import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
+import { keyCodes } from '../Functions/keyCodes';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
+import { getCellProperty } from '../Functions/getCellProperty';
 
-export class NumberCellTemplate implements CellTemplate<number, any> {
+export interface NumberCell extends Cell {
+    type: 'number';
+    value: number;
+    format?: Intl.NumberFormat;
+    nanToZero?: boolean;
+    hideZero?: boolean;
+}
 
-    isValid(cellData: number): boolean {
-        return typeof (cellData) === 'number';
+export class NumberCellTemplate implements CellTemplate<NumberCell> {
+
+    getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell> {
+        const value = getCellProperty(uncertainCell, 'value', 'number');
+        const numberFormat = uncertainCell.format || new Intl.NumberFormat(window.navigator.language);
+        const displayValue = (uncertainCell.nanToZero && Number.isNaN(value)) ? 0 : value;
+        const text = (Number.isNaN(displayValue) || (uncertainCell.hideZero && displayValue === 0)) ? '' : numberFormat.format(displayValue);
+        return { ...uncertainCell, value: displayValue, text }
     }
 
-    textToCellData(text: string): number {
-        return parseFloat(text);
+    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+        if (isNumpadNumericKey(keyCode)) keyCode -= 48;
+        const char = String.fromCharCode(keyCode);
+        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {
+            const value = Number(char);
+            if (Number.isNaN(value) && isAllowedOnNumberTypingKey(keyCode))
+                return { cell: { ...this.getCompatibleCell({ ...cell, value }), text: char }, enableEditMode: true }
+            return { cell: this.getCompatibleCell({ ...cell, value }), enableEditMode: true }
+        }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    cellDataToText(cellData: number): string {
-        return isNaN(cellData) ? '' : cellData.toString();
+    update(cell: Compatible<NumberCell>, cellToMerge: UncertainCompatible<NumberCell>): Compatible<NumberCell> {
+        return this.getCompatibleCell({ ...cell, value: cellToMerge.value });
     }
 
-    handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-        if (!ctrl && !alt && !shift && isNumberInput(keyCode))
-            return { cellData: NaN, enableEditMode: true }
-        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+    getTextFromCharCode = (cellText: string): string => {
+        switch (cellText.charCodeAt(0)) {
+            case keyCodes.DASH:
+                return '-';
+            case keyCodes.COMMA:
+                return ','
+            case keyCodes.PERIOD:
+            case keyCodes.DECIMAL:
+                return '.';
+            default:
+                return cellText;
+        }
     }
 
-    renderContent: (props: CellRenderProps<number, any>) => React.ReactNode = (props) => {
-        if (!props.isInEditMode) {
-            return this.cellDataToText(props.cellData);
+    getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
+
+    render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React.ReactNode {
+
+        if (!isInEditMode) {
+            return cell.text;
         }
 
+        const locale = cell.format ? cell.format.resolvedOptions().locale : window.navigator.languages[0];
+        const format = new Intl.NumberFormat(locale, { useGrouping: false, maximumFractionDigits: 20 });
+
         return <input
-            className="rg-number-cell-template"
             ref={input => {
                 if (input) {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            value={this.cellDataToText(props.cellData)}
-            onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value), false)}
+            defaultValue={(!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text)}
+            onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false)}
+            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), true)}
             onKeyDown={e => {
-                if (isNumberInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData.toString(); // reset
+                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode)) e.stopPropagation();
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode)) e.preventDefault();
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

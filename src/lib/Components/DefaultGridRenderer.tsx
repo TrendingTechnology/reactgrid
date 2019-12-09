@@ -1,53 +1,36 @@
-import * as React from "react";
-import { PaneRow } from "./PaneRow";
-import { Line } from "./Line";
-import { Shadow } from "./Shadow";
-import { ContextMenu } from "./ContextMenu";
-import { MenuOption, State, Id, Range, KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
-import { CellEditor } from "./CellEditor";
+import * as React from 'react';
+import { PaneRow } from './PaneRow';
+import { Line } from './Line';
+import { Shadow } from './Shadow';
+import { GridRendererProps, MenuOption } from '../Model';
+import { CellEditor } from './CellEditor';
+import { ContextMenu } from './ContextMenu'
 
-interface DefaultGridRendererProps {
-    state: State,
-    viewportElementRefHandler: (viewportElement: HTMLDivElement) => void,
-    hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void,
-    onScroll: () => void,
-    onKeyDown: (event: KeyboardEvent) => void,
-    onKeyUp: (event: KeyboardEvent) => void,
-    onPointerDown: (event: PointerEvent) => void,
-    onCopy: (event: ClipboardEvent) => void,
-    onCut: (event: ClipboardEvent) => void,
-    onPaste: (event: ClipboardEvent) => void,
-    onPasteCapture: (event: ClipboardEvent) => void,
-    onContextMenu: (event: PointerEvent) => void,
-    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
-    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-}
 
-export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererProps> = props =>
+export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = props =>
     <div
-        className="react-grid"
-        onKeyDown={props.onKeyDown}
-        onKeyUp={props.onKeyUp}
+        className="reactgrid"
+        onKeyDown={props.eventHandlers.keyDownHandler}
+        onKeyUp={props.eventHandlers.keyUpHandler}
+        onPointerDown={props.eventHandlers.pointerDownHandler}
+        onPasteCapture={props.eventHandlers.pasteCaptureHandler}
+        onPaste={props.eventHandlers.pasteHandler}
+        onCopy={props.eventHandlers.copyHandler}
+        onCut={props.eventHandlers.cutHandler}
+        onBlur={props.eventHandlers.blurHandler}
         style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150 }}
     >
         <div
             className="rg-viewport"
-            ref={props.viewportElementRefHandler}
-            onScroll={props.onScroll}
+            ref={props.eventHandlers.viewportElementRefHandler}
+            onScroll={props.eventHandlers.scrollHandler}
         >
             <div
-                data-cy="react-grid"
+                data-cy="reactgrid"
                 className="rg-content"
                 style={{
                     width: props.state.cellMatrix.width, height: props.state.cellMatrix.height
                 }}
-                onPointerDown={props.onPointerDown}
-                onCopy={props.onCopy}
-                onCut={props.onCut}
-                onPaste={props.onPaste}
-                onPasteCapture={props.onPasteCapture}
-                onContextMenu={props.onContextMenu}
             >
                 {props.state.cellMatrix.frozenTopRange.height > 0 &&
                     <PaneRow id='T'
@@ -58,7 +41,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                         borders={{ bottom: true }}
                         zIndex={3}
                     />}
-                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.col && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange &&
+                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange && props.state.visibleRange.height > 0 &&
                     <PaneRow
                         id='M'
                         state={props.state}
@@ -77,7 +60,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                         borders={{ top: true }}
                         zIndex={3}
                     />}
-                <input className="rg-hidden-element" readOnly={true} ref={props.hiddenElementRefHandler} />
+                <input className="rg-hidden-element" readOnly={true} ref={props.eventHandlers.hiddenElementRefHandler} />
                 <Line
                     linePosition={props.state.linePosition}
                     orientation={props.state.lineOrientation}
@@ -90,14 +73,17 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                     shadowSize={props.state.shadowSize}
                     cursor={props.state.shadowCursor}
                 />
-                <ContextMenu
-                    state={props.state}
-                    onRowContextMenu={(menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []}
-                    onColumnContextMenu={(menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []}
-                    onRangeContextMenu={(menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []}
-                    contextMenuPosition={props.state.contextMenuPosition}
-                />
+                {props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
+                    <ContextMenu
+                        state={props.state}
+                        onContextMenu={(menuOptions: MenuOption[]) => props.state.props.onContextMenu
+                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIds : [],
+                                (props.state.selectionMode === 'column') ? props.state.selectedIds : [], props.state.selectionMode, menuOptions)
+                            : []}
+                        contextMenuPosition={props.state.contextMenuPosition}
+                    />
+                }
             </div>
-        </div >
+        </div>
         {props.state.currentlyEditedCell && <CellEditor state={props.state} />}
     </div>

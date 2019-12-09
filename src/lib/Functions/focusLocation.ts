@@ -1,19 +1,24 @@
-import { State, Location } from "../Common";
-import { scrollIntoView } from "./scrollIntoView";
-import { trySetDataAndAppendChange } from "./trySetDataAndAppendChange";
+import { State, Location } from '../Model';
+import { scrollIntoView } from './scrollIntoView';
+import { tryAppendChange } from './tryAppendChange';
+import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function focusLocation(state: State, location: Location, resetSelection = true): State {
-    // TODO scroll into view after changing state !? 
+    // TODO scroll into view after changing state !?
     scrollIntoView(state, location);
-    // cell.onFocusChanged(location);
     // TODO external event needed?
     // TODO move resetSelection out to an other function
     if (state.focusedLocation && state.currentlyEditedCell) {
-        state = trySetDataAndAppendChange(state, state.focusedLocation, state.currentlyEditedCell)
+        state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
 
-    const cellTemplate = state.cellTemplates[location.cell.type];
-    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(location.cell.data)
+    const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
+    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(cell);
+
+    if (!isFocusable)
+        return state;
+
+    state.props.onFocusLocationChanged && state.props.onFocusLocationChanged({ rowId: location.row.rowId, columnId: location.column.columnId });
 
     if (resetSelection)
         state = {
@@ -27,8 +32,8 @@ export function focusLocation(state: State, location: Location, resetSelection =
 
     return {
         ...state,
-        contextMenuPosition: [-1, -1],
-        focusedLocation: location, // TODO enable: isFocusable ? location : undefined,
-        currentlyEditedCell: undefined
+        contextMenuPosition: { top: -1, left: -1 }, // TODO disable in derived state from props
+        focusedLocation: location,
+        currentlyEditedCell: undefined // TODO disable in derived state from props
     };
 }

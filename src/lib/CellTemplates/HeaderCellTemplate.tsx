@@ -1,17 +1,29 @@
 import * as React from 'react';
-import { CellTemplate, CellRenderProps } from '../Common';
+import { CellTemplate, Cell, Compatible, Uncertain } from '../Model';
+import { getCellProperty } from '../Functions/getCellProperty';
 
-export class HeaderCellTemplate implements CellTemplate<string, any> {
+export interface HeaderCell extends Cell {
+    type: 'header',
+    text: string,
+}
 
-    isReadonly = () => true;
+export class HeaderCellTemplate implements CellTemplate<HeaderCell> {
 
-    isValid = (cellData: string) => (typeof (cellData) === 'string');
+    getCompatibleCell(uncertainCell: Uncertain<HeaderCell>): Compatible<HeaderCell> {
+        const text = getCellProperty(uncertainCell, 'text', 'string');
+        const value = parseFloat(text);
+        return { ...uncertainCell, text, value };
+    }
+
+    render(cell: Compatible<HeaderCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HeaderCell>, commit: boolean) => void): React.ReactNode {
+        return cell.text;
+    }
 
     isFocusable = () => false;
 
-    cellDataToText = (cellData: string) => cellData;
+    getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
 
-    getCustomStyle = (cellData: string) => ({ background: '#f3f3f3' })
-
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => props.cellData
+    getStyle = (cell: Compatible<HeaderCell>) => ({ background: 'rgba(0, 0, 0, 0.20)' })
 }

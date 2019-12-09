@@ -1,20 +1,18 @@
-import * as React from "react";
-import { CellMatrix, Orientation } from "../Common";
+import * as React from 'react';
+import { CellMatrix, Orientation } from '../Model';
 
 interface ShadowProps {
     shadowPosition: number;
     orientation: Orientation;
     cellMatrix: CellMatrix;
     shadowSize: number;
-    cursor: string
+    cursor: string;
 }
 
-
 export class Shadow extends React.Component<ShadowProps> {
-
     render() {
         const { shadowSize, shadowPosition, cellMatrix, cursor } = this.props;
-        const isVertical = this.props.orientation == 'vertical' ? true : false
+        const isVertical = this.props.orientation == 'vertical' ? true : false;
         return (
             this.props.shadowPosition !== -1 &&
             <div

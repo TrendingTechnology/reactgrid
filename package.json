@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid",
-  "version": "2.0.6",
+  "version": "2.0.8-rc.29",
   "main": "dist/reactgrid.js",
   "typings": "dist/reactgrid.d.ts",
   "devDependencies": {
@@ -13,7 +13,7 @@
     "cross-env": "^6.0.2",
     "cypress": "^3.3.1",
     "cypress-image-snapshot": "^3.1.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.0",
     "npm-run-all": "^4.1.5",
     "npm-version-suffix": "^0.2.0",
     "react": "^16.8.6",

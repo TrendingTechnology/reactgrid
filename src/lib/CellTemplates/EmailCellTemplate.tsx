@@ -1,51 +1,58 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate } from '../Common';
-import { isTextInput, isNavigationKey } from './keyCodeCheckings';
+import { keyCodes } from '../Functions/keyCodes';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings';
+import { getCellProperty } from '../Functions/getCellProperty';
 
-export class EmailCellTemplate implements CellTemplate<string, any> {
+export interface EmailCell extends Cell {
+    type: 'email',
+    text: string,
+    validator?: (text: string) => boolean,
+    renderer?: (text: string) => React.ReactNode
+}
 
-    isValid(cellData: string): boolean {
-        const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        return email_regex.test(cellData.replace(/\s+/g, ''));
+export class EmailCellTemplate implements CellTemplate<EmailCell> {
+
+    getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell> {
+        const text = getCellProperty(uncertainCell, 'text', 'string');
+        const value = parseFloat(text);
+        return { ...uncertainCell, text, value };
     }
 
-    textToCellData(text: string): string {
-        return text;
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
+        const char = String.fromCharCode(keyCode);
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
+            return { cell: { ...cell, text: !shift ? char.toLowerCase() : char }, enableEditMode: true }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    cellDataToText(cellData: string) {
-        return cellData;
+    update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell> {
+        return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
     }
 
-    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-        if (!ctrl && !alt && isTextInput(keyCode))
-            return { cellData: '', enableEditMode: true }
-        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean) {
+        const isValid = cell.validator ? cell.validator(cell.text) : true;
+        return isValid ? 'valid' : 'invalid';
     }
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
-        if (!props.isInEditMode)
-            return props.cellData;
+    render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode {
+        if (!isInEditMode)
+            return cell.renderer ? cell.renderer(cell.text) : cell.text;
+
         return <input
-            type='email'
-            className="rg-email-cell-template"
             ref={input => {
-                if (input) {
-                    input.focus();
-                    // input.setSelectionRange(input.value.length, input.value.length);
-                }
+                if (input) input.focus();
             }}
-            defaultValue={props.cellData}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
+            onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
+            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), true)}
+            onKeyDown={e => {
+                if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
+            }}
+            defaultValue={cell.text}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
-            onKeyDown={e => {
-                if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
-            }}
         />
     }
 }

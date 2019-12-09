@@ -7,11 +7,11 @@ class Utils {
 
     selectCell(clientX, clientY, customEventArgs) {
         if (customEventArgs != undefined) {
-            cy.get('[data-cy=react-grid]').trigger('pointerdown', clientX, clientY, customEventArgs);
+            cy.get('[data-cy=reactgrid]').trigger('pointerdown', clientX, clientY, customEventArgs);
         } else {
-            cy.get('[data-cy=react-grid]').trigger('pointerdown', clientX, clientY);
+            cy.get('[data-cy=reactgrid]').trigger('pointerdown', clientX, clientY);
         }
-        cy.get('[data-cy=react-grid]').trigger('pointerup', { force: true });
+        cy.get('[data-cy=reactgrid]').trigger('pointerup', { force: true });
         cy.wait(200);
     }
 
@@ -28,26 +28,26 @@ class Utils {
 
     selectRange(fromX, fromY, toX, toY, customEventArgs) {
         if (customEventArgs != undefined) {
-            cy.get('[data-cy=react-grid]').trigger('pointerdown', fromX, fromY, customEventArgs);
+            cy.get('[data-cy=reactgrid]').trigger('pointerdown', fromX, fromY, customEventArgs);
         } else {
-            cy.get('[data-cy=react-grid]').trigger('pointerdown', fromX, fromY);
+            cy.get('[data-cy=reactgrid]').trigger('pointerdown', fromX, fromY);
         }
 
-        cy.get('[data-cy=react-grid]').trigger('pointermove', toX, toY);
-        cy.get('[data-cy=react-grid]').trigger('pointerup', { force: true });
+        cy.get('[data-cy=reactgrid]').trigger('pointermove', toX, toY);
+        cy.get('[data-cy=reactgrid]').trigger('pointerup', { force: true });
         cy.wait(200);
     }
 
     selectCellByTouch(clientX, clientY) {
-        cy.get('[data-cy=react-grid]').click(clientX, clientY, { clientX: clientX, clientY: clientY });
+        cy.get('[data-cy=reactgrid]').click(clientX, clientY, { clientX: clientX, clientY: clientY });
     }
 
     selectRangeByTouch(fromX, fromY, toX, toY, autoScroll = false) {
-        cy.get('[data-cy=react-grid]').click(fromX, fromY, { clientX: fromX, clientY: fromY, force: true });
-        cy.get('[data-cy=react-grid]').trigger('touchstart', fromX, fromY, {
+        cy.get('[data-cy=reactgrid]').click(fromX, fromY, { clientX: fromX, clientY: fromY, force: true });
+        cy.get('[data-cy=reactgrid]').trigger('touchstart', fromX, fromY, {
             changedTouches: [{ clientX: fromX, clientY: fromY + 100 }]
         });
-        cy.get('[data-cy=react-grid]').trigger('touchmove', toX, toY, {
+        cy.get('[data-cy=reactgrid]').trigger('touchmove', toX, toY, {
             changedTouches: [{ clientX: toX, clientY: toY + 100 }],
             force: true
         });
@@ -58,12 +58,13 @@ class Utils {
 
     fillCells(toX, toY) {
         cy.get('[data-cy=rg-fill-handle]').trigger('pointerdown', { force: true });
-        cy.get('[data-cy=react-grid]').trigger('pointermove', { clientX: toX, clientY: toY, force: true });
+        cy.get('[data-cy=reactgrid]').trigger('pointermove', { clientX: toX, clientY: toY, force: true });
         cy.wait(200);
-        cy.get('[data-cy=react-grid]').trigger('pointerup', { clientX: toX, clientY: toY, force: true });
+        cy.get('[data-cy=reactgrid]').trigger('pointerup', { clientX: toX, clientY: toY, force: true });
         cy.wait(200);
     }
 
+    // TODO not used ?
     fillCellsByTouch(fromX, fromY, toX, toY, type, autoScroll = false) {
         if (type === 'cell') {
             this.selectCellByTouch(fromX, fromY);
@@ -72,7 +73,7 @@ class Utils {
         }
         cy.get('[data-cy=touch-fill-handle]').trigger('touchstart', { force: true });
         cy.wait(200);
-        cy.get('[data-cy=react-grid]').trigger('touchmove', toX, toY, {
+        cy.get('[data-cy=reactgrid]').trigger('touchmove', toX, toY, {
             changedTouches: [{ clientX: toX, clientY: toY + 100 }],
             force: true
         });
@@ -123,26 +124,26 @@ class Utils {
 
     openContextMenu(clientX, clientY, optionValue) {
         if (optionValue != undefined) {
-            cy.get('[data-cy=react-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY, force: true });
+            cy.get('[data-cy=reactgrid]').trigger('contextmenu', { clientX: clientX, clientY: clientY, force: true });
             cy.wait(300);
             cy.get('.rg-context-menu-option')
                 .contains(optionValue)
                 .click();
         } else {
-            cy.get('[data-cy=react-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY, force: true });
+            cy.get('[data-cy=reactgrid]').trigger('contextmenu', { clientX: clientX, clientY: clientY, force: true });
         }
     }
 
     keyDown(keyCode, customEventArgs, timeout = 200) {
         if (customEventArgs != undefined) {
-            cy.get('[data-cy=react-grid]').trigger(
+            cy.get('[data-cy=reactgrid]').trigger(
                 'keydown',
                 Object.assign({}, { keyCode: keyCode }, customEventArgs)
             );
         } else {
-            cy.get('[data-cy=react-grid]').trigger('keydown', { keyCode: keyCode });
+            cy.get('[data-cy=reactgrid]').trigger('keydown', { keyCode: keyCode });
         }
-        cy.get('[data-cy=react-grid]').trigger('keyup', { force: true })
+        cy.get('[data-cy=reactgrid]').trigger('keyup', { force: true })
         cy.wait(timeout);
     }
 }
