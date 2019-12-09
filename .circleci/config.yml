@@ -50,6 +50,10 @@ jobs:
                   command: npm run pre-deploy
 
             - run:
+                  name: Add changes
+                  command: git add -A
+
+            - run:
                   name: Commit updated package version
                   command: git commit -m "upgrade version [ci skip]"
 
