@@ -41,7 +41,7 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
                         borders={{ bottom: true }}
                         zIndex={3}
                     />}
-                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange &&
+                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange && props.state.visibleRange.height > 0 &&
                     <PaneRow
                         id='M'
                         state={props.state}
