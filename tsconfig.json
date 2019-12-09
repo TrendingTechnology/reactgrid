@@ -27,6 +27,7 @@
   ],
   "exclude": [
     "src/index.tsx",
-    "src/TestGrid.tsx"
+    "src/TestGrid.tsx",
+    "src/GroupTestGrid.tsx"
   ]
 }

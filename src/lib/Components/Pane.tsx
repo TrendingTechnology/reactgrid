@@ -46,8 +46,8 @@ class GridContent extends React.Component<RowsProps> {
 }
 
 function renderHighlights(props: PaneProps) {
-    const highlightLocations = props.state.highlightLocations.filter((value: any) => Object.keys(value).length !== 0); // TODO why?
-    return highlightLocations.map((highlight: Highlight, id: number) => {
+    // const highlightLocations = props.state.highlightLocations.filter((value: any) => { console.log(Object.keys(value)); return Object.keys(value).length !== 0 }); // TODO why?
+    return props.state.highlightLocations.map((highlight: Highlight, id: number) => {
         const location = props.state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
         return location && props.range.contains(location) && <CellFocus key={id} location={location} color={highlight.borderColor} />; // TODO maybe new component or another way?
     });

@@ -14,7 +14,7 @@ export class PointerEventsController {
     // TODO Handle PointerCancel
     public handlePointerDown = (event: PointerEvent, state: State): State => {
         // TODO open context menu (long hold tap)
-        window.addEventListener('contextmenu', this.handleContextMenu as any);
+        state.props.onContextMenu && window.addEventListener('contextmenu', this.handleContextMenu as any);
         if (event.button !== 0 && event.button !== undefined) {
             return state;
         }
@@ -38,7 +38,7 @@ export class PointerEventsController {
         this.updateState(state => {
             window.removeEventListener('pointerup', this.handlePointerUp as any);
             window.removeEventListener('pointermove', this.handlePointerMove as any);
-            window.removeEventListener('contextmenu', this.handleContextMenu as any);
+            state.props.onContextMenu && window.removeEventListener('contextmenu', this.handleContextMenu as any);
             const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
             state = state.currentBehavior.handlePointerUp(event, currentLocation, state);
             state = state.currentBehavior.handleContextMenu(event, state);
@@ -68,7 +68,7 @@ export class PointerEventsController {
         this.updateState(state => {
             window.removeEventListener('pointerup', this.handlePointerUp as any);
             window.removeEventListener('pointermove', this.handlePointerMove as any);
-            window.removeEventListener('contextmenu', this.handleContextMenu as any);
+            state.props.onContextMenu && window.removeEventListener('contextmenu', this.handleContextMenu as any);
             const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
             const currentTimestamp = new Date().valueOf();
             const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];

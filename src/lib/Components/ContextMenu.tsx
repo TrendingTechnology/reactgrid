@@ -4,7 +4,7 @@ import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBeh
 import { isBrowserIE, getDataToPasteInIE } from '../Functions';
 
 interface ContextMenuProps {
-    contextMenuPosition: {top: number, left: number};
+    contextMenuPosition: { top: number, left: number };
     focusedLocation?: Location;
     state: State;
     onContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
@@ -13,13 +13,10 @@ interface ContextMenuProps {
 export class ContextMenu extends React.Component<ContextMenuProps> {
     render() {
         const { contextMenuPosition, onContextMenu, state } = this.props;
-        const focusedLocation = state.focusedLocation;
         let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
         const options = onContextMenu ? onContextMenu(customContextMenuOptions(state)) : [];
-        if (focusedLocation && options.length > 0) {
-            contextMenuOptions = options;
-        }
-        return (contextMenuOptions.length > 0 && 
+        if (options.length > 0) contextMenuOptions = options;
+        return (contextMenuOptions.length > 0 &&
             (
                 <div
                     className="rg-context-menu"
@@ -35,7 +32,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                             onPointerDown={e => e.stopPropagation()}
                             onClick={() => {
                                 el.handler();
-                                state.update((state: State) => ({ ...state, contextMenuPosition: {top: -1, left: -1} }))
+                                state.update((state: State) => ({ ...state, contextMenuPosition: { top: -1, left: -1 } }))
                             }}
                         >
                             {el.label}
