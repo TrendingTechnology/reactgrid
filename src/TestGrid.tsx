@@ -98,9 +98,10 @@ export const TestGrid: React.FunctionComponent = () => {
 
     const handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
         const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
         setState({
-            columns: reorderArray<Column>(state.columns, columnIds as number[], to),
-            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIds as number[], to) })),
+            columns: reorderArray<Column>(state.columns, columnIdxs, to),
+            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIdxs, to) })),
         });
     }
 
