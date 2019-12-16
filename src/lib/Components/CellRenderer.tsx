@@ -4,6 +4,7 @@ import { tryAppendChange } from '../Functions';
 import { ResizeHandle } from './ResizeHandle';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
+import { CellSelectionBehavior } from '../Behaviors/CellSelectionBehavior';
 
 export interface CellRendererProps {
     state: State;
@@ -37,7 +38,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
                     props.state.update(state => tryAppendChange(state, location, cell));
                 })
             }
-            {location.row.idx === 0 && location.column.resizable && !(state.currentBehavior instanceof ColumnSelectionBehavior) && <ResizeHandle />}
+            {location.row.idx === 0 && location.column.resizable && !(state.currentBehavior instanceof ColumnSelectionBehavior) && !(state.currentBehavior instanceof CellSelectionBehavior) && <ResizeHandle />}
         </div >
     );
 };

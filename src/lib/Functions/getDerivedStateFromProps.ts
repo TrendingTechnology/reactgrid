@@ -24,10 +24,10 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
 
     if (state.cellMatrix.columns.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
         state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) };
-        // TODO check it
-        setTimeout(() => {
-            if (document.activeElement !== state.hiddenFocusElement) state.hiddenFocusElement.focus();
-        });
+        // TODO remove if grid getting focus correctly after blur
+        // setTimeout(() => {
+        //     if (document.activeElement !== state.hiddenFocusElement) state.hiddenFocusElement.focus();
+        // });
     }
 
     if (state.visibleRange && dataHasChanged) {

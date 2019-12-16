@@ -1,112 +1,155 @@
 defaults: &defaults
-  docker:
-    - image: circleci/node:10.15.3
+    docker:
+        - image: circleci/node:10.16.3
 
 version: 2
 jobs:
-  upgrade-rc-version:
-    <<: *defaults
+    upgrade-rc-version:
+        <<: *defaults
 
-    steps:
-      - checkout
+        steps:
+            - checkout
 
-      - run:
-          name: Set configuration
-          command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
+            - run:
+                  name: Set configuration
+                  command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
 
-      - run:
-          name: Upgrade version
-          command: npm version prerelease --preid=rc -m "upgrade version [ci skip]"
+            - run:
+                  name: Upgrade version
+                  command: npm version prerelease --preid=rc -m "upgrade version [ci skip]"
 
-      - run:
-          name: Push upgraded version
-          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
+            - run:
+                  name: Push upgraded version
+                  command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
 
-  upgrade-version-and-publish:
-    <<: *defaults
+    deploy-on-build:
+        <<: *defaults
 
-    steps:
-      - checkout
+        steps:
+            - checkout
 
-      - restore_cache:
-          keys:
-            - v1-npm-deps-{{ checksum "package.json" }}
-            - v1-npm-deps-
+            - run:
+                  name: Set configuration
+                  command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
 
-      - run:
-          name: Remove suffix from package version
-          command: npm run remove-suffix
+            - run:
+                  name: Pull changes
+                  command: git pull --tags origin build
 
-      - run: 
-          name: Install Dependencies
-          command: npm install
+            - run:
+                  name: Install Dependencies
+                  command: npm install
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-npm-deps-{{ checksum "package.json" }}
+            - save_cache:
+                  paths:
+                      - node_modules
+                  key: v1-npm-deps-{{ checksum "package.json" }}
 
-      - run:
-          name: Build TypeScript code
-          command: npm run pre-deploy
+            - run:
+                  name: Run predeploy
+                  command: npm run pre-deploy
 
-      - run:
-          name: Write NPM Token to ~/.npmrc
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            - run:
+                  name: Add changes
+                  command: git add -A
 
-      - run:
-          name: Publish to NPM
-          command: npm publish --access=public
+            - run:
+                  name: Commit updated package version
+                  command: git commit -m "upgrade version [ci skip]"
 
-      - run:
-          name: Set configuration
-          command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
+            - run:
+                  name: Push upgraded version
+                  command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git build
 
-      - run:
-          name: Add changes
-          command: git add .
+    upgrade-version-and-publish:
+        <<: *defaults
 
-      - run:
-          name: Commit updated package version
-          command: git commit -m "upgrade version [ci skip]"
+        steps:
+            - checkout
 
-      - run:
-          name: Push upgraded version
-          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git master
+            #   - restore_cache:
+            #       keys:
+            #         - v1-npm-deps-{{ checksum "package.json" }}
+            #         - v1-npm-deps-
 
-      - run:
-          name: Change branch to develop
-          command: git checkout develop
+            - run:
+                  name: Install Dependencies
+                  command: npm install
 
-      - run:
-          name: Remove suffix from develop package version
-          command: npm run remove-suffix
+            - run:
+                  name: Remove suffix from package version
+                  command: npm run remove-suffix
 
-      - run: 
-          name: Update package-lock.json
-          command: npm install
+            - save_cache:
+                  paths:
+                      - node_modules
+                  key: v1-npm-deps-{{ checksum "package.json" }}
 
-      - run:
-          name: Add changes
-          command: git add .
+            - run:
+                  name: Build TypeScript code
+                  command: npm run pre-deploy
 
-      - run:
-          name: Commit updated package version
-          command: git commit -m "upgrade version [ci skip]"
+            - run:
+                  name: Write NPM Token to ~/.npmrc
+                  command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
 
-      - run:
-          name: Push upgraded version
-          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
-          
+            - run:
+                  name: Publish to NPM
+                  command: npm publish --access=public
+
+            - run:
+                  name: Set configuration
+                  command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
+
+            - run:
+                  name: Add changes
+                  command: git add .
+
+            - run:
+                  name: Commit updated package version
+                  command: git commit -m "upgrade version [ci skip]"
+
+            - run:
+                  name: Push upgraded version
+                  command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git master
+
+            - run:
+                  name: Change branch to develop
+                  command: git checkout develop
+
+            - run:
+                  name: Remove suffix from develop package version
+                  command: npm run remove-suffix
+
+            - run:
+                  name: Update package-lock.json
+                  command: npm install
+
+            - run:
+                  name: Add changes
+                  command: git add .
+
+            - run:
+                  name: Commit updated package version
+                  command: git commit -m "upgrade version [ci skip]"
+
+            - run:
+                  name: Push upgraded version
+                  command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
+
 workflows:
-  version: 2
-  main:
-    jobs:
-      - upgrade-version-and-publish:
-          filters:
-            branches:
-              only: master
-      - upgrade-rc-version:
-          filters:
-            branches:
-              only: develop
+    version: 2
+    main:
+        jobs:
+            - upgrade-version-and-publish:
+                  filters:
+                      branches:
+                          only: master
+            - upgrade-rc-version:
+                  filters:
+                      branches:
+                          only: develop
+            - deploy-on-build:
+                  filters:
+                      branches:
+                          only: build

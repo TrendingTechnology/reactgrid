@@ -42,6 +42,7 @@ export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps
                 // onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
                 // TODO
                 //onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.update((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
+
                 onKeyDown={eventHandlers.keyDownHandler}
                 onKeyUp={eventHandlers.keyUpHandler}
                 onPointerDown={eventHandlers.pointerDownHandler}

@@ -32,8 +32,8 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
 
     getClassName(cell: Compatible<TextCell>, isInEditMode: boolean) {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
-        const className = cell.className ? cell.className : ``;
-        return `${isValid ? `valid` : `invalid`} ${className}`;
+        const className = cell.className ? cell.className : '';
+        return `${isValid ? 'valid' : 'invalid'} ${className}`;
     }
 
     render(cell: Compatible<TextCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TextCell>, commit: boolean) => void): React.ReactNode {
@@ -49,9 +49,8 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
                 }
             }}
             defaultValue={cell.text}
-            onChange={e => {
-                onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false);
-            }}
+            onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
+            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), true)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

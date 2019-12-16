@@ -17,6 +17,7 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
         onPaste={props.eventHandlers.pasteHandler}
         onCopy={props.eventHandlers.copyHandler}
         onCut={props.eventHandlers.cutHandler}
+        onBlur={props.eventHandlers.blurHandler}
         style={{ width: '100%', height: '100%', minWidth: 510, minHeight: 150 }}
     >
         <div
@@ -40,7 +41,7 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
                         borders={{ bottom: true }}
                         zIndex={3}
                     />}
-                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange &&
+                {props.state.cellMatrix.scrollableRange.height > 0 && props.state.cellMatrix.scrollableRange.first.column && props.state.cellMatrix.scrollableRange.first.row && props.state.cellMatrix.scrollableRange.last.row && props.state.visibleRange && props.state.visibleRange.height > 0 &&
                     <PaneRow
                         id='M'
                         state={props.state}
@@ -76,8 +77,8 @@ export const DefaultGridRenderer: React.FunctionComponent<GridRendererProps> = p
                     <ContextMenu
                         state={props.state}
                         onContextMenu={(menuOptions: MenuOption[]) => props.state.props.onContextMenu
-                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIndexes : [],
-                                (props.state.selectionMode === 'column') ? props.state.selectedIndexes : [], props.state.selectionMode, menuOptions)
+                            ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIds : [],
+                                (props.state.selectionMode === 'column') ? props.state.selectedIds : [], props.state.selectionMode, menuOptions)
                             : []}
                         contextMenuPosition={props.state.contextMenuPosition}
                     />

@@ -13,12 +13,9 @@ interface ContextMenuProps {
 export class ContextMenu extends React.Component<ContextMenuProps> {
     render() {
         const { contextMenuPosition, onContextMenu, state } = this.props;
-        const focusedLocation = state.focusedLocation;
         let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
         const options = onContextMenu ? onContextMenu(customContextMenuOptions(state)) : [];
-        if (focusedLocation && options.length > 0) {
-            contextMenuOptions = options;
-        }
+        if (options.length > 0) contextMenuOptions = options;
         return (contextMenuOptions.length > 0 &&
             (
                 <div

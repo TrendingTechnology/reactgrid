@@ -28,12 +28,12 @@ export const TestGrid: React.FunctionComponent = () => {
 
     const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(columnCount).fill(0).map((_, ci) => ({
-            columnId: ci, resizable: true, reorderable: true
+            columnId: `col-${ci}`, resizable: true, reorderable: true
         } as Column));
 
         const rows = new Array(rowCount).fill(0).map((_, ri) => {
             return {
-                rowId: ri, reorderable: true, cells: columns.map((_, ci) => {
+                rowId: `row-${ri}`, reorderable: true, cells: columns.map((_, ci) => {
                     if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
                     const now = new Date();
                     switch (ci) {
@@ -93,29 +93,26 @@ export const TestGrid: React.FunctionComponent = () => {
         return true;
     }
 
-    const handleCanReorderRows = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+    const handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
         const rowIndex = state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
-        if (rowIndex === 0)
-            return false;
+        if (rowIndex === 0) return false;
         return true;
     }
 
     const handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
         const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
         setState({
-            columns: reorderArray<Column>(state.columns, columnIds as number[], to),
-            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIds as number[], to) })),
+            columns: reorderArray<Column>(state.columns, columnIdxs, to),
+            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIdxs, to) })),
         });
     }
 
     const handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-        let newState = { ...state };
+        const newState = { ...state };
         const to = state.rows.findIndex((row: Row) => row.rowId === targetRowId);
         const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id)) as number[];
-        setState({
-            ...newState,
-            rows: reorderArray<Row>(state.rows, ids, to)
-        });
+        setState({ ...newState, rows: reorderArray<Row>(state.rows, ids, to) });
     }
 
     const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
@@ -147,6 +144,7 @@ export const TestGrid: React.FunctionComponent = () => {
         license={'non-commercial'}
         onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
+        highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
         // frozenLeftColumns={2}
         // frozenRightColumns={2}
         //frozenTopRows={1}
