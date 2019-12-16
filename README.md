@@ -1,118 +1,98 @@
-## ReactGrid
-```
+#### Prerequisites
+The only requirement in order to make ReactGrid work is an installed ReactJS library.
+
+## 1. Install ReactGrid from npm repository
+
+```shell
 npm i @silevis/reactgrid
 ```
 
-Before run you need to have installed:
+Before run you need to have globally installed:
 - "react": "^16.8.6"
 - "react-dom": "^16.8.6"
 
-## Getting Started
-```
-import React from 'react';
-import { ReactGrid, ColumnProps, RowProps, DataChange, Id } from '@silevis/reactgrid'
-import '@silevis/reactgrid/dist/lib/assets/core.css';
+## 2. Import ReactGrid component
 
-interface Row {
-    id: string;
-    height: number;
-    data: Data;
-}
-interface Column {
-    id: string;
-    width: number;
-}
-
-interface Data {
-    [key: string]: string;
-}
-
-interface AppState {
-    columns: Column[];
-    rows: Row[];
-}
-
-interface AppProps {
-    columns: number;
-    rows: number;
-    rowsHeight?: number;
-    columnsWidth?: number;
-}
-
-export default class App extends React.Component<AppProps, AppState> {
-    constructor(props: AppProps) {
-        super(props)
-        const columns =
-            new Array(props.columns)
-                .fill(props.columnsWidth || 100)
-                .map((width, idx) => ({ id: this.getRandomId(), width, idx }));
-
-        this.state = {
-            columns,
-            rows:
-                new Array(props.rows)
-                    .fill(props.rowsHeight || 25)
-                    .map((height, idx) =>
-                        columns.reduce((row: Row, column: Column) => {
-                            row.data[column.id] = (idx + ' - ' + columns.findIndex(c => c.id == column.id)); return row
-                        }, { id: this.getRandomId(), height, data: {} })),
-        }
-    }
-
-    private getRandomId(): string {
-        return Math.random().toString(36).substr(2, 9);
-    }
-
-    private getMatrix() {
-        const columns: ColumnProps[] = [...this.state.columns].map((column, cIdx) => ({
-            id: column.id,
-            width: column.width,
-            reorderable: true,
-            resizable: true,
-            onResize: width => {
-                const state = { ...this.state };
-                state.columns[cIdx].width = width;
-                this.setState(state);
-            }
-        }));
-        const rows: RowProps[] = [...this.state.rows].map((row) => ({
-            id: row.id,
-            height: row.height,
-            reorderable: true,
-            cells: [...this.state.columns].map(c => ({ data: row.data[c.id], type: 'text' })),
-
-        }));
-        return { rows, columns }
-    }
-
-    private prepareDataChanges(dataChanges: DataChange[]) {
-        const state = { ...this.state }
-        dataChanges.forEach(change => {
-            state.rows.map(row => row.id == change.rowId ? row.data[change.columnId] = change.newData : row)
-        })
-        return state;
-    }
-
-    render() {
-        return (
-            <ReactGrid
-                cellMatrixProps={this.getMatrix()}
-                onDataChanged={(changes: DataChange[]) => this.setState(this.prepareDataChanges(changes))}
-                license={'non-commercial'}
-            />
-        );
-    }
-}
-```
-You must remember to import styles to display grid correctly. You can import core.css like in example above or core.scss which require installed node-sass.
-### Internet Explorer
-Additional you have to install https://www.npmjs.com/package/core-js and place it like below:
-```
-import React from 'react';
-import "core-js/stable";
-import { ReactGrid } from '@silevis/reactgrid'
+```tsx
+import { ReactGrid } from "@silevis/reactgrid";
 ```
 
-## Features
+## 3. Import css styles
+
+Import file from `node_modules` directory. This file is necessary to correctly displaying.
+
+```tsx
+import "/node_modules/@silevis/reactgrid/dist/lib/assets/core.css";
+```
+
+## 4. Create a cell matrix
+
+Time to define our data. It will be stored in [React Hook](https://reactjs.org/docs/hooks-intro.html). 
+`useState` hook will be initialized with object that contains two keys - `columns` and `rows`. 
+Both of them must be valid ReactGrid objects: [`Columns`](link) and [`Rows`](link).
+
+```tsx
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import { ReactGrid } from "@silevis/reactgrid";
+import "./../node_modules/@silevis/reactgrid/dist/lib/assets/core.css";
+
+function App() {
+  const [state, setState] = useState(() => ({
+    columns: [
+      { columnId: "Name", width: 100 },
+      { columnId: "Surname", width: 100 }
+    ],
+    rows: [
+      {
+        rowId: 0,
+        cells: [
+          { type: "header", text: "Name" },
+          { type: "header", text: "Surname" }
+        ]
+      },
+      {
+        rowId: 1,
+        cells: [
+          { type: "text", text: "Thomas" },
+          { type: "text", text: "Goldman" }
+        ]
+      },
+      {
+        rowId: 2,
+        cells: [
+          { type: "text", text: "Susie" },
+          { type: "text", text: "Spencer" }
+        ]
+      },
+      {
+        rowId: 2,
+        cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
+      }
+    ]
+  }));
+
+  return (
+    <ReactGrid
+      rows={state.rows}
+      columns={state.columns}
+      license={"non-commercial"}
+    />
+  );
+}
+```
+
+## 4. Render your component
+
+```tsx
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
 ## Documentation
-## License
+
+Browse docs: [click](http://reactgrid.com/docs/2.0.30/0-introduction/)
+
+## Pricing and licensing
+
+ReactGrid if free for non-commercial use, read more about [pricing and licensing](http://reactgrid.com/pricing)
