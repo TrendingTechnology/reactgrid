@@ -2,52 +2,51 @@ import * as React from 'react';
 import { Line } from './Line';
 import { Shadow } from './Shadow';
 import { ContextMenu } from './ContextMenu';
-import { MenuOption, State, PointerEvent, KeyboardEvent, ClipboardEvent, FocusEvent } from '../Model';
+import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent, GridRendererProps } from '../Model';
 import { CellEditor } from './CellEditor';
 import { Pane } from './Pane';
 import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from '../Functions';
 import { pasteData } from '../Behaviors/DefaultBehavior';
+import { handleKeyDown } from '../Functions/handleKeyDown';
 
-interface LegacyBrowserGridRendererProps {
-    state: State;
-    viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
-    hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
-    onKeyDown: (event: KeyboardEvent) => void;
-    onKeyUp: (event: KeyboardEvent) => void;
-    onCopy: (event: ClipboardEvent) => void;
-    onCut: (event: ClipboardEvent) => void;
-    onPaste: (event: ClipboardEvent) => void;
-    onPointerDown: (event: PointerEvent) => void;
-    onContextMenu: (event: PointerEvent) => void;
-    onBlur: (event: FocusEvent) => void;
-    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-}
+// interface LegacyBrowserGridRendererProps {
+//     state: State;
+//     viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
+//     hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
+//     onKeyDown: (event: KeyboardEvent) => void;
+//     onKeyUp: (event: KeyboardEvent) => void;
+//     onCopy: (event: ClipboardEvent) => void;
+//     onCut: (event: ClipboardEvent) => void;
+//     onPaste: (event: ClipboardEvent) => void;
+//     onPointerDown: (event: PointerEvent) => void;
+//     onContextMenu: (event: PointerEvent) => void;
+//     onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
+//     onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
+//     onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
+// }
 
-export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGridRendererProps> {
+export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps> {
     private frozenTopScrollableElement!: HTMLDivElement;
     private frozenRightScrollableElement!: HTMLDivElement;
     private frozenBottomScrollableElement!: HTMLDivElement;
     private frozenLeftScrollableElement!: HTMLDivElement;
 
     render() {
-        const props: LegacyBrowserGridRendererProps = this.props;
-        const state: State = props.state;
+        const { eventHandlers, state } = this.props;
         const cellMatrix = state.cellMatrix;
         const hiddenScrollableElement = state.hiddenScrollableElement;
         return (
             <div
                 className="reactgrid-legacy-browser"
-                onCopy={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e)}
-                onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
+                //onCopy={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e)}
+                // onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
                 // TODO
                 //onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.update((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
-                onBlur={props.onBlur}
-                onKeyDown={props.onKeyDown}
-                onKeyUp={props.onKeyUp}
-                onPointerDown={props.onPointerDown}
-                onContextMenu={props.onContextMenu}
+
+                onKeyDown={eventHandlers.keyDownHandler}
+                onKeyUp={eventHandlers.keyUpHandler}
+                onPointerDown={eventHandlers.pointerDownHandler}
+            // onContextMenu={state.props.onContextMenu}
             >
                 <div
                     ref={(hiddenScrollableElement: HTMLDivElement) => hiddenScrollableElement && this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement)}
@@ -215,7 +214,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 )}
                 <div
                     className="rg-viewport"
-                    ref={props.viewportElementRefHandler}
+                    ref={eventHandlers.viewportElementRefHandler}
                     style={{
                         right: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                         bottom: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
@@ -244,7 +243,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             className="rg-input-xy"
                             ref={(input: HTMLInputElement) => {
                                 if (input) {
-                                    props.hiddenElementRefHandler(input);
+                                    eventHandlers.hiddenElementRefHandler(input);
                                     input.setSelectionRange(0, 1);
                                 }
                             }}
@@ -253,14 +252,14 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         />
                         <Line linePosition={state.linePosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} />
                         <Shadow shadowPosition={state.shadowPosition} orientation={state.lineOrientation} cellMatrix={state.cellMatrix} shadowSize={state.shadowSize} cursor={state.shadowCursor} />
-                        {props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
+                        {state.contextMenuPosition.top !== -1 && state.contextMenuPosition.left !== -1 &&
                             <ContextMenu
-                                state={props.state}
-                                onContextMenu={(menuOptions: MenuOption[]) => props.state.props.onContextMenu
-                                    ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIds : [],
-                                        (props.state.selectionMode === 'column') ? props.state.selectedIds : [], props.state.selectionMode, menuOptions)
+                                state={state}
+                                onContextMenu={(menuOptions: MenuOption[]) => state.props.onContextMenu
+                                    ? state.props.onContextMenu((state.selectionMode === 'row') ? state.selectedIndexes : [],
+                                        (state.selectionMode === 'column') ? state.selectedIndexes : [], state.selectionMode, menuOptions)
                                     : []}
-                                contextMenuPosition={props.state.contextMenuPosition}
+                                contextMenuPosition={state.contextMenuPosition}
                             />
                         }
                     </div>

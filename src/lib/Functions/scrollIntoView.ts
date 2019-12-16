@@ -5,14 +5,14 @@ export function scrollIntoView(state: State, location: any, direction: Direction
     const top = getScrollTop(state, location, direction === 'horizontal');
     const left = getScrollLeft(state, location, direction === 'vertical');
 
-    if (isBrowserIE() || isBrowserEdge()) {
-        // TODO use viewportElement in LegacyRenderer
-        state.hiddenScrollableElement.scrollTop = top;
-        state.hiddenScrollableElement.scrollLeft = left;
-    } else {
-        state.viewportElement.scrollTop = top;
-        state.viewportElement.scrollLeft = left;
-    }
+    // if (isBrowserIE() || isBrowserEdge()) {
+    //     // TODO use viewportElement in LegacyRenderer
+    //     state.hiddenScrollableElement.scrollTop = top;
+    //     state.hiddenScrollableElement.scrollLeft = left;
+    // } else {
+    state.viewportElement.scrollTop = top;
+    state.viewportElement.scrollLeft = left;
+    //}
 }
 
 function getScrollTop(state: State, location: PointerLocation, dontChange: boolean): number {
@@ -29,7 +29,7 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
     const isColumnBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
     const isColumnBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
 
-    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom() || isColumnBelowBottomPane())  {
+    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom() || isColumnBelowBottomPane()) {
         if (location.cellY) {
             return rows[row.idx + 1] ? rows[row.idx + 1].top - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
         } else {
