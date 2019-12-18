@@ -22,6 +22,45 @@ jobs:
                   name: Push upgraded version
                   command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git develop
 
+    deploy-on-build:
+        <<: *defaults
+
+        steps:
+            - checkout
+
+            - run:
+                  name: Set configuration
+                  command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
+
+            - run:
+                  name: Pull changes
+                  command: git pull --tags origin build
+
+            - run:
+                  name: Install Dependencies
+                  command: npm install
+
+            - save_cache:
+                  paths:
+                      - node_modules
+                  key: v1-npm-deps-{{ checksum "package.json" }}
+
+            - run:
+                  name: Run predeploy
+                  command: npm run pre-deploy
+
+            - run:
+                  name: Add changes
+                  command: git add -A
+
+            - run:
+                  name: Commit updated package version
+                  command: git commit -m "upgrade version [ci skip]"
+
+            - run:
+                  name: Push upgraded version
+                  command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git build
+
     upgrade-version-and-publish:
         <<: *defaults
 
@@ -110,3 +149,7 @@ workflows:
                   filters:
                       branches:
                           only: develop
+            - deploy-on-build:
+                  filters:
+                      branches:
+                          only: build
