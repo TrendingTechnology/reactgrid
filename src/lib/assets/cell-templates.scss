@@ -1,4 +1,40 @@
-/* CHECKBOX CELL TEMPLATE */
+.rg-celleditor-generic{
+    width: 100%;
+    height: 100%;
+    padding: $template-padding;
+    border: $template-margin;
+    background: $template-bg-color;
+    font-size: $template-font-size;
+    outline: none;
+}
+
+.rg-celleditor {
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 5;
+    padding-top: $celleditor-padding-top;
+    background-color: $cell-editor-gb-color;
+    box-shadow: $cell-editor-shadow $cell-shadow-color;
+    border-style: solid;
+    border-color: $primary-color;
+    border-width: $celleditor-border-width;
+    input {
+        @extend .rg-celleditor-generic;
+    }
+}
+
+.rg-number-celleditor input {
+    text-align: right;
+}
+
+.rg-number-cell, .rg-time-cell, .rg-date-cell { 
+    justify-content: flex-end;
+}
+
+.rg-email-cell.invalid {
+    color: $template-content-invalid;
+}
+
 .rg-checkbox-cell {
     align-items: center;
     justify-content: center;
@@ -13,62 +49,8 @@
     }
 }
 
-.rg-celleditor-generic{
-    width: 100%;
-    height: 100%;
-    padding: $template-padding;
-    border: $template-margin;
-    background: $template-bg-color;
-    font-size: $template-font-size;
-    outline: none;
-}
-/* NUMBER TEMPLATE */
-
-.rg-number-celleditor input {
-    @extend .rg-celleditor-generic;
-    text-align: right;
-}
-
-.rg-number-cell, .rg-time-cell, .rg-date-cell { 
-    justify-content: flex-end;
-}
-
-/* TEXT TEMPLATE */
-.rg-text-celleditor input {
-    @extend .rg-celleditor-generic;
-    font-family: inherit;
-    
-}
-
-/* TIME TEMPLATE */
-.rg-time-celleditor input{
-    @extend .rg-celleditor-generic;
-}
-
-.rg-date-celleditor input {
-    @extend .rg-celleditor-generic;
-}
-
-/* EMAIL TEMPLATE */
-.rg-email-cell.invalid {
-    color: $template-content-invalid;
-}
-
-.rg-email-celleditor input {
-    @extend .rg-celleditor-generic;
-}
-
-/* GROUP HEADER TEMPLATE */
-.rg-group-celleditor input {
-    @extend .rg-celleditor-generic;
-}
-
-
+/* GROUP CELL TEMPLATE */
 .rg-group-cell {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    flex-direction: row;
     .chevron {
         z-index: $template-z-index;
         pointer-events: auto;
