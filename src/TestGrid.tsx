@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { ReactGrid, Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, Cell, CellLocation, NumberCell, GroupCell } from './lib'
 import './lib/assets/core.scss';
+import 'core-js';
+
+
 
 const columnCount = 10;
 const rowCount = 150;
@@ -98,9 +101,10 @@ export const TestGrid: React.FunctionComponent = () => {
 
     const handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
         const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
         setState({
-            columns: reorderArray<Column>(state.columns, columnIds as number[], to),
-            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIds as number[], to) })),
+            columns: reorderArray<Column>(state.columns, columnIdxs, to),
+            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIdxs, to) })),
         });
     }
 
@@ -143,7 +147,7 @@ export const TestGrid: React.FunctionComponent = () => {
         highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
         // frozenLeftColumns={2}
         // frozenRightColumns={2}
-        // frozenTopRows={2}
+        //frozenTopRows={1}
         // frozenBottomRows={2}
         canReorderColumns={handleCanReorderColumns}
         canReorderRows={handleCanReorderRows}

@@ -42,12 +42,14 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
     render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): React.ReactNode {
         return (
             <>
-                <input
-                    type="checkbox"
-                    checked={cell.checked}
-                    onChange={e => onCellChanged(this.toggleCheckboxCell(cell), true)}
-                />
-                <span></span>
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={cell.checked}
+                        onChange={e => onCellChanged(this.toggleCheckboxCell(cell), true)}
+                    />
+                    <span></span>
+                </label>
             </>
         )
     }

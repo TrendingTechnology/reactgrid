@@ -162,6 +162,7 @@
         height: 100%;
 
         .rg-cell {
+ 
             font-size: $cell-font-size;
             box-sizing: border-box;
             white-space: nowrap;
@@ -171,6 +172,7 @@
             align-items: center;
             overflow: hidden;
             padding: $cell-padding;
+            outline: none;
         }
 
         .rg-separator-line {
@@ -204,17 +206,6 @@
         }
     }
 
-    .rg-celleditor {
-        position: absolute;
-        box-sizing: border-box;
-        z-index: 5;
-        padding-top: $celleditor-padding-top;
-        background-color: $cell-editor-gb-color;
-        box-shadow: $cell-editor-shadow $cell-shadow-color;
-        border-style: solid;
-        border-color: $primary-color;
-        border-width: $celleditor-border-width;
-    }
 }
 
 .reactgrid {

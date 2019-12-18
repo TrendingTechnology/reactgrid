@@ -38,7 +38,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
                     props.state.update(state => tryAppendChange(state, location, cell));
                 })
             }
-            {location.row.idx === 0 && location.column.resizable && !(state.currentBehavior instanceof ColumnSelectionBehavior) && !(state.currentBehavior instanceof CellSelectionBehavior) && <ResizeHandle />}
+            {location.row.idx === 0 && location.column.resizable && !(state.currentBehavior instanceof ColumnSelectionBehavior) && <ResizeHandle />}
         </div >
     );
 };
