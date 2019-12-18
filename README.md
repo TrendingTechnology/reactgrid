@@ -1,6 +1,3 @@
-#### Prerequisites
-The only requirement in order to make ReactGrid work is an installed ReactJS library.
-
 ## 1. Install ReactGrid from npm repository
 
 ```shell
@@ -29,7 +26,7 @@ import "/node_modules/@silevis/reactgrid/dist/lib/assets/core.css";
 
 Time to define our data. It will be stored in [React Hook](https://reactjs.org/docs/hooks-intro.html). 
 `useState` hook will be initialized with object that contains two keys - `columns` and `rows`. 
-Both of them must be valid ReactGrid objects: [`Columns`](link) and [`Rows`](link).
+Both of them must be valid ReactGrid objects: `Columns` `Rows`.
 
 ```tsx
 import React, { useState } from "react";
@@ -89,10 +86,22 @@ const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
 ```
 
+Open example on [codesandbox.io](https://codesandbox.io/s/reactgrid-getting-started-0754c)
+
 ## Documentation
 
-Browse docs: [click](http://reactgrid.com/docs/2.0.30/0-introduction/)
+Browse docs: [click](http://reactgrid.com/docs/2.0.9/0-introduction/)
 
 ## Pricing and licensing
 
 ReactGrid if free for non-commercial use, read more about [pricing and licensing](http://reactgrid.com/pricing)
+
+## Author
+
+[Silevis Software](https://www.silevis.com/)
+
+<p align="center">
+  <a href="https://www.silevis.com/">
+    <img alt="Silevis" src="https://media.licdn.com/dms/image/C4D0BAQGgkonm5f80mA/company-logo_200_200/0?e=2159024400&v=beta&t=l5Nw-CF55OIxVORSAXOw79DlgSiDakhnYLlkBOMj7s8" width="120" />
+  </a>
+</p>
