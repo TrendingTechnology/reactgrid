@@ -1,16 +1,9 @@
-import { isBrowserIE, isBrowserEdge } from '../Functions';
 export function scrollIntoView(state, location, direction) {
     if (direction === void 0) { direction = 'both'; }
     var top = getScrollTop(state, location, direction === 'horizontal');
     var left = getScrollLeft(state, location, direction === 'vertical');
-    if (isBrowserIE() || isBrowserEdge()) {
-        state.hiddenScrollableElement.scrollTop = top;
-        state.hiddenScrollableElement.scrollLeft = left;
-    }
-    else {
-        state.viewportElement.scrollTop = top;
-        state.viewportElement.scrollLeft = left;
-    }
+    state.viewportElement.scrollTop = top;
+    state.viewportElement.scrollLeft = left;
 }
 function getScrollTop(state, location, dontChange) {
     var row = location.row;

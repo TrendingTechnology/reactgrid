@@ -40,8 +40,9 @@ var CheckboxCellTemplate = (function () {
     CheckboxCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         return (React.createElement(React.Fragment, null,
-            React.createElement("input", { type: "checkbox", checked: cell.checked, onChange: function (e) { return onCellChanged(_this.toggleCheckboxCell(cell), true); } }),
-            React.createElement("span", null)));
+            React.createElement("label", null,
+                React.createElement("input", { type: "checkbox", checked: cell.checked, onChange: function (e) { return onCellChanged(_this.toggleCheckboxCell(cell), true); } }),
+                React.createElement("span", null))));
     };
     return CheckboxCellTemplate;
 }());

@@ -22,6 +22,7 @@ var ColumnSelectionBehavior = (function (_super) {
         return _this;
     }
     ColumnSelectionBehavior.prototype.handlePointerDown = function (event, location, state) {
+        this.initialColumn = location.column;
         if (event.ctrlKey && state.selectionMode === 'column' && state.selectedIds.some(function (id) { return id === location.column.columnId; })) {
             state = unSelectOneColumn(state, location.column);
         }
@@ -35,7 +36,7 @@ var ColumnSelectionBehavior = (function (_super) {
         return state;
     };
     ColumnSelectionBehavior.prototype.handlePointerEnter = function (event, location, state) {
-        return selectMultipleColumns(state, state.focusedLocation.column, location.column, event.ctrlKey);
+        return selectMultipleColumns(state, this.initialColumn, location.column, event.ctrlKey);
     };
     return ColumnSelectionBehavior;
 }(Behavior));

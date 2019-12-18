@@ -17,7 +17,7 @@ import { Shadow } from './Shadow';
 import { ContextMenu } from './ContextMenu';
 import { CellEditor } from './CellEditor';
 import { Pane } from './Pane';
-import { recalcVisibleRange, isBrowserIE } from '../Functions';
+import { recalcVisibleRange } from '../Functions';
 var LegacyBrowserGridRenderer = (function (_super) {
     __extends(LegacyBrowserGridRenderer, _super);
     function LegacyBrowserGridRenderer() {
@@ -49,11 +49,10 @@ var LegacyBrowserGridRenderer = (function (_super) {
     }
     LegacyBrowserGridRenderer.prototype.render = function () {
         var _this = this;
-        var props = this.props;
-        var state = props.state;
+        var _a = this.props, eventHandlers = _a.eventHandlers, state = _a.state;
         var cellMatrix = state.cellMatrix;
         var hiddenScrollableElement = state.hiddenScrollableElement;
-        return (React.createElement("div", { className: "reactgrid-legacy-browser", onCopy: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e); }, onCut: function (e) { return isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e); }, onBlur: props.onBlur, onKeyDown: props.onKeyDown, onKeyUp: props.onKeyUp, onPointerDown: props.onPointerDown, onContextMenu: props.onContextMenu },
+        return (React.createElement("div", { className: "reactgrid-legacy-browser", onKeyDown: eventHandlers.keyDownHandler, onKeyUp: eventHandlers.keyUpHandler, onPointerDown: eventHandlers.pointerDownHandler },
             React.createElement("div", { ref: function (hiddenScrollableElement) { return hiddenScrollableElement && _this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement); }, className: "rg-hidden-scrollable-element", style: {
                     overflowX: this.isHorizontalScrollbarVisible() ? 'scroll' : 'auto',
                     overflowY: this.isVerticalScrollbarVisible() ? 'scroll' : 'auto',
@@ -110,7 +109,7 @@ var LegacyBrowserGridRenderer = (function (_super) {
                             }, range: cellMatrix.frozenBottomRange.slice(state.visibleRange, 'columns'), borders: {} })),
                 cellMatrix.frozenRightRange.width > 0 &&
                     React.createElement(Pane, { id: "BR", class: "rg-pane-br", state: state, style: {}, range: cellMatrix.frozenRightRange.slice(cellMatrix.frozenBottomRange, 'rows'), borders: {} }))),
-            React.createElement("div", { className: "rg-viewport", ref: props.viewportElementRefHandler, style: {
+            React.createElement("div", { className: "rg-viewport", ref: eventHandlers.viewportElementRefHandler, style: {
                     right: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                     bottom: (this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : 0),
                 } },
@@ -123,16 +122,16 @@ var LegacyBrowserGridRenderer = (function (_super) {
                             }, range: cellMatrix.scrollableRange.slice(state.visibleRange, 'rows').slice(state.visibleRange, 'columns'), borders: { right: false, bottom: false } }),
                     React.createElement("input", { className: "rg-input-xy", ref: function (input) {
                             if (input) {
-                                props.hiddenElementRefHandler(input);
+                                eventHandlers.hiddenElementRefHandler(input);
                                 input.setSelectionRange(0, 1);
                             }
                         }, value: "\u00A0", onChange: function () { } }),
                     React.createElement(Line, { linePosition: state.linePosition, orientation: state.lineOrientation, cellMatrix: state.cellMatrix }),
                     React.createElement(Shadow, { shadowPosition: state.shadowPosition, orientation: state.lineOrientation, cellMatrix: state.cellMatrix, shadowSize: state.shadowSize, cursor: state.shadowCursor }),
-                    props.state.contextMenuPosition.top !== -1 && props.state.contextMenuPosition.left !== -1 &&
-                        React.createElement(ContextMenu, { state: props.state, onContextMenu: function (menuOptions) { return props.state.props.onContextMenu
-                                ? props.state.props.onContextMenu((props.state.selectionMode === 'row') ? props.state.selectedIds : [], (props.state.selectionMode === 'column') ? props.state.selectedIds : [], props.state.selectionMode, menuOptions)
-                                : []; }, contextMenuPosition: props.state.contextMenuPosition }))),
+                    state.contextMenuPosition.top !== -1 && state.contextMenuPosition.left !== -1 &&
+                        React.createElement(ContextMenu, { state: state, onContextMenu: function (menuOptions) { return state.props.onContextMenu
+                                ? state.props.onContextMenu((state.selectionMode === 'row') ? state.selectedIndexes : [], (state.selectionMode === 'column') ? state.selectedIndexes : [], state.selectionMode, menuOptions)
+                                : []; }, contextMenuPosition: state.contextMenuPosition }))),
             state.currentlyEditedCell && React.createElement(CellEditor, { state: state })));
     };
     LegacyBrowserGridRenderer.prototype.hiddenScrollableElementRefHandler = function (state, hiddenScrollableElement) {

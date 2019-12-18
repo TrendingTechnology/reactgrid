@@ -24,7 +24,7 @@ var __assign = (this && this.__assign) || function () {
 };
 import * as React from 'react';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
-import { isBrowserIE, getDataToPasteInIE } from '../Functions';
+import { isBrowserIE, isBrowserEdge } from '../Functions';
 var ContextMenu = (function (_super) {
     __extends(ContextMenu, _super);
     function ContextMenu() {
@@ -64,8 +64,7 @@ function customContextMenuOptions(state) {
             id: 'paste',
             label: 'Paste',
             handler: function () {
-                if (isBrowserIE()) {
-                    setTimeout(function () { return state.update(function (state) { return pasteData(state, getDataToPasteInIE()); }); });
+                if (isBrowserIE() || isBrowserEdge()) {
                 }
                 else {
                     navigator.clipboard.readText().then(function (e) { return state.update(function (state) { return pasteData(state, e.split('\n').map(function (line) { return line.split('\t').map(function (t) { return ({ type: 'text', text: t, value: parseFloat(t) }); }); })); }); });

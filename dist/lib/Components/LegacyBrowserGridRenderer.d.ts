@@ -1,22 +1,6 @@
 import * as React from 'react';
-import { MenuOption, State, PointerEvent, KeyboardEvent, ClipboardEvent, FocusEvent } from '../Model';
-interface LegacyBrowserGridRendererProps {
-    state: State;
-    viewportElementRefHandler: (viewportElement: HTMLDivElement) => void;
-    hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
-    onKeyDown: (event: KeyboardEvent) => void;
-    onKeyUp: (event: KeyboardEvent) => void;
-    onCopy: (event: ClipboardEvent) => void;
-    onCut: (event: ClipboardEvent) => void;
-    onPaste: (event: ClipboardEvent) => void;
-    onPointerDown: (event: PointerEvent) => void;
-    onContextMenu: (event: PointerEvent) => void;
-    onBlur: (event: FocusEvent) => void;
-    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-}
-export declare class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGridRendererProps> {
+import { State, GridRendererProps } from '../Model';
+export declare class LegacyBrowserGridRenderer extends React.Component<GridRendererProps> {
     private frozenTopScrollableElement;
     private frozenRightScrollableElement;
     private frozenBottomScrollableElement;
@@ -33,4 +17,3 @@ export declare class LegacyBrowserGridRenderer extends React.Component<LegacyBro
     private isVerticalScrollbarVisible;
 }
 export declare function copySelectedRangeToClipboardInIE(state: State, removeValues?: boolean): void;
-export {};

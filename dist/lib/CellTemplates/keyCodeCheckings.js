@@ -11,12 +11,10 @@ export var inNumericKey = function (keyCode) {
 };
 export var isNumpadNumericKey = function (keyCode) { return (keyCode >= keyCodes.NUMPAD_0 && keyCode <= keyCodes.NUMPAD_9); };
 export var isAllowedOnNumberTypingKey = function (keyCode) {
-    return (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD ||
-        keyCode === keyCodes.DECIMAL);
+    return (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD || keyCode === keyCodes.DECIMAL);
 };
 export var isNavigationKey = function (keyCode) {
-    return (keyCode == keyCodes.LEFT_ARROW) ||
-        (keyCode == keyCodes.RIGHT_ARROW) ||
+    return (keyCode == keyCodes.LEFT_ARROW) || (keyCode == keyCodes.RIGHT_ARROW) ||
         keyCode == keyCodes.UP_ARROW || keyCode == keyCodes.DOWN_ARROW ||
         keyCode == keyCodes.END || keyCode == keyCodes.HOME ||
         keyCode == keyCodes.BACKSPACE || keyCode == keyCodes.DELETE;
