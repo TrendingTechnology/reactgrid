@@ -6,7 +6,6 @@ import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const newState = handleKeyDownInternal(state, event);
-    state.hiddenFocusElement.focus(); // TODO create test case with losing focus on grid
     if (newState !== state) { event.stopPropagation(); event.preventDefault(); }
     return newState;
 }
@@ -74,6 +73,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 event.preventDefault(); // prevent from leaving HFE
                 return isSingleCellSelected ? moveFocusLeft(state) : moveFocusInsideSelectedRange(state, 'left', asr, location);
             case keyCodes.ENTER:
+                state.hiddenFocusElement.focus();
                 return isSingleCellSelected ?
                     moveFocusUp(state) :
                     moveFocusInsideSelectedRange(state, 'up', asr, location);
@@ -93,6 +93,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
 
     } else {
         // === NO SHIFT OR CONTROL ===
+        state.hiddenFocusElement.focus();
         switch (event.keyCode) {
             case keyCodes.DELETE:
             case keyCodes.BACKSPACE:

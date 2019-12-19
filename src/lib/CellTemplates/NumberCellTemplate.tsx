@@ -38,7 +38,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         return this.getCompatibleCell({ ...cell, value: cellToMerge.value });
     }
 
-    getTextFromCharCode = (cellText: string): string => {
+    private getTextFromCharCode = (cellText: string): string => {
         switch (cellText.charCodeAt(0)) {
             case keyCodes.DASH:
                 return '-';
@@ -77,7 +77,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), true)}
             onKeyDown={e => {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode)) e.stopPropagation();
-                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode)) e.preventDefault();
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode) || e.shiftKey) e.preventDefault();
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
