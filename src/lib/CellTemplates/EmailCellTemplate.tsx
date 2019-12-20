@@ -3,6 +3,7 @@ import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
 import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
+import { getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface EmailCell extends Cell {
     type: 'email',
@@ -20,7 +21,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     }
 
     handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
-        const char = String.fromCharCode(keyCode);
+        const char = getCharFromKeyCode(keyCode, shift);
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: { ...cell, text: !shift ? char.toLowerCase() : char }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }

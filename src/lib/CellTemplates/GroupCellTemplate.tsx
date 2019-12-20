@@ -3,6 +3,7 @@ import { keyCodes } from '../Functions';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle } from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '..';
+import { getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface GroupCell extends Cell {
     type: 'group';
@@ -46,7 +47,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     handleKeyDown(cell: Compatible<GroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<GroupCell>, enableEditMode: boolean } {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
-        const char = String.fromCharCode(keyCode);
+        const char = getCharFromKeyCode(keyCode, shift);
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
         } else if (!ctrl && !alt && isAlphaNumericKey(keyCode)) {

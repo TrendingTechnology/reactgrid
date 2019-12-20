@@ -112,7 +112,7 @@ export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps
                         )}
                     </div>
                 )}
-                {cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && (
+                {cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && state.visibleRange.height > 0 && (
                     <div
                         className="rg-middle-wrapper"
                         style={{
@@ -221,11 +221,11 @@ export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps
                     }}
                 >
                     <div
-                        data-cy="reac-grid"
+                        data-cy="react-grid"
                         className="rg-content"
                         style={{ width: cellMatrix.width, height: cellMatrix.height }}
                     >
-                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.column && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange &&
+                        {cellMatrix.scrollableRange.height > 0 && cellMatrix.scrollableRange.first.column && cellMatrix.scrollableRange.first.row && cellMatrix.scrollableRange.last.row && state.visibleRange && state.visibleRange.height > 0 &&
                             <Pane
                                 id="MC"
                                 class="rg-pane-mc"
