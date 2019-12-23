@@ -93,35 +93,48 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
 
     } else {
         // === NO SHIFT OR CONTROL ===
-        state.hiddenFocusElement.focus();
+       // state.hiddenFocusElement.focus();
         switch (event.keyCode) {
             case keyCodes.DELETE:
+                state.hiddenFocusElement.focus();
             case keyCodes.BACKSPACE:
+                state.hiddenFocusElement.focus();
                 return wipeSelectedRanges(state);
             case keyCodes.UP_ARROW:
+                state.hiddenFocusElement.focus();
                 return moveFocusUp(state);
             case keyCodes.DOWN_ARROW:
+                state.hiddenFocusElement.focus();
                 return moveFocusDown(state);
             case keyCodes.LEFT_ARROW:
+                state.hiddenFocusElement.focus();
                 return moveFocusLeft(state);
             case keyCodes.RIGHT_ARROW:
+                state.hiddenFocusElement.focus();
                 return moveFocusRight(state);
             case keyCodes.TAB:
+                state.hiddenFocusElement.focus();
                 event.preventDefault(); // prevent from leaving HFE
                 return isSingleCellSelected ? moveFocusRight(state) : moveFocusInsideSelectedRange(state, 'right', asr, location);
             case keyCodes.HOME:
+                state.hiddenFocusElement.focus();
                 return (state.focusedLocation) ? focusCell(0, state.focusedLocation.row.idx, state) : state;
             case keyCodes.END:
+                state.hiddenFocusElement.focus();
                 return (state.focusedLocation) ? focusCell(state.cellMatrix.columns.length - 1, state.focusedLocation.row.idx, state) : state;
             case keyCodes.PAGE_UP:
+                state.hiddenFocusElement.focus();
                 return moveFocusPageUp(state);
             case keyCodes.PAGE_DOWN:
+                state.hiddenFocusElement.focus();
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
+                state.hiddenFocusElement.focus();
                 return isSingleCellSelected ?
                     { ...moveFocusDown(state), currentlyEditedCell: undefined } :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
             case keyCodes.ESCAPE:
+                state.hiddenFocusElement.focus();
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
         }
     }

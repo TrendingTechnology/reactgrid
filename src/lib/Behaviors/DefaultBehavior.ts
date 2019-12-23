@@ -133,7 +133,7 @@ export class DefaultBehavior extends Behavior {
     handleBlur(event: FocusEvent, state: State): State {
         return {
             ...state,
-            ...((event.target !== state.hiddenFocusElement) && { currentlyEditedCell: undefined })
+         //   ...((event.target !== state.hiddenFocusElement) && { currentlyEditedCell: undefined })
         }
     }
 
