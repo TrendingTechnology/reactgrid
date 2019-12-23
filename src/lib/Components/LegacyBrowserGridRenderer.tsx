@@ -5,7 +5,7 @@ import { ContextMenu } from './ContextMenu';
 import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent, GridRendererProps } from '../Model';
 import { CellEditor } from './CellEditor';
 import { Pane } from './Pane';
-import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from '../Functions';
+import { getDataToPasteInIE, isBrowserIE } from '../Functions';
 import { pasteData } from '../Behaviors/DefaultBehavior';
 import { handleKeyDown } from '../Functions/handleKeyDown';
 
@@ -46,7 +46,6 @@ export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps
                 onKeyDown={eventHandlers.keyDownHandler}
                 onKeyUp={eventHandlers.keyUpHandler}
                 onPointerDown={eventHandlers.pointerDownHandler}
-            // onContextMenu={state.props.onContextMenu}
             >
                 <div
                     ref={(hiddenScrollableElement: HTMLDivElement) => hiddenScrollableElement && this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement)}
@@ -205,7 +204,7 @@ export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps
                                 id="BR"
                                 class="rg-pane-br"
                                 state={state}
-                                style={{}}
+                                style={{ right: 0, overflow: 'hidden' }}
                                 range={cellMatrix.frozenRightRange.slice(cellMatrix.frozenBottomRange, 'rows')}
                                 borders={{}}
                             />
@@ -231,7 +230,8 @@ export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps
                                 class="rg-pane-mc"
                                 state={state}
                                 style={{
-                                    top: cellMatrix.frozenTopRange.height, left: cellMatrix.frozenLeftRange.width,
+                                    top: cellMatrix.frozenTopRange.height,
+                                    left: cellMatrix.frozenLeftRange.width + (17 / 2),
                                     width: this.isHorizontalScrollbarVisible() ? cellMatrix.width : state.visibleRange.width,
                                     height: this.isVerticalScrollbarVisible() ? cellMatrix.height : state.visibleRange.height
                                 }}
@@ -313,10 +313,8 @@ export class LegacyBrowserGridRenderer extends React.Component<GridRendererProps
             state.viewportElement.scrollLeft = scrollLeft;
         }
 
-        // TODO this is done outside of the GridRenderer
-        if (scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop || scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft) {
-            state.update((state: State) => recalcVisibleRange(state));
-        }
+        this.props.eventHandlers.scrollHandler();
+
     };
 
     private isClickedOutOfGrid(event: PointerEvent): boolean {

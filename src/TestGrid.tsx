@@ -6,7 +6,7 @@ import 'core-js';
 
 
 const columnCount = 10;
-const rowCount = 150;
+const rowCount = 30;
 
 interface TestGridState {
     columns: Column[]
@@ -145,10 +145,10 @@ export const TestGrid: React.FunctionComponent = () => {
         onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
         highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
-        // frozenLeftColumns={2}
-        // frozenRightColumns={2}
-        //frozenTopRows={1}
-        // frozenBottomRows={2}
+        frozenLeftColumns={2}
+        frozenRightColumns={2}
+        frozenTopRows={1}
+        frozenBottomRows={2}
         canReorderColumns={handleCanReorderColumns}
         canReorderRows={handleCanReorderRows}
         onColumnsReordered={handleColumnsReordered}

@@ -5,14 +5,14 @@ export function scrollIntoView(state: State, location: any, direction: Direction
     const top = getScrollTop(state, location, direction === 'horizontal');
     const left = getScrollLeft(state, location, direction === 'vertical');
 
-    // if (isBrowserIE() || isBrowserEdge()) {
-    //     // TODO use viewportElement in LegacyRenderer
-    //     state.hiddenScrollableElement.scrollTop = top;
-    //     state.hiddenScrollableElement.scrollLeft = left;
-    // } else {
-    state.viewportElement.scrollTop = top;
-    state.viewportElement.scrollLeft = left;
-    //}
+    if (isBrowserIE() || isBrowserEdge()) {
+        // TODO use viewportElement in LegacyRenderer
+        state.hiddenScrollableElement.scrollTop = top;
+        state.hiddenScrollableElement.scrollLeft = left;
+    } else {
+        state.viewportElement.scrollTop = top;
+        state.viewportElement.scrollLeft = left;
+    }
 }
 
 function getScrollTop(state: State, location: PointerLocation, dontChange: boolean): number {
