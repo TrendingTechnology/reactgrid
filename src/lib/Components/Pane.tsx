@@ -4,6 +4,7 @@ import { CellFocus } from './CellFocus';
 import { FillHandle } from './FillHandle';
 import { RowRenderer } from './RowRenderer';
 import { PartialArea } from './PartialArea';
+import { CellSelectionBehavior } from '../Behaviors/CellSelectionBehavior';
 
 export interface PaneProps {
     id: string
@@ -46,7 +47,6 @@ class GridContent extends React.Component<RowsProps> {
 }
 
 function renderHighlights(props: PaneProps) {
-    // const highlightLocations = props.state.highlightLocations.filter((value: any) => { console.log(Object.keys(value)); return Object.keys(value).length !== 0 }); // TODO why?
     return props.state.highlightLocations.map((highlight: Highlight, id: number) => {
         const location = props.state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
         return location && props.range.contains(location) && <CellFocus key={id} location={location} color={highlight.borderColor} />; // TODO maybe new component or another way?
@@ -61,7 +61,10 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
             {props.state.currentBehavior.renderPanePart(props.state, props.range)}
             {props.state.highlightLocations && renderHighlights(props)}
             {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) && <CellFocus location={props.state.focusedLocation} />}
-            {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) && !props.state.disableFillHandle && !props.state.currentlyEditedCell && <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
+            {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last)
+                && !props.state.disableFillHandle && !props.state.currentlyEditedCell
+                && !(props.state.currentBehavior instanceof CellSelectionBehavior)
+                && <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
         </div>
     );
 };

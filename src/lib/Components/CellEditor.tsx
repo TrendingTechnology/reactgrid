@@ -22,6 +22,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 left: position.left - 1,
                 height: location.row.height + 1,
                 width: location.column.width + 1,
+                position: props.state.disableFloatingCellEditor ? 'absolute' : 'fixed',
                 //...customStyle,
             }}
         >
@@ -35,20 +36,25 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
 
 const calculatedXAxisOffset = (location: Location, state: State) => {
     if (state.cellMatrix.frozenRightRange.first.column && location.column.idx >= state.cellMatrix.frozenRightRange.first.column.idx) {
-        return Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width;
+        return Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width + state.viewportElement.offsetLeft;
     } else if (location.column.idx > (state.cellMatrix.frozenLeftRange.last.column ? state.cellMatrix.frozenLeftRange.last.column.idx : state.cellMatrix.first.column.idx) || location.column.idx == state.cellMatrix.last.column.idx) {
-        return state.cellMatrix.frozenLeftRange.width - state.viewportElement.scrollLeft;
+        return state.cellMatrix.frozenLeftRange.width - state.viewportElement.scrollLeft + state.viewportElement.offsetLeft;
     }
-    return 0;
+    return state.viewportElement.offsetLeft;
 };
 
 const calculatedYAxisOffset = (location: Location, state: State) => {
+    const isViewportScrollable = state.viewportElement.clientHeight !== state.cellMatrix.height;
+    const top = state.viewportElement.getBoundingClientRect().top;
     if (state.cellMatrix.frozenBottomRange.first.row && location.row.idx >= state.cellMatrix.frozenBottomRange.first.row.idx) {
-        return Math.min(state.cellMatrix.height, state.viewportElement.clientHeight) - state.cellMatrix.frozenBottomRange.height;
+        const res = top - state.cellMatrix.frozenBottomRange.height + state.viewportElement.clientHeight;
+        return res;
+        // return Math.min(state.cellMatrix.height, state.viewportElement.clientHeight) - state.cellMatrix.frozenBottomRange.height + state.viewportElement.offsetTop;
     } else if (location.row.idx > (state.cellMatrix.frozenTopRange.last.row ? state.cellMatrix.frozenTopRange.last.row.idx : state.cellMatrix.first.row.idx) || location.row.idx == state.cellMatrix.last.row.idx) {
-        return state.cellMatrix.frozenTopRange.height - state.viewportElement.scrollTop;
+        // return state.cellMatrix.frozenTopRange.height + state.viewportElement.offsetTop + state.viewportElement.getBoundingClientRect().top
+        return top + state.cellMatrix.frozenTopRange.height - state.viewportElement.scrollTop;
     }
-    return 0;
+    return top;
 };
 
 const calculatedEditorPosition = (location: Location, state: State) => {

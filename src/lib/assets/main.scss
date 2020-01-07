@@ -83,7 +83,13 @@
 .reactgrid, 
 .reactgrid-legacy-browser {
     width: 100%;
-    height: 100%;
+    max-height: 100%;
+    position: relative;
+    overflow: auto;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 
     .rg-partial-area {
         position: absolute;
@@ -104,17 +110,17 @@
         }
     }
 
-    .rg-viewport {
-        position: absolute;
-        overflow: auto;
-        @include fill-absolute();
-        user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
+    // .rg-viewport {
+    //     position: absolute;
+    //     overflow: auto;
+    //     @include fill-absolute();
+    //     user-select: none;
+    //     -moz-user-select: none;
+    //     -webkit-user-select: none;
+    //     -ms-user-select: none;
 
         .rg-content {
-            position: relative;
+            // position: relative;
             outline: none;
 
             .rg-context-menu {
@@ -161,7 +167,6 @@
         height: 100%;
 
         .rg-cell {
- 
             font-size: $cell-font-size;
             box-sizing: border-box;
             white-space: nowrap;
@@ -203,7 +208,7 @@
             border-width: $cell-focus-border-width;
             border-color: $primary-color;
         }
-    }
+    // }
 
 }
 
@@ -354,8 +359,8 @@
         }
     }
 
-    .rg-viewport {
-        overflow: hidden;
+    // .rg-viewport {
+    //     overflow: hidden;
 
         .rg-content {
             .rg-input-xy {
@@ -366,5 +371,5 @@
                 background-color: $main-bg-color;
             }
         }
-    }
+    // }
 }
