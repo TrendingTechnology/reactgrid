@@ -66,7 +66,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     getStyle(cell: Compatible<GroupCell>, isInEditMode: boolean): CellStyle {
         const indent = cell.indent ? cell.indent : 0;
         const elementMarginMultiplier = indent * 1.4;
-        return { paddingLeft: `${elementMarginMultiplier}em` };
+        return { paddingLeft: `calc(${elementMarginMultiplier}em + 2px)` };
     }
 
     render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
