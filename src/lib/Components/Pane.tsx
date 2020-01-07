@@ -70,5 +70,6 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 function renderSelectedRanges(state: State, pane: Range) {
-    return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.columns.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} class="rg-partial-area-selected-range" style={{}} />);
+    return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.columns.length === 1 && range.rows.length === 1) && pane.intersectsWith(range)
+        && <PartialArea key={i} pane={pane} range={range} class="rg-partial-area-selected-range" style={{}} />);
 }
