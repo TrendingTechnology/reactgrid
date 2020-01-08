@@ -19,12 +19,12 @@
 
     .rg-pane-l, 
     .rg-pane-tl {
-        box-shadow: $shadow-bottom-right $main-bg-color;
+        box-shadow: $shadow-bottom-right $cell-shadow-color;
     }
 
     .rg-pane-r, 
     .rg-pane-tr {
-        box-shadow: $shadow-top-right $main-bg-color;
+        box-shadow: $shadow-top-right $cell-shadow-color;
     }
 }
 
