@@ -4,6 +4,7 @@ import { isBrowserIE, isBrowserEdge } from '../Functions';
 export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
     const top = getScrollTop(state, location, direction === 'horizontal');
     const left = getScrollLeft(state, location, direction === 'vertical');
+    console.log('top', top);
 
     if (isBrowserIE() || isBrowserEdge()) {
         // TODO use viewportElement in LegacyRenderer
@@ -29,7 +30,7 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
     const isColumnBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
     const isColumnBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
 
-    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom() || isColumnBelowBottomPane()) {
+    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom()) {
         if (location.cellY) {
             return rows[row.idx + 1] ? rows[row.idx + 1].top - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
         } else {
