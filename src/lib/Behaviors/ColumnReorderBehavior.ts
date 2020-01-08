@@ -1,4 +1,5 @@
 import { State, Behavior, PointerEvent, PointerLocation, Direction, GridColumn } from '../Model';
+import { stat } from 'fs';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
@@ -18,10 +19,14 @@ export class ColumnReorderBehavior extends Behavior {
         const leftColumns = leftIndexes.map(i => state.cellMatrix.columns[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width!, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        this.leftOffset = location.viewportX - this.getLeftXViewport(state);
+        // this.leftOffset = location.viewportX - this.getLeftXViewport(state);
+        this.leftOffset = this.getLeftXViewport(state);
         this.rightOffset = this.getRightXViewport(state) - location.viewportX;
+        // this.rightOffset = this.getRightXViewport(state);
+
         return {
             ...state,
+            linePosition: this.leftOffset,
             lineOrientation: 'vertical',
             shadowSize: columns.reduce((sum, col) => sum + col.width!, 0),
             shadowPosition: this.getShadowPosition(location, state)
@@ -56,25 +61,30 @@ export class ColumnReorderBehavior extends Behavior {
         return Math.max(...rightColumns);
     }
 
-    getXPositionForSelection(state: State, edge: number): number {
+    getXPositionForSelection(state: State, edge: number, isRight: boolean): number {
         const column = state.cellMatrix.columns.find((gridColumn: GridColumn) => {
             return gridColumn.left <= edge && gridColumn.right >= edge;
         });
         if (column === undefined) {
             return 0;
         }
-        const centerLine = column.left + (column.width) / 2;
-        return centerLine >= edge ? column.left : column.right;
+        return isRight ? column.right : column.left;
     }
 
     handlePointerEnter(event: PointerEvent, location: PointerLocation, state: State): State {
         const dropLocation = this.getLastPossibleDropLocation(location, state)
-        if (!dropLocation) return state;
+        let linePosition = this.leftOffset;
+        if (!dropLocation) return {
+            ...state,
+            linePosition
+        }
         const drawRight = dropLocation.column.idx > this.initialColumnIdx;
-        const linePosition = Math.min((drawRight ? this.getXPositionForSelection(state, dropLocation.viewportX + this.rightOffset) : this.getXPositionForSelection(state, dropLocation.viewportX - this.leftOffset)) + state.viewportElement.scrollLeft,
+        console.log("Pierwszy: ", linePosition);
+        linePosition = Math.min((drawRight ? this.getXPositionForSelection(state, dropLocation.viewportX + this.rightOffset, drawRight) : this.getXPositionForSelection(state, dropLocation.viewportX, drawRight)) + state.viewportElement.scrollLeft,
             state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft
         )
         this.lastPossibleDropLocation = dropLocation;
+        console.log("Drugi: ", linePosition);
         return {
             ...state,
             linePosition
