@@ -74,27 +74,17 @@ export class ColumnReorderBehavior extends Behavior {
     }
 
     getEdgePosition(state: State, location: PointerLocation, isRight: boolean): number {
-        console.log(this.leftOffset);
-        console.log(this.rightOffset);
-        console.log(location.viewportX);
         const selectedColumn = state.cellMatrix.columns.find((gridColumn: GridColumn) => {
             return gridColumn.idx === this.initialColumnIdx;
         });
         if (selectedColumn === undefined) {
-            console.log("NIE ZNALEZIONO");
             return 0;
-        }
-        if ((selectedColumn.left === this.leftOffset && !isRight) || (selectedColumn.right === this.rightOffset && isRight)){
-            console.log("JESTEŚ  PRZY KRAWEĘDZI");
-            return (isRight) ? location.viewportX + this.distanceToRightSelectionEdge : location.viewportX - this.distanceToLeftSelectionEdge;
         }
         else {
             if (location.viewportX >= this.leftOffset && location.viewportX <= this.rightOffset){
-                console.log("NIE PRZEKROCZYŁEŚ KRAWEDZI");
                 return this.leftOffset;
             } 
             else {
-                console.log("PRZEKROCZYŁEŚ KRAWEDZ");
                 return location.viewportX;
             }
         }
