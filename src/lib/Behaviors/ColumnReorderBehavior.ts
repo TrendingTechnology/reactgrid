@@ -99,8 +99,8 @@ export class ColumnReorderBehavior extends Behavior {
         }
         const drawRight = dropLocation.column.idx > this.initialColumnIdx;
         const edgePosition = this.getEdgePosition(state, location, drawRight);
-        linePosition = Math.min((drawRight ? this.getXPositionForSelection(state, edgePosition, drawRight) : this.getXPositionForSelection(state, edgePosition, drawRight)) + state.viewportElement.scrollLeft,
-            state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft
+        linePosition = Math.min((drawRight ? this.getXPositionForSelection(state, edgePosition, drawRight) : this.getXPositionForSelection(state, edgePosition, drawRight)) 
+        + state.viewportElement.scrollLeft, state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft
         )
         this.lastPossibleDropLocation = dropLocation;
         return {
