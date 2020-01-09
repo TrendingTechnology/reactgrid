@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ReactGrid, Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, Cell, CellLocation, NumberCell, GroupCell } from './lib'
 import './lib/assets/core.scss';
+import 'core-js';
 
 const columnCount = 10;
 const rowCount = 150;

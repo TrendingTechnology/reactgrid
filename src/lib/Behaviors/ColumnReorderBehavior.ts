@@ -1,5 +1,4 @@
 import { State, Behavior, PointerEvent, PointerLocation, Direction, GridColumn } from '../Model';
-import { stat } from 'fs';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
@@ -8,6 +7,9 @@ export class ColumnReorderBehavior extends Behavior {
     private selectedIdxs!: number[];
     private rightOffset!: number;
     private leftOffset!: number;
+    private distanceToLeftSelectionEdge!: number;
+    private distanceToRightSelectionEdge!: number;
+    private selectedColumn!: GridColumn;
     autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -19,10 +21,10 @@ export class ColumnReorderBehavior extends Behavior {
         const leftColumns = leftIndexes.map(i => state.cellMatrix.columns[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width!, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        // this.leftOffset = location.viewportX - this.getLeftXViewport(state);
+        this.distanceToLeftSelectionEdge = location.viewportX - this.getLeftXViewport(state);
         this.leftOffset = this.getLeftXViewport(state);
-        this.rightOffset = this.getRightXViewport(state) - location.viewportX;
-        // this.rightOffset = this.getRightXViewport(state);
+        this.rightOffset = this.getRightXViewport(state);
+        this.distanceToRightSelectionEdge = this.getRightXViewport(state) - location.viewportX;
 
         return {
             ...state,
@@ -63,12 +65,39 @@ export class ColumnReorderBehavior extends Behavior {
 
     getXPositionForSelection(state: State, edge: number, isRight: boolean): number {
         const column = state.cellMatrix.columns.find((gridColumn: GridColumn) => {
-            return gridColumn.left <= edge && gridColumn.right >= edge;
+            return (!isRight) ? gridColumn.left <= edge && gridColumn.right > edge : gridColumn.left < edge && gridColumn.right >= edge;
         });
         if (column === undefined) {
             return 0;
         }
         return isRight ? column.right : column.left;
+    }
+
+    getEdgePosition(state: State, location: PointerLocation, isRight: boolean): number {
+        console.log(this.leftOffset);
+        console.log(this.rightOffset);
+        console.log(location.viewportX);
+        const selectedColumn = state.cellMatrix.columns.find((gridColumn: GridColumn) => {
+            return gridColumn.idx === this.initialColumnIdx;
+        });
+        if (selectedColumn === undefined) {
+            console.log("NIE ZNALEZIONO");
+            return 0;
+        }
+        if ((selectedColumn.left === this.leftOffset && !isRight) || (selectedColumn.right === this.rightOffset && isRight)){
+            console.log("JESTEŚ  PRZY KRAWEĘDZI");
+            return (isRight) ? location.viewportX + this.distanceToRightSelectionEdge : location.viewportX - this.distanceToLeftSelectionEdge;
+        }
+        else {
+            if (location.viewportX >= this.leftOffset && location.viewportX <= this.rightOffset){
+                console.log("NIE PRZEKROCZYŁEŚ KRAWEDZI");
+                return this.leftOffset;
+            } 
+            else {
+                console.log("PRZEKROCZYŁEŚ KRAWEDZ");
+                return location.viewportX;
+            }
+        }
     }
 
     handlePointerEnter(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -79,12 +108,11 @@ export class ColumnReorderBehavior extends Behavior {
             linePosition
         }
         const drawRight = dropLocation.column.idx > this.initialColumnIdx;
-        console.log("Pierwszy: ", linePosition);
-        linePosition = Math.min((drawRight ? this.getXPositionForSelection(state, dropLocation.viewportX + this.rightOffset, drawRight) : this.getXPositionForSelection(state, dropLocation.viewportX, drawRight)) + state.viewportElement.scrollLeft,
+        const edgePosition = this.getEdgePosition(state, location, drawRight);
+        linePosition = Math.min((drawRight ? this.getXPositionForSelection(state, edgePosition, drawRight) : this.getXPositionForSelection(state, edgePosition, drawRight)) + state.viewportElement.scrollLeft,
             state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft
         )
         this.lastPossibleDropLocation = dropLocation;
-        console.log("Drugi: ", linePosition);
         return {
             ...state,
             linePosition

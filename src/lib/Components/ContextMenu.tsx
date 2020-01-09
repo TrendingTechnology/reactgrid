@@ -62,8 +62,11 @@ function customContextMenuOptions(state: State): MenuOption[] {
             label: 'Paste',
             handler: () => {
                 if (isBrowserIE()) {
-                    setTimeout(() => state.update((state: State) => pasteData(state, getDataToPasteInIE())));
-                } else {
+                 //   setTimeout(() => state.update((state: State) => pasteData(state, getDataToPasteInIE())));
+                } else if (navigator.userAgent.indexOf("Firefox") != -1) {
+                    alert("These actions are unavailable using the Context Menu, but you can still use: CTRL + C for copy, CTRL + X for cut, CTRL + V to paste");
+                }
+                else {
                     navigator.clipboard.readText().then(e => state.update((state: State) => pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ type: 'text', text: t, value: parseFloat(t) }))))));
                 }
             }
