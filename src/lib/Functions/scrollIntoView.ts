@@ -4,7 +4,6 @@ import { isBrowserIE, isBrowserEdge } from '../Functions';
 export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
     const top = getScrollTop(state, location, direction === 'horizontal');
     const left = getScrollLeft(state, location, direction === 'vertical');
-    // console.log('left', left);
 
     if (isBrowserIE() || isBrowserEdge()) {
         // TODO use viewportElement in LegacyRenderer
@@ -27,28 +26,30 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
     const isBottomRowFrozen = frozenBottomRange.rows.some(r => row.idx === r.idx);
     const shouldScrollToBottom = () => ((location.cellY ? row.top + location.cellY : row.bottom) > visibleScrollAreaHeight + scrollTop - 4) || state.cellMatrix.last.row.idx === row.idx;
     const shouldScrollToTop = () => row.top + (location.cellY ? location.cellY : 0) < scrollTop + 1 && !isBottomRowFrozen;
-    const isColumnBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
-    const isColumnBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
+    const isRowBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
+    const isRowBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
 
-    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom()) {
+    const isFocusLocationOnTopFrozen = () => row.idx <= frozenTopRange.last.row.idx;
+    const isFocusLocationOnBottomFrozen = () => row.idx >= frozenBottomRange.first.row.idx;
+
+    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom() || isRowBelowBottomPane()) {
         if (location.cellY) {
             return rows[row.idx + 1] ? rows[row.idx + 1].top - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
         } else {
             return row.bottom - visibleScrollAreaHeight + 1;
         }
-    } else if (isColumnBelowBottomPane() && (state.focusedLocation && frozenBottomRange.rows.length > 0) && state.focusedLocation.row.idx < frozenBottomRange.rows[0].idx) {
+    } else if (isRowBelowBottomPane() && (state.focusedLocation && frozenBottomRange.rows.length > 0) && state.focusedLocation.row.idx < frozenBottomRange.rows[0].idx) {
         return row.bottom - visibleScrollAreaHeight;
     } else if (frozenTopRange.rows.length === 0 && shouldScrollToTop()) {
         if (location.cellY) {
-            return rows[row.idx - 1] ? rows[row.idx + -1].top - 1 : rows[row.idx].top - 1;
+            return rows[row.idx - 1] ? rows[row.idx - 1].top - 1 : rows[row.idx].top - 1;
         } else {
             return row.top - 1;
         }
-    } else if (isColumnBelowTopPane() && state.focusedLocation && state.focusedLocation.row.idx > frozenTopRange.rows.length) {
+    } else if (isRowBelowTopPane() && state.focusedLocation && state.focusedLocation.row.idx > frozenTopRange.rows.length && !isFocusLocationOnTopFrozen()) {
         return row.top - 1;
-    } else {
-        return scrollTop;
     }
+    return scrollTop;
 }
 
 function getScrollLeft(state: State, location: PointerLocation, dontChange: boolean): number {
@@ -90,6 +91,5 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
     } else if (isColumnBelowLeftPane() && !isFocusLocationOnLeftFrozen()) {
         return column.left - 1;
     }
-
     return scrollLeft;
 }

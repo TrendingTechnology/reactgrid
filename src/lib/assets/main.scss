@@ -66,11 +66,9 @@
     pointer-events: auto;
     z-index: 1;
 
-    &:hover {
-        .rg-resize-handle {
-            cursor: w-resize;
-            background-color: $primary-color;
-        }
+    &:hover .rg-resize-handle {
+        cursor: w-resize;
+        background-color: $primary-color;
     }
 
     .rg-resize-handle {
@@ -238,10 +236,6 @@
 }
 
 .reactgrid-legacy-browser {
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
 
     .rg-frozen-right, 
     .rg-pane-br {
