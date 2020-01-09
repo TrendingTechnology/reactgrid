@@ -29,7 +29,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = props => {
                     id={props.id + 'L'}
                     class="rg-pane-l"
                     state={props.state}
-                    style={{ left: 0, position: 'sticky', zIndex: props.zIndex + 1 }}
+                    style={{ left: 0, zIndex: props.zIndex + 1 }}
                     range={matrix.frozenLeftRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, right: true }}
                 />}
@@ -47,7 +47,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = props => {
                     id={props.id + 'R'}
                     class="rg-pane-r"
                     state={props.state}
-                    style={{ right: 0, position: 'sticky', zIndex: props.zIndex + 1 }}
+                    style={{ right: 0, zIndex: props.zIndex + 1 }}
                     range={matrix.frozenRightRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, left: true }}
                 />

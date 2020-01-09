@@ -10,8 +10,8 @@ $cell-editor-bg-color:              #ffffff !default;
 $fillhandle-action-border-color:    #000000 !default;
 
 // SHADOWS
-$shadow-blur-radius:    3px !default; 
-$shadow-spread-radius:  -3px !default; 
+$shadow-blur-radius:    7px !default; 
+$shadow-spread-radius:  -2px !default; 
 $shadow-length:         3px !default; 
 $shadow-bottom-right:   $shadow-length 0 $shadow-blur-radius $shadow-spread-radius !default;
 $shadow-top-right:      (-$shadow-length) 0 $shadow-blur-radius $shadow-spread-radius !default;

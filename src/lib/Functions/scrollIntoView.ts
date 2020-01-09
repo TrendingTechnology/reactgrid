@@ -4,7 +4,7 @@ import { isBrowserIE, isBrowserEdge } from '../Functions';
 export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
     const top = getScrollTop(state, location, direction === 'horizontal');
     const left = getScrollLeft(state, location, direction === 'vertical');
-    console.log('top', top);
+    // console.log('left', left);
 
     if (isBrowserIE() || isBrowserEdge()) {
         // TODO use viewportElement in LegacyRenderer
