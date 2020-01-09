@@ -29,16 +29,19 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
     const isRowBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
     const isRowBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
 
-    const isFocusLocationOnTopFrozen = () => row.idx <= frozenTopRange.last.row.idx;
-    const isFocusLocationOnBottomFrozen = () => row.idx >= frozenBottomRange.first.row.idx;
+    const hasTopFrozens = () => frozenTopRange.rows.length > 0;
+    const hasBottomFrozens = () => frozenBottomRange.rows.length > 0;
 
-    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom() || isRowBelowBottomPane()) {
+    const isFocusLocationOnTopFrozen = () => frozenTopRange.last.row && row.idx <= frozenTopRange.last.row.idx;
+    const isFocusLocationOnBottomFrozen = () => frozenBottomRange.first.row && row.idx >= frozenBottomRange.first.row.idx;
+
+    if (!hasTopFrozens() && shouldScrollToBottom() || isRowBelowBottomPane()) {
         if (location.cellY) {
             return rows[row.idx + 1] ? rows[row.idx + 1].top - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
         } else {
             return row.bottom - visibleScrollAreaHeight + 1;
         }
-    } else if (isRowBelowBottomPane() && (state.focusedLocation && frozenBottomRange.rows.length > 0) && state.focusedLocation.row.idx < frozenBottomRange.rows[0].idx) {
+    } else if (hasBottomFrozens() && isRowBelowBottomPane() && isFocusLocationOnBottomFrozen()) {
         return row.bottom - visibleScrollAreaHeight;
     } else if (frozenTopRange.rows.length === 0 && shouldScrollToTop()) {
         if (location.cellY) {
