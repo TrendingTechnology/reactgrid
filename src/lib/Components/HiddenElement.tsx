@@ -12,16 +12,12 @@ export const HiddenElement: React.FunctionComponent<HiddenElementProps> = (props
 
     let styles = {};
     if (isBrowserSafari()) {
-        const { focusedLocation } = props.state;
+        const { focusedLocation, cellMatrix } = props.state;
         styles = {
             position: 'absolute',
-            ...(focusedLocation && { top: focusedLocation && focusedLocation.row.top }),
-            ...(focusedLocation && { left: focusedLocation && focusedLocation.column.left })
+            ...(focusedLocation && { top: focusedLocation.row.top }),
+            ...(focusedLocation && { left: cellMatrix.last.column.right })
         }
     }
-    return (
-        <input className="rg-hidden-element"
-            style={styles}
-            readOnly={true} ref={props.hiddenElementRefHandler} />
-    )
+    return <input className="rg-hidden-element" style={styles} readOnly={true} ref={props.hiddenElementRefHandler} />
 }
