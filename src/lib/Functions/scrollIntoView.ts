@@ -24,32 +24,35 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
     const visibleContentHeight = Math.min(clientHeight, state.cellMatrix.height);
     const visibleScrollAreaHeight = visibleContentHeight - frozenTopRange.height - frozenBottomRange.height;
     const isBottomRowFrozen = frozenBottomRange.rows.some(r => row.idx === r.idx);
-    const shouldScrollToBottom = () => ((location.cellY ? row.top + location.cellY : row.bottom) > visibleScrollAreaHeight + scrollTop - 4) || state.cellMatrix.last.row.idx === row.idx;
-    const shouldScrollToTop = () => row.top + (location.cellY ? location.cellY : 0) < scrollTop + 1 && !isBottomRowFrozen;
     const isRowBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
     const isRowBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
+    const shouldScrollToBottom = () => ((location.cellY ? row.top + location.cellY : row.bottom) > visibleScrollAreaHeight + scrollTop - 4) || state.cellMatrix.last.row.idx === row.idx || isRowBelowTopPane();
+    const shouldScrollToTop = () => row.top + (location.cellY ? location.cellY : 0) < scrollTop + 1 && !isBottomRowFrozen;
 
     const hasTopFrozens = () => frozenTopRange.rows.length > 0;
     const hasBottomFrozens = () => frozenBottomRange.rows.length > 0;
 
-    const isFocusLocationOnTopFrozen = () => frozenTopRange.last.row && row.idx <= frozenTopRange.last.row.idx;
-    const isFocusLocationOnBottomFrozen = () => frozenBottomRange.first.row && row.idx >= frozenBottomRange.first.row.idx;
+    const isFocusLocationOnTopFrozen = () => hasTopFrozens() && row.idx <= frozenTopRange.last.row.idx;
+    const isFocusLocationOnBottomFrozen = () => hasBottomFrozens() && row.idx >= frozenBottomRange.first.row.idx;
 
-    if (!hasTopFrozens() && shouldScrollToBottom() || isRowBelowBottomPane()) {
+    if (!hasTopFrozens() && shouldScrollToBottom()) {
         if (location.cellY) {
-            return rows[row.idx + 1] ? rows[row.idx + 1].top - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
+            return rows[row.idx] ? rows[row.idx].bottom - visibleScrollAreaHeight + 1 : rows[row.idx].bottom - visibleScrollAreaHeight + 1;
         } else {
             return row.bottom - visibleScrollAreaHeight + 1;
         }
-    } else if (hasBottomFrozens() && isRowBelowBottomPane() && isFocusLocationOnBottomFrozen()) {
+    } else if (isRowBelowBottomPane() && hasBottomFrozens() && !isFocusLocationOnBottomFrozen()) {
+        if (isFocusLocationOnTopFrozen()) {
+            return rows[row.idx - 1].top;
+        }
         return row.bottom - visibleScrollAreaHeight;
-    } else if (frozenTopRange.rows.length === 0 && shouldScrollToTop()) {
+    } else if (!hasTopFrozens() && shouldScrollToTop()) {
         if (location.cellY) {
             return rows[row.idx - 1] ? rows[row.idx - 1].top - 1 : rows[row.idx].top - 1;
         } else {
             return row.top - 1;
         }
-    } else if (isRowBelowTopPane() && state.focusedLocation && state.focusedLocation.row.idx > frozenTopRange.rows.length && !isFocusLocationOnTopFrozen()) {
+    } else if (isRowBelowTopPane() && !isFocusLocationOnTopFrozen()) {
         return row.top - 1;
     }
     return scrollTop;
