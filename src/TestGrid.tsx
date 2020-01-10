@@ -3,10 +3,8 @@ import { ReactGrid, Column, Row, CellChange, Id, MenuOption, SelectionMode, Drop
 import './lib/assets/core.scss';
 import 'core-js';
 
-
-
 const columnCount = 10;
-const rowCount = 10;
+const rowCount = 150;
 
 interface TestGridState {
     columns: Column[]
@@ -140,9 +138,9 @@ export const TestGrid: React.FunctionComponent = () => {
 
     return (
         <div style={{
-            height: 200,
+            height: 'calc(100vh - 100px)',
             width: 1000,
-            // margin: 35,
+            margin: 0,
             // marginTop: 300,
             // marginBottom: 300,
         }}>
@@ -153,10 +151,10 @@ export const TestGrid: React.FunctionComponent = () => {
                 onCellsChanged={handleChanges}
                 onColumnResized={handleColumnResize}
                 highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
-                frozenLeftColumns={2}
-                frozenRightColumns={2}
-                frozenTopRows={2}
-                frozenBottomRows={2}
+                // frozenLeftColumns={2}
+                // frozenRightColumns={2}
+                // frozenTopRows={2}
+                // frozenBottomRows={2}
                 canReorderColumns={handleCanReorderColumns}
                 canReorderRows={handleCanReorderRows}
                 onColumnsReordered={handleColumnsReordered}
@@ -165,7 +163,7 @@ export const TestGrid: React.FunctionComponent = () => {
                 onFocusLocationChanged={handleFocusLocationChanged}
                 enableRowSelection
                 enableColumnSelection
-            // disableFloatingCellEditor
+                disableFloatingCellEditor
             />
         </div>
     )

@@ -110,17 +110,7 @@
         }
     }
 
-    // .rg-viewport {
-    //     position: absolute;
-    //     overflow: auto;
-    //     @include fill-absolute();
-    //     user-select: none;
-    //     -moz-user-select: none;
-    //     -webkit-user-select: none;
-    //     -ms-user-select: none;
-
         .rg-content {
-            // position: relative;
             outline: none;
 
             .rg-context-menu {
@@ -208,7 +198,6 @@
             border-width: $cell-focus-border-width;
             border-color: $primary-color;
         }
-    // }
 
 }
 
@@ -357,8 +346,15 @@
         }
     }
 
-    // .rg-viewport {
-    //     overflow: hidden;
+    .rg-viewport {
+        position: absolute;
+        overflow: auto;
+        @include fill-absolute();
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        overflow: hidden;
 
         .rg-content {
             .rg-input-xy {
@@ -369,5 +365,5 @@
                 background-color: $main-bg-color;
             }
         }
-    // }
+    }
 }

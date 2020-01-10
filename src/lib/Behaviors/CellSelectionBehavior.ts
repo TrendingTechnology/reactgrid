@@ -33,6 +33,7 @@ export class CellSelectionBehavior extends Behavior {
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         const range = state.cellMatrix.getRange(state.focusedLocation!, location);
+        if (((event.target as HTMLDivElement).className === 'reactgrid')) return state; // fix for FF scroll issue
         if (state.disableRangeSelection) {
             return state;
         } else if (state.selectionMode === 'range') {
