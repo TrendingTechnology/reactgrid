@@ -51,7 +51,9 @@ export class PointerEventsController {
         this.updateState(state => {
             const autoScrollDirection = state.currentBehavior.autoScrollDirection;
             const currentLocation = getLocationFromClient(state, event.clientX, event.clientY, autoScrollDirection);
-            scrollIntoView(state, currentLocation, autoScrollDirection);
+            if (((event.target as HTMLDivElement).className !== 'reactgrid')) {
+                scrollIntoView(state, currentLocation, autoScrollDirection);
+            }
             state = state.currentBehavior.handlePointerMove(event, currentLocation, state);
             const previousLocation = this.eventLocations[this.currentIndex];
             this.eventLocations[this.currentIndex] = currentLocation;

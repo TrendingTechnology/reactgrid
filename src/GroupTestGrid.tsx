@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {Cell, CellChange, Column, GroupCell, Id, ReactGrid, Row, TextCell} from './lib'
+import React, { useState } from 'react';
+import { Cell, CellChange, Column, GroupCell, Id, ReactGrid, Row, TextCell } from './lib'
 import './lib/assets/core.scss';
 
 
 interface GroupTestGridStateData {
-    columns:    Column[]
-    rows:       Row[]
+    columns: Column[]
+    rows: Row[]
 }
 
 const data: any[] = [
@@ -71,12 +71,12 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     const hasChildren = (rows: Row[], row: Row): boolean => rows.some((r: Row) => getGroupCell(r).parentId === row.rowId);
 
     const isRowFullyExpanded = (rows: Row[], row: Row): boolean => {
-      const parentRow = getParentRow(rows, row);
-      if (parentRow) {
-        if (!getGroupCell(parentRow).isExpanded) return false;
-        return isRowFullyExpanded(rows, parentRow);
-      }
-      return true
+        const parentRow = getParentRow(rows, row);
+        if (parentRow) {
+            if (!getGroupCell(parentRow).isExpanded) return false;
+            return isRowFullyExpanded(rows, parentRow);
+        }
+        return true
     };
 
     const getExpandedRows = (rows: Row[]): Row[] => {
@@ -99,7 +99,6 @@ export const GroupTestGrid: React.FunctionComponent = () => {
             groupCell.hasChildrens = hasRowChildrens;
             if (hasRowChildrens) assignIndentAndHasChildrens(allRows, row, indent);
         });
-        console.log('a')
     };
 
     const createIndents = (rows: Row[]): Row[] => {
@@ -115,7 +114,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
     };
 
     const getRowsFromData = (): Row[] => {
-        return [ ...data ].map((dataRow: any): Row => {
+        return [...data].map((dataRow: any): Row => {
             return {
                 rowId: dataRow.id,
                 cells: [
@@ -141,7 +140,7 @@ export const GroupTestGrid: React.FunctionComponent = () => {
         rows = getExpandedRows(rows);
         return { columns, rows }
     });
-    const [rowsToRender, setRowsToRender] = useState<Row[]>([ ...state.rows ]);
+    const [rowsToRender, setRowsToRender] = useState<Row[]>([...state.rows]);
 
     const handleColumnResize = (ci: Id, width: number) => {
         let newState = { ...state };

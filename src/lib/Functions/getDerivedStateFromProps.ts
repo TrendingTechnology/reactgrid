@@ -24,10 +24,6 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
 
     if (state.cellMatrix.columns.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
         state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) };
-        // TODO remove if grid getting focus correctly after blur
-        // setTimeout(() => {
-        //     if (document.activeElement !== state.hiddenFocusElement) state.hiddenFocusElement.focus();
-        // });
     }
 
     if (state.visibleRange && dataHasChanged) {
@@ -42,6 +38,7 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
         disableFillHandle: props.disableFillHandle || false,
         disableRangeSelection: props.disableRangeSelection || false,
         enableColumnSelection: props.enableColumnSelection || false,
-        enableRowSelection: props.enableRowSelection || false
+        enableRowSelection: props.enableRowSelection || false,
+        disableFloatingCellEditor: props.disableFloatingCellEditor || false,
     };
 }

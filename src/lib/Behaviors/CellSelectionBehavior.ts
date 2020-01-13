@@ -1,11 +1,11 @@
 import { focusLocation, PointerEvent } from '../Functions';
 import { State, Location, Behavior } from '../Model';
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
-import { newLocation } from '../Functions/newLocation';
+
 
 export class CellSelectionBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
-        if (((event.target as HTMLDivElement).className === 'rg-viewport')) return state;
+        if (((event.target as HTMLDivElement).className === 'reactgrid')) return state;
         if (!state.disableRangeSelection && event.shiftKey && state.focusedLocation) {
             const range = state.cellMatrix.getRange(state.focusedLocation, location);
             if (event.ctrlKey && state.selectionMode === 'range') {
@@ -33,6 +33,7 @@ export class CellSelectionBehavior extends Behavior {
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         const range = state.cellMatrix.getRange(state.focusedLocation!, location);
+        if (((event.target as HTMLDivElement).className === 'reactgrid')) return state; // fix for FF scroll issue
         if (state.disableRangeSelection) {
             return state;
         } else if (state.selectionMode === 'range') {

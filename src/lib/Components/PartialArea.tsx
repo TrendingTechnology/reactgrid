@@ -24,12 +24,14 @@ export const PartialArea: React.FunctionComponent<PartialAreaProps> = props => {
             key={range.first.column.idx + pane.last.column.idx}
             style={{
                 ...style,
-                top: top - (top === 0 ? 0 : 1), left: left - (left === 0 ? 0 : 1),
-                width: width + (left === 0 ? 0 : 1), height: height + (top === 0 ? 0 : 1),
-                borderTop: hasTopBorder ? (style.borderTop ? style.borderTop : style.border) : '',
-                borderBottom: hasBottomBorder ? (style.borderBottom ? style.borderBottom : style.border) : '',
-                borderRight: hasRightBorder ? (style.borderRight ? style.borderRight : style.border) : '',
-                borderLeft: hasLeftBorder ? (style.borderLeft ? style.borderLeft : style.border) : ''
+                top: top - (top === 0 ? 0 : 1),
+                left: left - (left === 0 ? 0 : 1),
+                width: width + (left === 0 ? 0 : 1),
+                height: height + (top === 0 ? 0 : 1),
+                borderTop: hasTopBorder ? undefined : 'unset',
+                borderBottom: hasBottomBorder ? undefined : 'unset',
+                borderRight: hasRightBorder ? undefined : 'unset',
+                borderLeft: hasLeftBorder ? undefined : 'unset',
             }}
         />
     );

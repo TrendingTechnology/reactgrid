@@ -31,9 +31,10 @@ export class State {
     readonly disableRangeSelection: boolean = false;
     readonly enableColumnSelection: boolean = false;
     readonly enableRowSelection: boolean = false;
+    readonly disableFloatingCellEditor: boolean = false;
 
     // CONTEXT MENU
-    readonly contextMenuPosition: {top: number, left: number} = {top: -1, left: -1}; // [top, left]
+    readonly contextMenuPosition: { top: number, left: number } = { top: -1, left: -1 }; // [top, left]
 
     // LINE AND SHADOW
     readonly lineOrientation: Orientation = 'horizontal';

@@ -1,5 +1,5 @@
-import { State, KeyboardEvent, Row, Location, Range } from '../Model';
-import { focusLocation, keyCodes, getActiveSelectedRange, tryAppendChange, emptyCell } from '.';
+import { State, KeyboardEvent, Location, Range } from '../Model';
+import { focusLocation, keyCodes, getActiveSelectedRange, tryAppendChange, emptyCell, scrollIntoView } from '.';
 import { newLocation } from './newLocation';
 import { areLocationsEqual } from './areLocationsEqual';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
@@ -83,7 +83,6 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return resizeSelection(state, 0, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx);
             case keyCodes.END:
                 return resizeSelection(state, asr.first.column.idx, state.cellMatrix.last.column.idx, asr.first.row.idx, asr.last.row.idx);
-
             case keyCodes.PAGE_UP:
             case keyCodes.PAGE_DOWN:
                 // TODO resizeSelection
@@ -250,36 +249,36 @@ function moveFocusInsideSelectedRange(state: State, direction: 'left' | 'right' 
 function resizeSelectionUp(state: State, asr: Range, location: Location): State {
     return (asr.first.row.idx > 0) ?
         (asr.last.row.idx > location.row.idx) ?
-            resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx - 1) :
-            resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx - 1) :
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx - 1, 'up') :
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx - 1, 'up') :
         state;
 }
 
 function resizeSelectionDown(state: State, asr: Range, location: Location): State {
     return (asr.last.row.idx < state.cellMatrix.last.row.idx) ?
         (asr.first.row.idx < location.row.idx) ?
-            resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx + 1) :
-            resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx + 1) :
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx, asr.last.row.idx, asr.first.row.idx + 1, 'down') :
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx, asr.first.row.idx, asr.last.row.idx + 1, 'down') :
         state;
 }
 
 function resizeSelectionLeft(state: State, asr: Range, location: Location): State {
     return (asr.first.column.idx > 0) ?
         (asr.last.column.idx > location.column.idx) ?
-            resizeSelection(state, asr.first.column.idx, asr.last.column.idx - 1, asr.first.row.idx, asr.last.row.idx) :
-            resizeSelection(state, asr.last.column.idx, asr.first.column.idx - 1, asr.last.row.idx, asr.first.row.idx) :
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx - 1, asr.first.row.idx, asr.last.row.idx, 'left') :
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx - 1, asr.last.row.idx, asr.first.row.idx, 'left') :
         state;
 }
 
 function resizeSelectionRight(state: State, asr: Range, location: Location): State {
     return (asr.last.column.idx < state.cellMatrix.last.column.idx) ?
         (asr.first.column.idx < location.column.idx) ?
-            resizeSelection(state, asr.last.column.idx, asr.first.column.idx + 1, asr.last.row.idx, asr.first.row.idx) :
-            resizeSelection(state, asr.first.column.idx, asr.last.column.idx + 1, asr.first.row.idx, asr.last.row.idx) :
+            resizeSelection(state, asr.last.column.idx, asr.first.column.idx + 1, asr.last.row.idx, asr.first.row.idx, 'right') :
+            resizeSelection(state, asr.first.column.idx, asr.last.column.idx + 1, asr.first.row.idx, asr.last.row.idx, 'right') :
         state;
 }
 
-function resizeSelection(state: State, firstColIdx: number, lastColIdx: number, firstRowIdx: number, lastRowIdx: number): State {
+function resizeSelection(state: State, firstColIdx: number, lastColIdx: number, firstRowIdx: number, lastRowIdx: number, scrollDirection?: 'left' | 'right' | 'up' | 'down'): State {
     if (state.disableRangeSelection)
         return state;
 
@@ -287,9 +286,23 @@ function resizeSelection(state: State, firstColIdx: number, lastColIdx: number, 
     const end = state.cellMatrix.getLocation(lastRowIdx, lastColIdx);
     let selectedRanges = state.selectedRanges.slice();
     selectedRanges[state.activeSelectedRangeIdx] = state.cellMatrix.getRange(start, end);
-    // TODO implement scrolling
-    // if (scroll)
-    //     scrollIntoView(state, end);
+    if (scrollDirection) {
+        const location = state.focusedLocation;
+        switch (scrollDirection) {
+            case 'left':
+            case 'right':
+                const colIdx = location!.column.idx !== firstColIdx ? firstColIdx : lastColIdx;
+                scrollIntoView(state, state.cellMatrix.getLocation(location!.row.idx, colIdx), 'horizontal');
+                break;
+            case 'up':
+            case 'down':
+                const rowIdx = location!.row.idx !== firstRowIdx ? firstRowIdx : lastRowIdx;
+                scrollIntoView(state, state.cellMatrix.getLocation(rowIdx, location!.column.idx), 'vertical');
+                break;
+            default:
+                break;
+        }
+    }
 
     return { ...state, selectedRanges };
 }

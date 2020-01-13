@@ -3,10 +3,8 @@ import { ReactGrid, Column, Row, CellChange, Id, MenuOption, SelectionMode, Drop
 import './lib/assets/core.scss';
 import 'core-js';
 
-
-
 const columnCount = 10;
-const rowCount = 30;
+const rowCount = 150;
 
 interface TestGridState {
     columns: Column[]
@@ -34,7 +32,7 @@ export const TestGrid: React.FunctionComponent = () => {
         const rows = new Array(rowCount).fill(0).map((_, ri) => {
             return {
                 rowId: `row-${ri}`, reorderable: true, cells: columns.map((_, ci) => {
-                    if (ri === 0) return { type: 'header', text: `${ri} - ${ci}` }
+                    if (ri === 0) return { type: 'text', text: `${ri} - ${ci}` }
                     const now = new Date();
                     switch (ci) {
                         case 0:
@@ -138,24 +136,36 @@ export const TestGrid: React.FunctionComponent = () => {
         return true;
     }
 
-    return <ReactGrid
-        rows={state.rows}
-        columns={state.columns}
-        license={'non-commercial'}
-        onCellsChanged={handleChanges}
-        onColumnResized={handleColumnResize}
-        highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
-        frozenLeftColumns={2}
-        frozenRightColumns={2}
-        frozenTopRows={1}
-        frozenBottomRows={2}
-        canReorderColumns={handleCanReorderColumns}
-        canReorderRows={handleCanReorderRows}
-        onColumnsReordered={handleColumnsReordered}
-        onRowsReordered={handleRowsReordered}
-        onContextMenu={handleContextMenu}
-        onFocusLocationChanged={handleFocusLocationChanged}
-        enableRowSelection
-        enableColumnSelection
-    />
+    return (
+        <div style={{
+            height: 'calc(100vh - 100px)',
+            width: 1000,
+            margin: 0,
+            // marginTop: 300,
+            // marginBottom: 300,
+        }}>
+            <ReactGrid
+                rows={state.rows}
+                columns={state.columns}
+                license={'non-commercial'}
+                onCellsChanged={handleChanges}
+                onColumnResized={handleColumnResize}
+                highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
+                // frozenLeftColumns={2}
+                // frozenRightColumns={2}
+                // frozenTopRows={2}
+                // frozenBottomRows={2}
+                canReorderColumns={handleCanReorderColumns}
+                canReorderRows={handleCanReorderRows}
+                onColumnsReordered={handleColumnsReordered}
+                onRowsReordered={handleRowsReordered}
+                onContextMenu={handleContextMenu}
+                onFocusLocationChanged={handleFocusLocationChanged}
+                enableRowSelection
+                enableColumnSelection
+                disableFloatingCellEditor
+            />
+        </div>
+    )
+
 }
